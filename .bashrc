@@ -121,3 +121,4 @@ shopt -s cdspell
 export GRADLE_OPTS="-Dorg.gradle.daemon=true"
 PATH=~/bin:~/Projects/deploy:${PATH}
 
+export ANT_OPTS=-Dant.logger.defaults=/user/home/dborg/.ant_settings
