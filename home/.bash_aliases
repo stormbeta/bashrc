@@ -13,9 +13,6 @@ if [ -x /usr/bin/dircolors ]; then
 	alias ant='ant -logger org.apache.tools.ant.listener.AnsiColorLogger'
 fi
 
-# make less more friendly for non-text input files, see lesspipe(1)
-[ -x $(which lesspipe) ] && eval "$(SHELL=/bin/sh lesspipe)"
-
 # ls aliases
 alias ll='ls -l'
 alias la='ls -A'
