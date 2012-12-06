@@ -2,7 +2,7 @@
 pathmunge /usr/local/bin
 
 # Setup GO (if it is there)
-if [[ which go ]]; then
+if which -s go ; then
 	export GOROOT=/usr/local/Cellar/go/1.0.1
 	export GOPATH=${HOME}/GoWorkspace
 	pathmunge ${HOME}/GoWorkspace/bin after
@@ -10,3 +10,6 @@ if [[ which go ]]; then
 fi
 
 alias socks='sudo networksetup -setsocksfirewallproxystate'
+
+# make less more friendly for non-text input files, see lesspipe(1)
+eval "$(SHELL=/bin/sh lesspipe.sh)"
