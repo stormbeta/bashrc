@@ -1,6 +1,4 @@
-#!/bin/bash
-
-# enable color support of ls and also add handy aliases
+# Oh, THE COLORS!
 if [ -x /usr/bin/dircolors ]; then
   test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
   alias ls='ls --color=auto'
@@ -10,22 +8,21 @@ if [ -x /usr/bin/dircolors ]; then
   alias grep='grep --color=auto -n'
   alias fgrep='fgrep --color=auto -n'
   alias egrep='egrep --color=auto -n'
+
+	alias svn='colorsvn'
+	alias ant='ant -logger org.apache.tools.ant.listener.AnsiColorLogger'
 fi
 
-# some more ls aliases
+# make less more friendly for non-text input files, see lesspipe(1)
+[ -x $(which lesspipe) ] && eval "$(SHELL=/bin/sh lesspipe)"
+
+# ls aliases
 alias ll='ls -l'
 alias la='ls -A'
+alias lla='ls -lA'
 alias l='ls -CF'
 
-alias sag='sudo apt-get'
-alias svn='colorsvn'
-
-if [[ -e /usr/sbin/service ]]; then
-  alias service='sudo service'
-fi
-
-alias ant='ant -logger org.apache.tools.ant.listener.AnsiColorLogger'
-
+# Git shortcuts with completion
 alias g='git status'
 alias gco='git checkout'
 alias gf='git fetch'

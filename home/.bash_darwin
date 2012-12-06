@@ -1,0 +1,12 @@
+# Make brew happy
+pathmunge /usr/local/bin
+
+# Setup GO (if it is there)
+if [[ which go ]]; then
+	export GOROOT=/usr/local/Cellar/go/1.0.1
+	export GOPATH=${HOME}/GoWorkspace
+	pathmunge ${HOME}/GoWorkspace/bin after
+	pathmunge ${GOROOT}/bin after
+fi
+
+alias socks='sudo networksetup -setsocksfirewallproxystate'
