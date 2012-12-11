@@ -20,7 +20,7 @@ source ~/.bash_prompt
 source ~/.ssh/ssh-agent-setup.sh
 
 # Set up ruby with rbenv like all the cool kids.
-[[ -d ${HOME}/.rbenv/bin  ]] && pathmunge ${HOME}~/.rbenv/bin
+[[ -d ${HOME}/.rbenv/bin  ]] && pathmunge ${HOME}/.rbenv/bin
 eval "$(rbenv init -)"
 
 # don't put duplicate lines in the history. See bash(1) for more options
