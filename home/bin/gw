@@ -1,0 +1,36 @@
+#!/bin/bash
+GRADLEW_FOUND=false
+BUILD_GRADLE_FOUND=false
+
+CURR_PATH="${PWD}"
+REAL_GRADLEW="${CURR_PATH}/gradlew"
+
+if [[ -x "${REAL_GRADLEW}" ]]; then
+  GRADLEW_FOUND=true
+else
+  while [[ "${CURR_PATH}" != "/" ]]; do
+    CURR_PATH=$(dirname "${CURR_PATH}")
+    REAL_GRADLEW="${CURR_PATH}/gradlew"
+
+    if [[ -x "${REAL_GRADLEW}" ]]; then
+      GRADLEW_FOUND=true
+      break
+    elif [[ -f "${CURR_PATH}/build.gradle" && $(which gradle) ]]; then
+      BUILD_GRADLE_FOUND=true	
+      break
+    fi
+  done
+fi
+
+if ${GRADLEW_FOUND}; then
+  echo "Using gradle wrapper at '${REAL_GRADLEW}':"
+  cd ${CURR_PATH} && ./gradlew "${@}"
+elif ${BUILD_GRADLE_FOUND}; then
+  echo "Using gradle executable $(which gradle) in '${CURR_PATH}':"
+  cd ${CURR_PATH} && gradle "${@}"
+else
+  echo "Unable to find gradlew or a build.gradle with a gradle executable in your path."
+  which gradle && gradle
+fi
+
+cd - > /dev/null 2>&1
