@@ -15,7 +15,7 @@ function path() {
 
 # Lets be smart about how we add new stuff to our PATH
 function pathmunge () {
-  if ! echo ${PATH} | grep -qe "(^|:)${1}($|:)" ; then
+  if ! echo ${PATH} | grep -qE "(^|:)${1}($|:)" ; then
      if [[ "${2}" = "after" ]] ; then
       PATH=${PATH}:${1}
   else
