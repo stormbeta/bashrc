@@ -1,6 +1,6 @@
 # Make brew happy
 pathmunge /usr/local/bin
-pathemuge /usr/local/sbin after
+pathmunge /usr/local/sbin after
 
 # Setup GO (if it is there)
 if which -s go ; then
