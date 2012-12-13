@@ -1,36 +1,59 @@
 #!/bin/bash
+# Find a gradle executable. 
+GRADLE=$(which gradle)
+
+# Default names for things
+GRADLEW='gradlew'
+BUILD_GRADLE='build.gradle'
+
 GRADLEW_FOUND=false
 BUILD_GRADLE_FOUND=false
 
 CURR_PATH="${PWD}"
-REAL_GRADLEW="${CURR_PATH}/gradlew"
 
-if [[ -x "${REAL_GRADLEW}" ]]; then
-  GRADLEW_FOUND=true
-else
-  while [[ "${CURR_PATH}" != "/" ]]; do
+function error_exit() {
+  echo "${@}" >&2
+  exit 1
+}
+
+# First, search recursively upwards for a build.gradle.
+# TODO: Make this smarter by parsing the args and use the provided buildfile if provided
+while [[ "${CURR_PATH}" != "/" ]]; do
+  if [[ -f "${CURR_PATH}/${BUILD_GRADLE}" ]]; then
+    BUILD_GRADLE_FOUND=true
+    BUILD_GRADLE="${CURR_PATH}/${BUILD_GRADLE}"
+    break
+  else 
     CURR_PATH=$(dirname "${CURR_PATH}")
-    REAL_GRADLEW="${CURR_PATH}/gradlew"
+  fi
+done
 
-    if [[ -x "${REAL_GRADLEW}" ]]; then
-      GRADLEW_FOUND=true
-      break
-    elif [[ -f "${CURR_PATH}/build.gradle" && $(which gradle) ]]; then
-      BUILD_GRADLE_FOUND=true	
-      break
-    fi
-  done
-fi
+# Fail fast if we don't find a build.gradle.
+! ${BUILD_GRADLE_FOUND} && error_exit "Unable to find a ${BUILD_GRADLE} in any parent directoy of ${PWD}." 
 
+# Search recursively upwards from the first-found build.gradle for a gradlew.
+while [[ "${CURR_PATH}" != "/" ]]; do
+  if [[ -x "${CURR_PATH}/${GRADLEW}" ]]; then
+    GRADLEW_FOUND=true
+    # Prefer the gradle wrapper if one exists in this tree.
+    GRADLE="${CURR_PATH}/${GRADLEW}"
+    break
+  else 
+    CURR_PATH=$(dirname "${CURR_PATH}")
+  fi
+done
+
+# Select the right gradle or error out if no good options exist.
 if ${GRADLEW_FOUND}; then
-  echo "Using gradle wrapper at '${REAL_GRADLEW}':"
-  cd ${CURR_PATH} && ./gradlew "${@}"
-elif ${BUILD_GRADLE_FOUND}; then
-  echo "Using gradle executable $(which gradle) in '${CURR_PATH}':"
-  cd ${CURR_PATH} && gradle "${@}"
+  GRADLE_TYPE="wrapper"
+elif [[ -x ${GRADLE} ]]; then
+  GRADLE_TYPE="executable"
+  echo "There is no ${GRADLEW} set up for this project. You may want to consider setting one up."
+  echo "See: http://gradle.org/docs/current/userguide/gradle_wrapper.html"
 else
-  echo "Unable to find gradlew or a build.gradle with a gradle executable in your path."
-  which gradle && gradle
+  error_exit "Unable to find ${GRADLEW} or a gradle executable installed and available on your path."
 fi
 
-cd - > /dev/null 2>&1
+# Say what we are gonna do, then do it.
+echo -e "Using gradle ${GRADLE_TYPE} at '${GRADLE}' to run '${BUILD_GRADLE}':\n"
+cd $(dirname ${BUILD_GRADLE}) && "${GRADLE}" "${@}"
