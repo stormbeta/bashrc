@@ -5,3 +5,8 @@ alias sag='sudo apt-get'
 
 # make less more friendly for non-text input files, see lesspipe(1)
 eval "$(SHELL=/bin/sh lesspipe)"
+
+# Critical. Also, make sure this is set up before my aliases file (contains completion stuff) 
+if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
+    source /etc/bash_completion
+fi

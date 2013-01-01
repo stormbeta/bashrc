@@ -14,3 +14,8 @@ alias socks='sudo networksetup -setsocksfirewallproxystate'
 
 # make less more friendly for non-text input files, see lesspipe(1)
 eval "$(SHELL=/bin/sh lesspipe.sh)"
+
+# Set up bash completion on OSX
+if [ -f `brew --prefix`/etc/bash_completion ]; then
+    source `brew --prefix`/etc/bash_completion
+fi

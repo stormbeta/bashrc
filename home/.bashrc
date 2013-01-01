@@ -7,12 +7,7 @@ source ~/.bash_functions
 pathmunge ~/bin
 
 # Source platform dependent stuff to help with paths, etc.
-source ~/.bash_$(uname | tr "[:upper:]" "[:lower:]") # platform-dependent configurations
-
-# Critical. Also, make sure this is set up before my aliases file (contains completion stuff) 
-if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
-    source /etc/bash_completion
-fi
+source ~/.bash_$(uname | tr "[:upper:]" "[:lower:]") 
 
 # Source other parts of my configuration
 source ~/.bash_aliases
