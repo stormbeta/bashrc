@@ -19,7 +19,7 @@ function smart-alias() {
   shift
   local replacement=${@}
 
-  if which -s ${cmd} && which -s ${replacement%% *}; then
+  if which ${cmd} >/dev/null 2>&1 && which ${replacement%% *} >/dev/null 2>&1; then
     alias ${cmd}="${replacement}"
   fi
 }
