@@ -20,7 +20,7 @@ function smart-alias() {
   local replacement=${@}
 
   if which -s ${cmd} && which -s ${replacement%% *}; then
-    alias ${cmd}=${replacement}
+    alias ${cmd}="${replacement}"
   fi
 }
 
