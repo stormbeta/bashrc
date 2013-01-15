@@ -1,6 +1,9 @@
+#!/bin/bash
+
 # Make brew happy
-pathmunge /usr/local/bin
+export PATH=/usr/local/bin:${PATH}
 pathmunge /usr/local/sbin after
+pathmunge /usr/local/share/python after
 
 # Setup GO (if it is there)
 if which -s go ; then
@@ -19,3 +22,4 @@ eval "$(SHELL=/bin/sh lesspipe.sh)"
 if [ -f `brew --prefix`/etc/bash_completion ]; then
     source `brew --prefix`/etc/bash_completion
 fi
+

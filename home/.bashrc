@@ -19,9 +19,6 @@ source ~/.ssh/ssh-agent-setup.sh
 eval "$(rbenv init -)"
 
 # don't put duplicate lines in the history. See bash(1) for more options
-# don't overwrite GNU Midnight Commander's setting of `ignorespace'.
-HISTCONTROL=${HISTCONTROL}${HISTCONTROL+:}ignoredups
-# ... or force ignoredups and ignorespace
 HISTCONTROL=ignoreboth
 
 # Use ^X instead of ^S to stop control flow so I can reclaim ^S for forward common history search
