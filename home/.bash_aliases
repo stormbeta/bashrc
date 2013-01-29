@@ -28,15 +28,15 @@ alias l='ls -CF'
 # Mix the hub subcommands in with git
 smart-alias git 'hub'
 
-# Git shortcuts with completion
+# git shortcuts
 alias g='git status'
 alias gco='git checkout'
 alias gf='git fetch'
 alias gb='git branch'
 alias gd='git diff'
 alias gcp='git cherry-pick'
-alias gcd='[[ $(command git rev-parse --show-cdup 2> /dev/null) =~ ".." ]] && cd $(command git rev-parse --show-cdup)'
 
+# git completion for shortcuts
 complete -o default -o nospace -F _git_status g
 complete -o default -o nospace -F _git_checkout gco
 complete -o default -o nospace -F _git_fetch gf
