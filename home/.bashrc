@@ -34,6 +34,5 @@ shopt -s globstar
 shopt -s autocd
 shopt -s cdspell
 
-# Set environment options for common utilities 
-export GRADLE_OPTS="-Dorg.gradle.daemon=true"
+# Use custom colors for the ant console output
 export ANT_OPTS="-Dant.logger.defaults=${HOME}/.ant_settings"
