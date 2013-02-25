@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # Make brew happy
-export PATH=/usr/local/bin:${PATH}
+export PATH="/usr/local/bin:/usr/local/opt/coreutils/libexec/gnubin:${PATH}"
+export MANPATH="/usr/local/opt/coreutils/libexec/gnuman:$MANPATH"
 pathmunge /usr/local/sbin after
 pathmunge /usr/local/share/python after
 
