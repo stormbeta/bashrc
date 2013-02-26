@@ -1,7 +1,8 @@
 #!/bin/bash
 
 function color_prompt {
-  return [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null
+  [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null
+  return ${?}
 }
 
 function smart_unalias {
