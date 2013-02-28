@@ -1,0 +1,17 @@
+[user]
+  name = Doug Borg
+  email = doug.borg@dougborg.org
+[core]
+  excludesfile = /home/dborg/.gitignore
+[github]
+  user = dougborg
+[color]
+  diff = auto
+  status = auto
+  branch = auto
+[merge]
+  tool = meld
+[web]
+	browser = google-chrome
+[push]
+	default = tracking

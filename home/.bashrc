@@ -20,6 +20,11 @@ if [[ -d ${HOME}/.rbenv/bin  ]]; then
   eval "$(rbenv init -)"
 fi
 
+if [[ $(hostname -f) =~ \.+(ecovate|readytalk)\.com ]]; then
+  export GIT_AUTHOR_EMAIL="douglas.borg@readytalk.com"
+  export GIT_COMMITTER_EMAIL=${GIT_AUTHOR_EMAIL}
+fi
+
 # don't put duplicate lines in the history. See bash(1) for more options
 HISTCONTROL=ignoreboth
 
