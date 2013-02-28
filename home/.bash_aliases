@@ -43,3 +43,7 @@ complete -o default -o nospace -F _git_fetch gf
 complete -o default -o nospace -F _git_branch gb
 complete -o default -o nospace -F _git_diff gd
 complete -o default -o nospace -F _git_cherry_pick gcp
+
+homeshick="${HOME}/.homeshick"
+[[ -x ${homeshick} ]] && alias homesick=${homeshick}
+
