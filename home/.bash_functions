@@ -16,14 +16,31 @@ function path {
 function updatehome {
   local homesick=${HOME}/.homeshick
 
+  # Initialize homesick if needed.
   if [[ ! -x ${homesick} ]]; then
+    cp -r ${HOME}/.ssh ${HOME}/.ssh_bkup
     curl -sL https://raw.github.com/andsens/homeshick/master/install.sh | bash
     ${homesick} clone dougborg/bashrc
     ${homesick} clone dougborg/vimrc
   fi
 
+  # Update homesick repos.
   ${homesick} pull && ${homesick} symlink
+  source ${HOME}/.bashrc
   ( cd ${HOME}/.vim; make install )
+
+  # Restore .ssh if needed.
+  if [[ -d ${HOME}/.ssh_bkup ]]; then
+    cp -i ${HOME}/.ssh_bkup/* ${HOME}/.ssh/
+    rm -rf ${HOME}/.ssh_bkup
+  fi
+}
+
+function initializehome {
+ local target=${1}
+
+ ssh-copy-id ${target}
+ ssh -At ${target} "$(declare -f updatehome); updatehome; bash -l"
 }
 
 # Alias a command with a replacement only if both exist.
