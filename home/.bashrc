@@ -7,12 +7,15 @@ source ~/.bash_functions
 pathmunge ~/bin
 
 # Source platform dependent stuff to help with paths, etc.
-source ~/.bash_$(uname | tr "[:upper:]" "[:lower:]") 
+source ~/.bash_$(uname | tr "[:upper:]" "[:lower:]")
 
 # Source other parts of my configuration
 source ~/.bash_aliases
 source ~/.bash_prompt
-source ~/.ssh/ssh-agent-setup.sh
+
+if [ -z $SSH_AUTH_SOCK ]; then
+  source ~/.ssh/ssh-login
+fi
 
 # Set up ruby with rbenv like all the cool kids.
 if [[ -d ${HOME}/.rbenv/bin  ]]; then
