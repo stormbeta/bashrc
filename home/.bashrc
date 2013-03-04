@@ -13,10 +13,6 @@ source ~/.bash_$(uname | tr "[:upper:]" "[:lower:]")
 source ~/.bash_aliases
 source ~/.bash_prompt
 
-if [ -z $SSH_AUTH_SOCK ]; then
-  source ~/.ssh/ssh-login
-fi
-
 # Set up ruby with rbenv like all the cool kids.
 if [[ -d ${HOME}/.rbenv/bin  ]]; then
   pathmunge ${HOME}/.rbenv/bin
