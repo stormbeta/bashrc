@@ -18,3 +18,6 @@ else
   echo "SSH agent already active from another session or host."
 fi
 
+# Mix the hub subcommands in with git on linux
+smart-alias git 'hub'
+

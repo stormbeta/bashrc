@@ -1,17 +1,85 @@
 [user]
   name = Doug Borg
   email = doug.borg@dougborg.org
-[core]
-  excludesfile = /home/dborg/.gitignore
+
 [github]
   user = dougborg
+
+[merge]
+  tool = meld
+
+[web]
+  browser = google-chrome
+
+[push]
+  default = tracking
+
+[hub]
+  protocol = https
+[credential]
+  helper = osxkeychain
+
+[alias]
+  promote = ~/bin/git-promote
+  wtf     = ~/bin/git-wtf
+  rank-contributers = ~/bin/git-rank-contributers
+
+  co = checkout
+  c  = commit
+  s  = status -sb
+  b  = branch
+  a  = add -A .
+
+  # Diffs
+  sdiff = diff --short-stat
+  ndiff = diff --name-only
+  count = !git shortlog -sn
+
+  # Logs
+  plog  = log --graph --pretty=format:'%Cred%h%Creset %an: %s - %Creset %C(yellow)%d%Creset %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
+  logme = log --author='Doug.*Borg'
+  blog  = log --graph --decorate --pretty=oneline --abbrev-commit
+
+  # Safeguards
+  rebase = rebase -i
+
 [color]
   diff = auto
   status = auto
   branch = auto
+  ui = true
+
+[color "branch"]
+  current = yellow reverse
+  local = yellow
+  remote = green
+
+[color "status"]
+  added = green
+  changed = yellow
+  untracked = red
+
 [merge]
-  tool = meld
-[web]
-	browser = google-chrome
-[push]
-	default = tracking
+  # Include summaries of merged commits in newly created merge commit messages
+  log = true
+
+[branch "master"]
+  # Use `origin` as the default remote on the `master` branch in all cases
+  remote = origin
+  merge = refs/heads/master
+
+[core]
+  excludesfile = ~/.gitignore
+  editor = vim
+
+[apply]
+  whitespace = nowarn
+
+[mergetool]
+  keepBackup = false
+
+[difftool]
+  prompt = false
+
+[help]
+  autocorrect = 0

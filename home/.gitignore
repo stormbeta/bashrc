@@ -1,1 +1,8 @@
 .DS_Store
+.svn
+*~
+*.swp
+*.rbc
+*.pbc
+*.class
+id_rsa

@@ -25,16 +25,12 @@ alias la='ls -A'
 alias lla='ls -lA'
 alias l='ls -CF'
 
-# Mix the hub subcommands in with git
-smart-alias git 'hub'
-
 # git shortcuts
 alias g='git status'
 alias gco='git checkout'
 alias gf='git fetch'
 alias gb='git branch'
 alias gd='git diff'
-alias gcp='git cherry-pick'
 
 # git completion for shortcuts
 complete -o default -o nospace -F _git_status g
