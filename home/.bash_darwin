@@ -24,7 +24,7 @@ if [[ -f `brew --prefix`/etc/bash_completion ]]; then
   source `brew --prefix`/etc/bash_completion
 fi
 
-if [ -z $SSH_AUTH_SOCK ]; then
+if [[ -z $SSH_AUTH_SOCK ]]; then
   ssh-add -K
 else
   echo "SSH agent using key in OSX keychain."
@@ -32,7 +32,6 @@ fi
 
 function update {
   # Update all teh OSX things.
-  updatehome
   sudo softwareupdate -i -a
   if which brew &> /dev/null; then
     brew update
@@ -41,6 +40,7 @@ function update {
   fi
   which npm &> /dev/null && npm update npm -g && npm update -g
   which gem &> /dev/null && sudo gem update
+  updatehome
 }
 
 # Empty the Trash on all mounted volumes and the main HDD

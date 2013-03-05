@@ -5,4 +5,4 @@
 *.rbc
 *.pbc
 *.class
-id_rsa
+*_rsa

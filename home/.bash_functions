@@ -23,11 +23,6 @@ function restore {
   fi
 }
 
-function path {
-  # Print out the current path in a nice way
-  ( IFS=:; printf "%s\n" ${PATH} )
-}
-
 function updatehome {
   # Use homeshick to keep my dotfiles up-to-date.
   local homesick=${HOME}/.homeshick
@@ -71,6 +66,11 @@ function smart-alias {
   if which ${cmd} &>/dev/null && which ${replacement%% *} &>/dev/null; then
     alias ${cmd}="${replacement}"
   fi
+}
+
+function path {
+  # Print out the current path in a nice way
+  ( IFS=:; printf "%s\n" ${PATH} )
 }
 
 function pathmunge {

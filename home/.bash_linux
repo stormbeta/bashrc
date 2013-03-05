@@ -21,8 +21,8 @@ smart-alias git 'hub'
 
 function update {
   # Update all teh Debian things.
-  updatehome
   sudo apt-get update && sudo apt-get upgrade
   which npm &> /dev/null && npm update npm -g && npm update -g
   which gem &> /dev/null && sudo gem update
+  updatehome
 }
