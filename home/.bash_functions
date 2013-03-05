@@ -54,7 +54,7 @@ function ssh-init-home {
   local target=${1}
 
   ssh-copy-id ${target}
-  ssh -At ${target} "$(declare -f updatehome); updatehome; bash -l"
+  ssh -At ${target} "$(declare -f bkup restore updatehome); updatehome; bash -l"
 }
 
 function smart-alias {
