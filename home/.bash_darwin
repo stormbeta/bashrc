@@ -23,3 +23,10 @@ eval "$(SHELL=/bin/sh lesspipe.sh)"
 if [[ -f `brew --prefix`/etc/bash_completion ]]; then
     source `brew --prefix`/etc/bash_completion
 fi
+
+if [ -z $SSH_AUTH_SOCK ]; then
+  ssh-add -K
+else
+  echo "SSH agent using key in OSX keychain."
+fi
+

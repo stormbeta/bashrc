@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Make a copy of the path right beside it. 
-function dup () {
+# Make a copy of the path right beside it.
+function dup {
   local path=${1}
   local new=${2}
 
@@ -9,12 +9,42 @@ function dup () {
 }
 
 # Print out the current path in a nice way
-function path() {
-    local IFS=: && printf "%s\n" ${PATH}
+function path {
+  local IFS=: && printf "%s\n" ${PATH}
+}
+
+function updatehome {
+  local homesick=${HOME}/.homeshick
+
+  # Initialize homesick if needed.
+  if [[ ! -x ${homesick} ]]; then
+    cp -r ${HOME}/.ssh ${HOME}/.ssh_bkup
+    curl -sL https://raw.github.com/andsens/homeshick/master/install.sh | bash
+    ${homesick} clone dougborg/bashrc
+    ${homesick} clone dougborg/vimrc
+  fi
+
+  # Update homesick repos.
+  ${homesick} pull && ${homesick} symlink
+  source ${HOME}/.bashrc
+  ( cd ${HOME}/.vim; make install )
+
+  # Restore .ssh if needed.
+  if [[ -d ${HOME}/.ssh_bkup ]]; then
+    cp -i ${HOME}/.ssh_bkup/* ${HOME}/.ssh/
+    rm -rf ${HOME}/.ssh_bkup
+  fi
+}
+
+function initializehome {
+ local target=${1}
+
+ ssh-copy-id ${target}
+ ssh -At ${target} "$(declare -f updatehome); updatehome; bash -l"
 }
 
 # Alias a command with a replacement only if both exist.
-function smart-alias() {
+function smart-alias {
   local cmd=${1}
   shift
   local replacement=${@}
@@ -25,7 +55,7 @@ function smart-alias() {
 }
 
 # Be smart about how we add new stuff to our PATH
-function pathmunge () {
+function pathmunge {
   if ! echo ${PATH} | grep -qE "(^|:)${1}($|:)" ; then
     if [[ "${2}" == "after" ]] ; then
       PATH=${PATH}:${1}
@@ -35,7 +65,7 @@ function pathmunge () {
   fi
 }
 
-gcd() {
+function gcd {
     if [[ $(which git 2> /dev/null) ]]; then
         STATUS=$(git status 2>/dev/null)
         if [[ -z ${STATUS} ]]; then
@@ -46,7 +76,7 @@ gcd() {
     fi
 }
 
-_git_cd() {
+function _git_cd {
     if [[ $(which git 2> /dev/null) ]]; then
         STATUS=$(git status 2>/dev/null)
         if [[ -z ${STATUS} ]]; then

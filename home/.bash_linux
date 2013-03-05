@@ -11,3 +11,10 @@ eval "$(SHELL=/bin/sh lesspipe)"
 if [[ -f /etc/bash_completion ]] && ! shopt -oq posix; then
     source /etc/bash_completion
 fi
+
+if [ -z $SSH_AUTH_SOCK ]; then
+  source ~/.ssh/ssh-login
+else
+  echo "SSH agent already active from another session or host."
+fi
+
