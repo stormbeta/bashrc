@@ -25,7 +25,7 @@ function restore {
 
 function path {
   # Print out the current path in a nice way
-  local IFS=: && printf "%s\n" ${PATH}
+  ( IFS=:; printf "%s\n" ${PATH} )
 }
 
 function updatehome {
