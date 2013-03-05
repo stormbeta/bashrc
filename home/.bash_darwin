@@ -31,14 +31,16 @@ else
 fi
 
 function update {
-  # Get OS X Software Updates, and update installed Ruby gems, Homebrew, npm, and their installed packages
+  # Update all teh OSX things.
+  updatehome
   sudo softwareupdate -i -a
-  brew update
-  brew upgrade
-  brew cleanup
-  # npm update npm -g
-  # npm update -g
-  sudo gem update
+  if which brew &> /dev/null; then
+    brew update
+    brew upgrade
+    brew cleanup
+  fi
+  which npm &> /dev/null && npm update npm -g && npm update -g
+  which gem &> /dev/null && sudo gem update
 }
 
 # Empty the Trash on all mounted volumes and the main HDD

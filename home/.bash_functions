@@ -55,7 +55,7 @@ function updatehome {
   restore ${HOME}/bin_bkup
 }
 
-function initializehome {
+function ssh-init-home {
   local target=${1}
 
   ssh-copy-id ${target}
@@ -68,7 +68,7 @@ function smart-alias {
   shift
   local replacement=${@}
 
-  if which ${cmd} >/dev/null 2>&1 && which ${replacement%% *} >/dev/null 2>&1; then
+  if which ${cmd} &>/dev/null && which ${replacement%% *} &>/dev/null; then
     alias ${cmd}="${replacement}"
   fi
 }
@@ -85,7 +85,7 @@ function pathmunge {
 }
 
 function gcd {
-  if [[ $(which git 2> /dev/null) ]]; then
+  if [[ $(which git &> /dev/null) ]]; then
     STATUS=$(git status 2>/dev/null)
     if [[ -z ${STATUS} ]]; then
       return
@@ -96,7 +96,7 @@ function gcd {
 }
 
 function _git_cd {
-  if [[ $(which git 2> /dev/null) ]]; then
+  if [[ $(which git &> /dev/null) ]]; then
     STATUS=$(git status 2>/dev/null)
     if [[ -z ${STATUS} ]]; then
       return

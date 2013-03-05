@@ -1,6 +1,4 @@
 #!/bin/bash
-alias sag='sudo apt-get'
-
 # Pretty much never makes sense to run service without sudo
 [[ -e /usr/sbin/service ]] && alias service='sudo service'
 
@@ -21,3 +19,10 @@ fi
 # Mix the hub subcommands in with git on linux
 smart-alias git 'hub'
 
+function update {
+  # Update all teh Debian things.
+  updatehome
+  sudo apt-get update && sudo apt-get upgrade
+  which npm &> /dev/null && npm update npm -g && npm update -g
+  which gem &> /dev/null && sudo gem update
+}
