@@ -35,13 +35,10 @@ stty -ixon
 stty stop ^X
 
 # Some handy shell options
-shopt -s checkwinsize
-shopt -s histappend
-shopt -s extglob
-shopt -s dirspell
-shopt -s globstar
-shopt -s autocd
-shopt -s cdspell
+if ! shopt -qs checkwinsize histappend extglob cdspell dirspell globstar autocd; then
+  echo "Warning! You are running an older verison of bash:"
+  bash --version
+fi
 
 # Use custom colors for the ant console output
 export ANT_OPTS="-Dant.logger.defaults=${HOME}/.ant_settings"
