@@ -7,7 +7,7 @@ eval "$(SHELL=/bin/sh lesspipe)"
 
 # Completion is critical; this needs to be set up before my aliases file
 if [[ -f /etc/bash_completion ]] && ! shopt -oq posix; then
-    source /etc/bash_completion
+  source /etc/bash_completion
 fi
 
 # Setup ssh agent.
