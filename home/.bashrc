@@ -7,7 +7,7 @@ source ~/.bash_functions
 pathmunge ~/bin
 
 # Source platform dependent stuff to help with paths, etc.
-source ~/.bash_$(uname | tr "[:upper:]" "[:lower:]")
+source ~/.bash_$(uname -o | tr "[:upper:]" "[:lower:]")
 
 # Source other parts of my configuration
 source ~/.bash_aliases
