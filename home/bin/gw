@@ -20,7 +20,7 @@ function lookup() {
     if [[ -e "${curr_path}/${file}" ]]; then
       echo "${curr_path}/${file}"
       break
-    else 
+    else
       curr_path=$(dirname "${curr_path}")
     fi
   done
@@ -32,7 +32,7 @@ function select_gradle() {
 
   # Deal with a missing wrapper by defaulting to system gradle.
   if [[ -z "${gradle}" ]]; then
-    gradle=$(which gradle)
+    gradle=$(which gradle &> /dev/null)
     echo_error "There is no ${GRADLEW} set up for this project. You may want to consider setting one up."
     echo_error "See: http://gradle.org/docs/current/userguide/gradle_wrapper.html"
   fi
@@ -66,4 +66,5 @@ function execute_gradle() {
   "${gradle}" ${GW_ARGS}
 }
 
+set -e
 execute_gradle
