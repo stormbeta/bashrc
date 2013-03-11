@@ -10,6 +10,7 @@ if [[ -f /etc/bash_completion ]] && ! shopt -oq posix; then
     source /etc/bash_completion
 fi
 
+# Setup ssh agent.
 if [ -z $SSH_AUTH_SOCK ]; then
   source ~/.ssh/ssh-login
 else
