@@ -3,7 +3,14 @@
 [ -z "${PS1}" ] && return
 
 export HOMESICK="${HOME}/.homesick/repos"
-export PLATFORM=$(uname -o | tr "[:upper:]" "[:lower:]")
+
+if [[ ${OS} =~ Windows ]]; then
+  uname_flag='-o'
+else
+  uname_flag='-s'
+fi
+
+export PLATFORM=$(uname ${uname_flag} | tr "[:upper:]" "[:lower:]")
 
 # Use custom colors for the ant console output
 export ANT_OPTS="-Dant.logger.defaults=${HOME}/.ant_settings"
