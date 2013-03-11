@@ -25,6 +25,8 @@ alias la='ls -A'
 alias lla='ls -lA'
 alias l='ls -CF'
 
+alias c='clear'
+
 # git shortcuts
 alias g='git status'
 alias gco='git checkout'
