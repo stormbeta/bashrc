@@ -57,6 +57,14 @@ function ssh-init-home {
   ssh -At ${target} "$(declare -f bkup restore updatehome); updatehome; bash -l"
 }
 
+function jarls {
+  jar tvf ${1}
+}
+
+function tarls {
+  tar tvzf ${1} | tarcolor
+}
+
 function smart-alias {
   # Alias a command with a replacement only if both exist.
   local cmd=${1}
