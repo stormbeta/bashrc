@@ -104,7 +104,7 @@ function gcd {
 }
 
 function _git_cd {
-  if [[ $(which git &> /dev/null) ]]; then
+  if $(which git &> /dev/null); then
     STATUS=$(git status 2>/dev/null)
     if [[ -z ${STATUS} ]]; then
       return
@@ -116,8 +116,7 @@ function _git_cd {
     COMPREPLY=()
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}$2"
-    dirnames=$(cd $TARGET; compgen -o dirnames $2)
-    opts=$(for i in $dirnames; do  if [[ $i != ".git" ]]; then echo $i/; fi; done)
+    opts=$(cd $TARGET; compgen -d -o dirnames -S / -X '@(*/.git|*/.git/|.git|.git/)' $2)
     if [[ ${cur} == * ]]; then
       COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
       return 0
