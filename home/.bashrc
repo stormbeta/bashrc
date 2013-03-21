@@ -45,6 +45,7 @@ fi
 # Source my functions and start setting up my PATH
 source ~/.bash_functions
 pathmunge ~/bin
+pathmunge ~/ReadyTalk/deploy
 
 # Source platform dependent stuff first to help with paths, etc.
 source ~/.bash_${PLATFORM}

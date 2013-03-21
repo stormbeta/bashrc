@@ -16,8 +16,31 @@ fi
 smart-alias svn 'colorsvn'
 smart-alias ant 'ant -logger org.apache.tools.ant.listener.AnsiColorLogger'
 
-# Work proxy
+# Work stuff.
 alias ssh-proxy='ssh -D 9000 -Nf 1900.readytalk.com 2>/dev/null'
+alias deploy='deploy.sh'
+complete -F _deploy deploy
+
+function make-completion-wrapper () {
+  local function_name="$2"
+  local arg_count=$(($#-3))
+  local comp_function_name="$1"
+  shift 2
+  local function="
+  function $function_name {
+    ((COMP_CWORD+=$arg_count))
+    COMP_WORDS=( "$@" \${COMP_WORDS[@]:1} )
+    "$comp_function_name"
+    return 0
+  }"
+  eval "$function"
+  # echo $function_name
+  # echo "$function"
+}
+
+alias deployme='deploy.sh $(whoami)'
+make-completion-wrapper _deploy _deployme deploy.sh $(whoami)
+complete -F _deployme deployme
 
 # ls aliases
 alias ll='ls -l'
