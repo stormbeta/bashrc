@@ -10,7 +10,6 @@ case ${PLATFORM} in
       fi
       which npm &> /dev/null && npm update npm -g && npm update -g
       which gem &> /dev/null && sudo gem update
-      updatehome
     }
     ;;
   linux)
@@ -20,7 +19,6 @@ case ${PLATFORM} in
       which yum &> /dev/null && sudo yum update && sudo yum upgrade
       which npm &> /dev/null && npm update npm -g && npm update -g
       which gem &> /dev/null && sudo gem update
-      updatehome
     }
     ;;
   *)
@@ -28,9 +26,43 @@ case ${PLATFORM} in
     ;;
 esac
 
+function updatehome {
+  # Use homeshick to keep my dotfiles up-to-date.
+  local homesick=${HOME}/.homeshick
+
+  # Initialize homesick if needed.
+  if [[ ! -x ${homesick} ]]; then
+    curl -sL https://raw.github.com/andsens/homeshick/master/install.sh | bash
+
+    bkup ${HOME}/.ssh
+    bkup ${HOME}/.vim
+    bkup ${HOME}/bin
+
+    ${homesick} clone dougborg/bashrc
+    ${homesick} clone dougborg/vimrc
+  fi
+
+  # Update homesick repos.
+  ${homesick} pull && ${homesick} symlink
+  source ${HOME}/.bashrc
+  ( cd ${HOME}/.vim; make install )
+
+  # Restore .ssh and bin, etc. if needed.
+  restore ${HOME}/.ssh_bkup
+  restore ${HOME}/.vim_bkup
+  restore ${HOME}/bin_bkup
+}
+
 function update {
   updateplatform
   updatehome
+}
+
+function ssh-init-home {
+  local target=${1}
+
+  ssh-copy-id ${target}
+  ssh -At ${target} "$(declare -f bkup restore updatehome); updatehome; bash -l"
 }
 
 # vim: set ft=sh ts=2 sw=2 tw=0 :
