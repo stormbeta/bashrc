@@ -11,8 +11,8 @@ if [[ -f /etc/bash_completion ]] && ! shopt -oq posix; then
 fi
 
 # Setup ssh agent.
-if [ -z $SSH_AUTH_SOCK ]; then
-  source ~/.ssh/ssh-login
+if [[ -z $SSH_AUTH_SOCK ]]; then
+  source ${HOME}/.ssh/ssh-login
 else
   echo "SSH agent already active from another session or host."
 fi
@@ -21,8 +21,9 @@ fi
 smart-alias git 'hub'
 
 function update {
-  # Update all teh Debian things.
-  sudo apt-get update && sudo apt-get upgrade
+  # Update all teh Linux things.
+  which apt-get &>/dev/null && sudo apt-get update && sudo apt-get upgrade
+  which yum &> /dev/null && sudo yum update && sudo yum upgrade
   which npm &> /dev/null && npm update npm -g && npm update -g
   which gem &> /dev/null && sudo gem update
   updatehome

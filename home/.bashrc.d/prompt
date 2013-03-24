@@ -5,11 +5,6 @@ function color_prompt {
   return ${?}
 }
 
-function smart_unalias {
-  alias_cmd=${1}
-  alias | grep -q "${alias_cmd}=" && unalias ${1};
-}
-
 # set variable identifying the chroot you work in (used in the prompt below)
 if [ -z "${debian_chroot}" ] && [ -r /etc/debian_chroot ]; then
   debian_chroot=$(cat /etc/debian_chroot)
@@ -30,3 +25,5 @@ case "${TERM}" in
   *)
     ;;
 esac
+
+# vim: set ft=sh ts=2 sw=2 tw=0 :

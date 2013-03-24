@@ -1,17 +1,18 @@
 #!/bin/bash
 
 # Make brew happy
-export PATH="/usr/local/bin:/usr/local/opt/coreutils/libexec/gnubin:${PATH}"
-export MANPATH="/usr/local/opt/coreutils/libexec/gnuman:$MANPATH"
-pathmunge /usr/local/sbin after
-pathmunge /usr/local/share/python after
+path-prepend /usr/local/opt/coreutils/libexec/gnubin
+path-prepend /usr/local/opt/coreutils/libexec/gnuman MANPATH
+path-prepend /usr/local/bin
+path-append /usr/local/sbin
+path-append /usr/local/share/python
 
 # Setup GO (if it is there)
 if which -s go ; then
   export GOROOT=/usr/local/Cellar/go/1.0.1
   export GOPATH=${HOME}/GoWorkspace
-  pathmunge ${HOME}/GoWorkspace/bin after
-  pathmunge ${GOROOT}/bin after
+  path-append ${HOME}/GoWorkspace/bin
+  path-append ${GOROOT}/bin
 fi
 
 alias socks='sudo networksetup -setsocksfirewallproxystate'

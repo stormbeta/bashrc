@@ -76,52 +76,23 @@ function smart-alias {
   fi
 }
 
-function path {
-  # Print out the current path in a nice way
-  ( IFS=:; printf "%s\n" ${PATH} )
+function smart_unalias {
+  alias_cmd=${1}
+  alias | grep -q "${alias_cmd}=" && unalias ${1};
 }
 
-function pathmunge {
-  # Be smart about how we add new stuff to our PATH
-  if ! echo ${PATH} | grep -qE "(^|:)${1}($|:)" ; then
-    if [[ "${2}" == "after" ]] ; then
-      PATH=${PATH}:${1}
-    else
-      PATH=${1}:${PATH}
-    fi
-  fi
+function make-completion-wrapper () {
+  local function_name="$2"
+  local arg_count=$(($#-3))
+  local comp_function_name="$1"
+  shift 2
+  local function="
+  function $function_name {
+    ((COMP_CWORD+=$arg_count))
+    COMP_WORDS=( "$@" \${COMP_WORDS[@]:1} )
+    "$comp_function_name"
+    return 0
+  }"
+  eval "$function"
 }
 
-function gcd {
-  if [[ $(which git &> /dev/null) ]]; then
-    STATUS=$(git status 2>/dev/null)
-    if [[ -z ${STATUS} ]]; then
-      return
-    fi
-    TARGET="./$(command git rev-parse --show-cdup)$1"
-    cd ${TARGET}
-  fi
-}
-
-function _git_cd {
-  if $(which git &> /dev/null); then
-    STATUS=$(git status 2>/dev/null)
-    if [[ -z ${STATUS} ]]; then
-      return
-    fi
-    TARGET="./$(command git rev-parse --show-cdup)"
-    if [[ -d $TARGET ]]; then
-      TARGET="$TARGET/"
-    fi
-    COMPREPLY=()
-    cur="${COMP_WORDS[COMP_CWORD]}"
-    prev="${COMP_WORDS[COMP_CWORD-1]}$2"
-    opts=$(cd $TARGET; compgen -d -o dirnames -S / -X '@(*/.git|*/.git/|.git|.git/)' $2)
-    if [[ ${cur} == * ]]; then
-      COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
-      return 0
-    fi
-  fi
-}
-
-complete -o nospace -F _git_cd gcd
