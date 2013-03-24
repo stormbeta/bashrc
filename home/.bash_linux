@@ -1,30 +1,10 @@
-#!/bin/bash
 # Pretty much never makes sense to run service without sudo
 [[ -e /usr/sbin/service ]] && alias service='sudo service'
 
 # make less more friendly for non-text input files, see lesspipe(1)
 eval "$(SHELL=/bin/sh lesspipe)"
 
-# Completion is critical; this needs to be set up before my aliases file
-if [[ -f /etc/bash_completion ]] && ! shopt -oq posix; then
-  source /etc/bash_completion
-fi
-
-# Setup ssh agent.
-if [[ -z $SSH_AUTH_SOCK ]]; then
-  source ${HOME}/.ssh/ssh-login
-else
-  echo "SSH agent already active from another session or host."
-fi
-
 # Mix the hub subcommands in with git on linux
 smart-alias git 'hub'
 
-function update {
-  # Update all teh Linux things.
-  which apt-get &>/dev/null && sudo apt-get update && sudo apt-get upgrade
-  which yum &> /dev/null && sudo yum update && sudo yum upgrade
-  which npm &> /dev/null && npm update npm -g && npm update -g
-  which gem &> /dev/null && sudo gem update
-  updatehome
-}
+# vim: set ft=sh ts=2 sw=2 tw=0 :

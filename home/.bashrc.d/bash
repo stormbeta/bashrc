@@ -24,4 +24,19 @@ $( shopt -s )
 "
 fi
 
+case ${PLATFORM} in
+  darwin)
+    # Set up bash completion on OSX with brew
+    if [[ -f `brew --prefix`/etc/bash_completion ]]; then
+      source `brew --prefix`/etc/bash_completion
+    fi
+    ;;
+  *)
+    # Completion is critical; this needs to be set up before my aliases file
+    if [[ -f /etc/bash_completion ]] && ! shopt -oq posix; then
+      source /etc/bash_completion
+    fi
+    ;;
+esac
+
 # vim: set ft=sh ts=2 sw=2 tw=0 :

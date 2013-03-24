@@ -1,0 +1,36 @@
+case ${PLATFORM} in
+  darwin)
+    function updateplatform {
+      # Update all teh OSX things.
+      sudo softwareupdate -i -a
+      if which brew &> /dev/null; then
+        brew update
+        brew upgrade
+        brew cleanup
+      fi
+      which npm &> /dev/null && npm update npm -g && npm update -g
+      which gem &> /dev/null && sudo gem update
+      updatehome
+    }
+    ;;
+  linux)
+    function updateplatform {
+      # Update all teh Linux things.
+      which apt-get &>/dev/null && sudo apt-get update && sudo apt-get upgrade
+      which yum &> /dev/null && sudo yum update && sudo yum upgrade
+      which npm &> /dev/null && npm update npm -g && npm update -g
+      which gem &> /dev/null && sudo gem update
+      updatehome
+    }
+    ;;
+  *)
+    function updateplatform { :; }
+    ;;
+esac
+
+function update {
+  updateplatform
+  updatehome
+}
+
+# vim: set ft=sh ts=2 sw=2 tw=0 :

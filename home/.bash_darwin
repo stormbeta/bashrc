@@ -1,53 +1,17 @@
-#!/bin/bash
-
-# Make brew happy
-path-prepend /usr/local/opt/coreutils/libexec/gnubin
-path-prepend /usr/local/opt/coreutils/libexec/gnuman MANPATH
-path-prepend /usr/local/bin
-path-append /usr/local/sbin
-path-append /usr/local/share/python
-
-# Setup GO (if it is there)
-if which -s go ; then
-  export GOROOT=/usr/local/Cellar/go/1.0.1
-  export GOPATH=${HOME}/GoWorkspace
-  path-append ${HOME}/GoWorkspace/bin
-  path-append ${GOROOT}/bin
-fi
-
 alias socks='sudo networksetup -setsocksfirewallproxystate'
 
 # make less more friendly for non-text input files, see lesspipe(1)
 eval "$(SHELL=/bin/sh lesspipe.sh)"
 
-# Set up bash completion on OSX
-if [[ -f `brew --prefix`/etc/bash_completion ]]; then
-  source `brew --prefix`/etc/bash_completion
-fi
-
-if [[ -z $SSH_AUTH_SOCK ]]; then
-  ssh-add -K
-else
-  echo "SSH agent using key in OSX keychain."
-fi
-
-function update {
-  # Update all teh OSX things.
-  sudo softwareupdate -i -a
-  if which brew &> /dev/null; then
-    brew update
-    brew upgrade
-    brew cleanup
-  fi
-  which npm &> /dev/null && npm update npm -g && npm update -g
-  which gem &> /dev/null && sudo gem update
-  updatehome
+function emptytrash {
+  # Empty the Trash on all mounted volumes and the main HDD
+  # Also, clear Apple’s System Logs to improve shell startup speed
+  sudo rm -rfv /Volumes/*/.Trashes
+  sudo rm -rfv ~/.Trash
+  sudo rm -rfv /private/var/log/asl/*.asl
 }
-
-# Empty the Trash on all mounted volumes and the main HDD
-# Also, clear Apple’s System Logs to improve shell startup speed
-alias emptytrash="sudo rm -rfv /Volumes/*/.Trashes; sudo rm -rfv ~/.Trash; sudo rm -rfv /private/var/log/asl/*.asl"
 
 # Recursively delete `.DS_Store` files
 alias dsclean="find . -type f -name '*.DS_Store' -ls -delete"
 
+# vim: set ft=sh ts=2 sw=2 tw=0 :
