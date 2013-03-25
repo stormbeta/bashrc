@@ -1,3 +1,13 @@
+# Here is the stuff you will want to modify if you are not @dougborg:
+homeshickrepo="andsens/homeshick/"
+
+homesickrepolist="dougborg/bashrc \
+                  dougborg/vimrc"
+
+bkupdirlist="${HOME}/.ssh \
+             ${HOME}/.vim \
+             ${HOME}/bin"
+
 case ${PLATFORM} in
   darwin)
     function updateplatform {
@@ -22,9 +32,33 @@ case ${PLATFORM} in
     }
     ;;
   *)
-    function updateplatform { :; }
+    function updateplatform {
+      echo " I don't know how to update all teh things on this platform (${PLATFORM})."
+    }
     ;;
 esac
+
+function bkup {
+  # Make a copy of the path to *_bkup.
+  local path=${1}
+  local bkup=${path}_bkup
+
+  if [[ -e "${path}" ]]; then
+    cp -a "${path}" "${bkup}"
+  fi
+}
+
+function restore {
+  # Restores a _bkup dir/file.
+  local bkup=${1}
+  local new=${1%_bkup}
+
+  if [[ -e "${bkup}" ]]; then
+    [ ! -f ${new} ] && mkdir ${new}
+    diff "${bkup}" "${new}"
+    cp -ai "${bkup}" "${new}" && rm -rf "${bkup}"
+  fi
+}
 
 function updatehome {
   # Use homeshick to keep my dotfiles up-to-date.
@@ -32,14 +66,9 @@ function updatehome {
 
   # Initialize homesick if needed.
   if [[ ! -x ${homesick} ]]; then
-    curl -sL https://raw.github.com/andsens/homeshick/master/install.sh | bash
-
-    bkup ${HOME}/.ssh
-    bkup ${HOME}/.vim
-    bkup ${HOME}/bin
-
-    ${homesick} clone dougborg/bashrc
-    ${homesick} clone dougborg/vimrc
+    curl -sL https://raw.github.com/${homeshickrepo}/master/install.sh | bash
+    for dir in ${bkupdirlist}; do bkup ${dir}; done
+    for repo in ${homesickrepolist}; do ${homesick} clone ${repo}; done
   fi
 
   # Update homesick repos.
@@ -48,9 +77,7 @@ function updatehome {
   ( cd ${HOME}/.vim; make install )
 
   # Restore .ssh and bin, etc. if needed.
-  restore ${HOME}/.ssh_bkup
-  restore ${HOME}/.vim_bkup
-  restore ${HOME}/bin_bkup
+  for dir in ${bkupdirlist}; do restore ${dir}_bkup; done
 }
 
 function update {
