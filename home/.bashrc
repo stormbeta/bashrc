@@ -33,7 +33,7 @@ source ${HOME}/.bash_${PLATFORM}
 if [[ -d ${HOME}/.bashrc.d ]]; then
   while read dotd; do
     source "${dotd}"
-  done < <(find ${HOME}/.bashrc.d/ -type f)
+  done < <(find ${HOME}/.bashrc.d/ -type f -o -type l)
   unset dotd
 fi
 

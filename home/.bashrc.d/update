@@ -1,13 +1,3 @@
-# Here is the stuff you will want to modify if you are not @dougborg:
-homeshickrepo="andsens/homeshick/"
-
-homesickrepolist="dougborg/bashrc \
-                  dougborg/vimrc"
-
-bkupdirlist="${HOME}/.ssh \
-             ${HOME}/.vim \
-             ${HOME}/bin"
-
 case ${PLATFORM} in
   darwin)
     function updateplatform {
@@ -38,36 +28,23 @@ case ${PLATFORM} in
     ;;
 esac
 
-function bkup {
-  # Make a copy of the path to *_bkup.
-  local path=${1}
-  local bkup=${path}_bkup
-
-  if [[ -e "${path}" ]]; then
-    cp -a "${path}" "${bkup}"
-  fi
-}
-
-function restore {
-  # Restores a _bkup dir/file.
-  local bkup=${1}
-  local new=${1%_bkup}
-
-  if [[ -e "${bkup}" ]]; then
-    [ ! -f ${new} ] && mkdir ${new}
-    diff "${bkup}" "${new}"
-    cp -ai "${bkup}" "${new}" && rm -rf "${bkup}"
-  fi
-}
-
 function updatehome {
+  # Here is the stuff you will want to modify if you are not @dougborg:
+  homesickrepolist="dougborg/bashrc \
+                    dougborg/vimrc"
+
+  dirlist="${HOME}/.ssh \
+               ${HOME}/.vim \
+               ${HOME}/bin"
+
   # Use homeshick to keep my dotfiles up-to-date.
   local homesick=${HOME}/.homeshick
 
   # Initialize homesick if needed.
   if [[ ! -x ${homesick} ]]; then
-    curl -sL https://raw.github.com/${homeshickrepo}/master/install.sh | bash
-    for dir in ${bkupdirlist}; do bkup ${dir}; done
+    git clone git://github.com/andsens/homeshick.git $HOME/.homesick/repos/homeshick
+    homesick="$HOME/.homesick/repos/homeshick/home/.homeshick"
+    for dir in ${dirlist}; do mkdir ${dir}; done
     for repo in ${homesickrepolist}; do ${homesick} clone ${repo}; done
   fi
 
@@ -75,9 +52,6 @@ function updatehome {
   ${homesick} pull && ${homesick} symlink
   source ${HOME}/.bashrc
   ( cd ${HOME}/.vim; make install )
-
-  # Restore .ssh and bin, etc. if needed.
-  for dir in ${bkupdirlist}; do restore ${dir}_bkup; done
 }
 
 function update {
@@ -89,7 +63,7 @@ function ssh-init-home {
   local target=${1}
 
   ssh-copy-id ${target}
-  ssh -At ${target} "$(declare -f bkup restore updatehome); updatehome; bash -l"
+  ssh -At ${target} "$(declare -f updatehome); updatehome; bash -l"
 }
 
 # vim: set ft=sh ts=2 sw=2 tw=0 :
