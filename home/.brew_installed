@@ -10,6 +10,7 @@ colordiff
 colorsvn
 coreutils
 ctags
+doxygen
 findutils
 fontconfig
 freetype
@@ -60,8 +61,11 @@ netcat
 nettle
 ngrep
 nmap
+node
+openssl
 p11-kit
 pango
+parallel
 pcre
 pixman
 pkg-config
@@ -81,11 +85,14 @@ sdl_image
 siege
 sqlite
 ssh-copy-id
-tmux
+the_silver_searcher
+tomcat
 tree
 vim
 vimpager
+watch
 wget
+whois
 xz
 yasm
 zsh
