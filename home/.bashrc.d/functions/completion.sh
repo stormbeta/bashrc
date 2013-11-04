@@ -1,5 +1,3 @@
-#!/bin/bash
-
 function make-completion-wrapper () {
   local function_name="$2"
   local arg_count=$(($#-3))

@@ -1,5 +1,3 @@
-#!/bin/bash
-
 function color_prompt {
   [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null
   return ${?}
@@ -25,5 +23,3 @@ case "${TERM}" in
   *)
     ;;
 esac
-
-# vim: set ft=sh ts=2 sw=2 tw=0 :

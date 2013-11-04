@@ -8,7 +8,6 @@ if [[ "${PLATFORM}" == "darwin" ]]; then
   # Stuff for brew.
   path-prepend /usr/local/bin
   path-append /usr/local/sbin
-  path-append /usr/local/share/python
 
   function brew {
     # Create a wrapper for brew that keeps a list of installed brew packages up to
@@ -34,6 +33,3 @@ if [[ "${PLATFORM}" == "darwin" ]]; then
     brew install $(cat ${brew_installed})
   }
 fi
-
-# vim: set ft=sh ts=2 sw=2 tw=0 :
-# sublime: syntax Packages/ShellScript/Shell-Unix-Generic.tmLanguage

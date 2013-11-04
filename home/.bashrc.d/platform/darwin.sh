@@ -1,5 +1,3 @@
-alias socks='sudo networksetup -setsocksfirewallproxystate'
-
 # make less more friendly for non-text input files, see lesspipe(1)
 eval "$(SHELL=/bin/sh lesspipe.sh)"
 
@@ -14,4 +12,5 @@ function emptytrash {
 # Recursively delete `.DS_Store` files
 alias dsclean="find . -type f -name '*.DS_Store' -ls -delete"
 
-# vim: set ft=sh ts=2 sw=2 tw=0 :
+# Handy shortcut for setting up socks proxy
+alias socks='sudo networksetup -setsocksfirewallproxystate'

@@ -1,4 +1,6 @@
 #!/bin/bash
+# Script to compare contents of two jar files as well as look for potential API incompatibilities.
+
 file1=${1}
 file2=${2}
 

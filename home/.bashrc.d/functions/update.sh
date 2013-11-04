@@ -29,27 +29,17 @@ case ${PLATFORM} in
 esac
 
 function updatehome {
-  # Here is the stuff you will want to modify if you are not @dougborg:
-  homesickrepolist="dougborg/bashrc \
-                    dougborg/vimrc"
-
-  dirlist="${HOME}/.ssh \
-               ${HOME}/.vim \
-               ${HOME}/bin"
-
-  # Use homeshick to keep my dotfiles up-to-date.
-  local homesick=${HOME}/.homeshick
-
   # Initialize homesick if needed.
-  if [[ ! -x ${homesick} ]]; then
-    git clone git://github.com/andsens/homeshick.git $HOME/.homesick/repos/homeshick
-    homesick="$HOME/.homesick/repos/homeshick/home/.homeshick"
-    for dir in ${dirlist}; do mkdir ${dir}; done
-    for repo in ${homesickrepolist}; do ${homesick} clone ${repo}; done
+  if [[ ! -d "${HOMESHICK}" ]]; then
+    git clone git://github.com/andsens/homeshick.git ${HOMESHICK}
   fi
 
+  source "${HOMESHICK}/homeshick.sh"
+  for dir in ${HOMSICK_MKDIRS}; do mkdir -p ${dir}; done
+  for repo in ${HOMESICK_REPOS}; do homeshick clone ${repo}; done
+
   # Update homesick repos.
-  ${homesick} pull && ${homesick} symlink
+  homeshick pull && homeshick symlink
   source ${HOME}/.bashrc
   ( cd ${HOME}/.vim; make install )
 }
@@ -63,7 +53,13 @@ function ssh-init-home {
   local target=${1}
 
   ssh-copy-id ${target}
-  ssh -At ${target} "$(declare -f updatehome); updatehome; bash -l"
+  ssh -At ${target} bash <<EOF
+    export HOMESHICK="${HOMESHICK}"
+    export HOMESICK_REPOS="${HOMESICK_REPOS}"
+    export HOMESICK_MKDIRS="${HOMESICK_MKDIRS}"
+    $(declare -f updatehome)
+    updatehome
+EOF
 }
 
 # vim: set ft=sh ts=2 sw=2 tw=0 :

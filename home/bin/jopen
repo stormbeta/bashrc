@@ -1,4 +1,6 @@
 #!/bin/bash
+# Simple script to open up a JIRA issue.
+
 
 issue=${1}
 defaultProject='EI'

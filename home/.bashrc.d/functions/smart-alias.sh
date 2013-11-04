@@ -1,5 +1,3 @@
-#!/bin/bash
-
 function smart-alias {
 # Alias a command with a replacement only if both exist.
   local cmd=${1}
