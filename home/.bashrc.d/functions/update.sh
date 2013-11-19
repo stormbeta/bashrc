@@ -30,18 +30,34 @@ esac
 
 function updatehome {
   # Initialize homesick if needed.
+  set -e
   if [[ ! -d "${HOMESHICK}" ]]; then
     git clone git://github.com/andsens/homeshick.git ${HOMESHICK}
   fi
 
   source "${HOMESHICK}/homeshick.sh"
-  for dir in ${HOMSICK_MKDIRS}; do mkdir -p ${dir}; done
+
+  local dir
+  local full_dir
+  for dir in "${HOMESICK_MKDIRS[@]}"; do
+    full_dir="${HOME}/${dir}"
+    if [[ ! -d ${full_dir} ]]; then
+      echo "Creating ${full_dir}."
+      mkdir -p ${HOME}/${dir}
+    else
+      echo "${full_dir} exists."
+    fi
+  done
+
   for repo in ${HOMESICK_REPOS}; do homeshick clone ${repo}; done
 
   # Update homesick repos.
-  homeshick pull && homeshick symlink
+  homeshick pull
+  yes | homeshick symlink
+
   source ${HOME}/.bashrc
   ( cd ${HOME}/.vim; make install )
+  set +e
 }
 
 function update {
@@ -54,7 +70,8 @@ function ssh-init-home {
 
   ssh-copy-id ${target}
   ssh -At ${target} bash <<EOF
-    export HOMESHICK="${HOMESHICK}"
+    export HOMESICK="\${HOME}/.homesick/repos"
+    export HOMESHICK="\${HOMESICK}/homeshick"
     export HOMESICK_REPOS="${HOMESICK_REPOS}"
     export HOMESICK_MKDIRS="${HOMESICK_MKDIRS}"
     $(declare -f updatehome)

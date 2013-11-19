@@ -18,10 +18,3 @@ export ANT_OPTS="-Dant.logger.defaults=${HOME}/.ant_settings"
 # Create aliases for color version of optional commands if they both exist
 smart-alias svn 'colorsvn'
 smart-alias ant 'ant -logger org.apache.tools.ant.listener.AnsiColorLogger'
-
-which brew &> /dev/null && brew_prefix=$( brew --prefix )
-
-# GRC colorizes nifty unix tools all over the place
-if $(which grc &>/dev/null); then
-  source ${brew_prefix}/etc/grc.bashrc
-fi

@@ -9,11 +9,9 @@ source "${HOMESHICK}/homeshick.sh"
 export HOMESICK_REPOS="dougborg/bashrc \
                        dougborg/vimrc"
 
-# Shared dirs we should create first so homeshick repos don't mangle eachoter:
+# Shared dirs we should create first so homeshick repos don't mangle eachother:
 # @PERSONALIZE@
-export HOMESICK_MKDIRS="${HOME}/.ssh \
-                        ${HOME}/.vim \
-                        ${HOME}/bin"
+export HOMESICK_MKDIRS=(".ssh" ".vim" "bin")
 
 :<<WIP
 export HOMESICK_CASTLES=$(homeshick list | tr -s ' ' | cut -d ' ' -f 2)
@@ -23,8 +21,8 @@ for castle in ${HOMESICK_CASTLES}; do
   eval "function subl-${castle} {
           subl ${HOMESICK}/${castle}
         }"
-  
-  eval "function vim-${castle} { 
+
+  eval "function vim-${castle} {
           vim ${HOMESICK}/${castle}
         }"
 done
