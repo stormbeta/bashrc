@@ -1,9 +1,9 @@
 [user]
-  name = Doug Borg
-  email = dougborg@dougborg.org
+  name = Jason Miller
+  email = stormbeta@gmail.com
 
 [github]
-  user = dougborg
+  user = stormbeta
 
 [web]
   browser = google-chrome
@@ -24,9 +24,8 @@
 
   co = checkout
   c  = commit
-  s  = status -sb
-  b  = branch
-  a  = add -A .
+  st = status -sb
+  br = branch
 
   # Diffs
   sdiff = diff --short-stat
@@ -35,7 +34,7 @@
 
   # Logs
   plog  = log --graph --pretty=format:'%Cred%h%Creset %an: %s - %Creset %C(yellow)%d%Creset %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
-  logme = log --author='Doug.*Borg'
+  logme = log --author='Jason.*Miller'
   blog  = log --graph --decorate --pretty=oneline --abbrev-commit
 
   # Safeguards
@@ -63,7 +62,7 @@
 
 [merge]
   # Include summaries of merged commits in newly created merge commit messages
-  tool = meld
+  tool = vimdiff
   log = true
 
 [core]
@@ -82,6 +81,3 @@
 [diff]
   mnemonicprefix = true
   renames = copies
-
-[help]
-  autocorrect = 0

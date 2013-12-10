@@ -13,7 +13,7 @@ function emptytrash {
 alias dsclean="find . -type f -name '*.DS_Store' -ls -delete"
 
 # Handy shortcut for setting up socks proxy
-alias socks='sudo networksetup -setsocksfirewallproxystate'
+# alias socks='sudo networksetup -setsocksfirewallproxystate'
 
 #Setup brew prefix.
 which brew &> /dev/null && brew_prefix=$( brew --prefix )
