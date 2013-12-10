@@ -1,4 +1,4 @@
-path-append ~/ReadyTalk/deploy
+path-append ~/git/deploy
 
 alias deploy='deploy.sh'
 make-completion-wrapper _deploy _deploy_alias deploy.sh
