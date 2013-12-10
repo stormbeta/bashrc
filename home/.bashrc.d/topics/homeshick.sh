@@ -6,8 +6,8 @@ source "${HOMESHICK}/homeshick.sh"
 
 # My homesick repos
 # @PERSONALIZE@
-export HOMESICK_REPOS="dougborg/bashrc \
-                       dougborg/vimrc"
+export HOMESICK_REPOS="stormbeta/bashrc \
+                       stormbeta/vimrc"
 
 # Shared dirs we should create first so homeshick repos don't mangle eachother:
 # @PERSONALIZE@
