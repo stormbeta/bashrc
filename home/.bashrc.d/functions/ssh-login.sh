@@ -53,3 +53,9 @@ function ssh-login {
     start_agent;
   fi
 }
+
+function ssh-osx-tmux {
+  local jump_host="$1"
+  shift 1
+  ssh -tt $jump_host -C 'tmux -CC attach' $@
+}

@@ -26,6 +26,7 @@
   c  = commit
   st = status -sb
   br = branch
+  pr = pull --rebase
 
   # Diffs
   sdiff = diff --short-stat

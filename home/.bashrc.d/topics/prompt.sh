@@ -9,7 +9,7 @@ if [ -z "${debian_chroot}" ] && [ -r /etc/debian_chroot ]; then
 fi
 
 if color_prompt; then
-  PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]$(smart_unalias git; __git_ps1 2>/dev/null)\$ '
+  PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]$(smart_unalias git; __git_ps1 2>/dev/null)\$ \[\033[1;29m\]'
 else
   PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w$(smart_unalias git; __git_ps1 2>/dev/null)\$ '
 fi
