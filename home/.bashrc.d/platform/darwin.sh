@@ -22,3 +22,7 @@ which brew &> /dev/null && brew_prefix=$( brew --prefix )
 if which grc &>/dev/null && [[ -n "${brew_prefix}" ]]; then
   source ${brew_prefix}/etc/grc.bashrc
 fi
+
+darwin_git='/Applications/Xcode.app/Contents/Developer/usr/share/git-core/'
+[[ -f "${darwin_git}/git-completion.bash" ]] && . "${darwin_git}/git-completion.bash"
+[[ -f "${darwin_git}/git-prompt.sh" ]] && . "${darwin_git}/git-prompt.sh"
