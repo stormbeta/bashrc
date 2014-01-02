@@ -12,10 +12,14 @@ function emptytrash {
 # Recursively delete `.DS_Store` files
 alias dsclean="find . -type f -name '*.DS_Store' -ls -delete"
 
+# Use linux-style colors for ls
+export CLICOLOR=1
+export LSCOLORS=ExGxBxDxCxEgEdxbxgxcxd
+
 # Handy shortcut for setting up socks proxy
 # alias socks='sudo networksetup -setsocksfirewallproxystate'
 
-#Setup brew prefix.
+# Setup brew prefix.
 which brew &> /dev/null && brew_prefix=$( brew --prefix )
 
 # GRC colorizes nifty unix tools all over the place
@@ -23,6 +27,7 @@ if which grc &>/dev/null && [[ -n "${brew_prefix}" ]]; then
   source ${brew_prefix}/etc/grc.bashrc
 fi
 
+# Enable git shell features for OSX (requires Xcode)
 darwin_git='/Applications/Xcode.app/Contents/Developer/usr/share/git-core/'
 [[ -f "${darwin_git}/git-completion.bash" ]] && . "${darwin_git}/git-completion.bash"
 [[ -f "${darwin_git}/git-prompt.sh" ]] && . "${darwin_git}/git-prompt.sh"

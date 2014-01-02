@@ -2,6 +2,7 @@ autoconf
 automake
 bash
 cmake
+grc
 htop-osx
 libtool
 readline
