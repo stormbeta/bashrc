@@ -5,5 +5,9 @@ cmake
 grc
 htop-osx
 libtool
+pcre
+pkg-config
 readline
+the_silver_searcher
 vim
+xz
