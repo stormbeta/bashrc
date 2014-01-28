@@ -28,6 +28,9 @@
   br = branch
   pr = pull --rebase
 
+  fpull = "!f() { git fetch --all && git pull $@; }; f"
+  push-local = "!f() { local target=$1; shift; git push . HEAD:$target $@; }; f"
+
   # Diffs
   sdiff = diff --short-stat
   ndiff = diff --name-only
