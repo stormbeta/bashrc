@@ -2,7 +2,7 @@ export HOMESICK="${HOME}/.homesick/repos"
 export HOMESHICK="${HOMESICK}/homeshick"
 
 # Use homeshick to manage my dotfiles repos.
-source "${HOMESHICK}/bin/homeshick.sh"
+source "${HOMESHICK}/homeshick.sh"
 
 # My homesick repos
 # @PERSONALIZE@

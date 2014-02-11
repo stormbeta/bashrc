@@ -35,7 +35,7 @@ function updatehome {
     git clone git://github.com/andsens/homeshick.git ${HOMESHICK}
   fi
 
-  source "${HOMESHICK}/bin/homeshick.sh"
+  source "${HOMESHICK}/homeshick.sh"
 
   local dir
   local full_dir
