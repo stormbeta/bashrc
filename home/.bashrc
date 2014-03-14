@@ -37,3 +37,11 @@ sourced topics
 
 path-remove /usr/local/bin
 path-prepend /usr/local/bin
+
+# Enable fuzzy completion
+source ~/.bashrc.d/fuzzy_bash_completion
+fuzzy_replace_filedir_xspec
+bind 'set show-all-if-ambiguous on'
+for cmd in "cd ls cp tar vim mv rm mkdir rmdir"; do
+  fuzzy_setup_for_command "${cmd}"
+done

@@ -49,7 +49,7 @@ function updatehome {
     fi
   done
 
-  for repo in ${HOMESICK_REPOS}; do homeshick clone ${repo}; done
+  for repo in ${HOMESICK_REPOS}; do homeshick clone git@github.com:${repo}; done
 
   # Update homesick repos.
   homeshick pull
