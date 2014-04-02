@@ -74,6 +74,7 @@ function ssh-init-home {
     export HOMESHICK="\${HOMESICK}/homeshick"
     export HOMESICK_REPOS="${HOMESICK_REPOS}"
     export HOMESICK_MKDIRS="${HOMESICK_MKDIRS}"
+    ssh-keyscan github.com >> ~/.ssh/known_hosts
     $(declare -f updatehome)
     updatehome
 EOF
