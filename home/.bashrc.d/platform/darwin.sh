@@ -9,6 +9,13 @@ function emptytrash {
   sudo rm -rfv /private/var/log/asl/*.asl
 }
 
+#Attach to remote shell via iTerm2 tmux integration
+function ssh-osx-tmux {
+  local jump_host="$1"
+  shift 1
+  ssh -tt $jump_host -C 'tmux -CC attach' $@
+}
+
 # Recursively delete `.DS_Store` files
 alias dsclean="find . -type f -name '*.DS_Store' -ls -delete"
 

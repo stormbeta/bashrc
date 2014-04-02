@@ -12,4 +12,3 @@ function make-completion-wrapper () {
   }"
   eval "$function"
 }
-

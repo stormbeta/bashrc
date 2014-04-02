@@ -15,7 +15,7 @@ case ${PLATFORM} in
     ;;
   *)
     # Setup ssh agent.
-    if [[ -z ${SSH_AUTH_SOCK} ]]; then
+    if [[ -z ${SSH_AUTH_SOCK} ]] && [[ -e "${SSH_AUTH_SOCK}" ]]  ; then
       export SSH_ENV=${HOME}/.ssh/env-${HOSTNAME}
       export SSH_CONFIG=${HOME}/.ssh/config
       ssh-login
