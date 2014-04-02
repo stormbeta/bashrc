@@ -56,8 +56,8 @@ function updatehome {
   yes | homeshick symlink
 
   source ${HOME}/.bashrc
-  ( cd ${HOME}/.vim; make install )
   set +e
+  ( cd ${HOME}/.vim; ./update.sh )
 }
 
 function update {
