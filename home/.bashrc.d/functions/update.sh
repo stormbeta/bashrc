@@ -49,7 +49,9 @@ function updatehome {
     fi
   done
 
+  set -e
   for repo in ${HOMESICK_REPOS}; do homeshick clone git@github.com:${repo}; done
+  set +e
 
   # Update homesick repos.
   homeshick pull
