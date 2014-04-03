@@ -49,9 +49,9 @@ function updatehome {
     fi
   done
 
-  set -e
-  for repo in ${HOMESICK_REPOS}; do homeshick clone git@github.com:${repo}; done
   set +e
+  for repo in ${HOMESICK_REPOS}; do homeshick clone git@github.com:${repo}; done
+  set -e
 
   # Update homesick repos.
   homeshick pull
@@ -71,6 +71,10 @@ function ssh-init-home {
   local target=${1}
 
   ssh-copy-id ${target}
+  scp ~/.ssh/known_hosts ${target}:./.ssh/known_hosts
+  scp -r "${HOME}/.homesick" ${target}:./
+  scp -r "${HOME}/.homeshick" ${target}:./
+
   ssh -At ${target} bash <<EOF
     export HOMESICK="\${HOME}/.homesick/repos"
     export HOMESHICK="\${HOMESICK}/homeshick"

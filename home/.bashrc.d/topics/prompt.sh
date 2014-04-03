@@ -8,6 +8,8 @@ if [ -z "${debian_chroot}" ] && [ -r /etc/debian_chroot ]; then
   debian_chroot=$(cat /etc/debian_chroot)
 fi
 
+trap 'echo -ne "\033[0m"' DEBUG
+
 if color_prompt; then
   PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]$(smart_unalias git; __git_ps1 2>/dev/null)\$ \[\033[1;29m\]'
 else
