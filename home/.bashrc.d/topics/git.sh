@@ -18,6 +18,8 @@ alias gco='git checkout'
 alias gf='git fetch'
 alias gb='git branch'
 alias gd='git diff'
+alias gpf='git fetch --all && git pull -r || git pull --ff-only'
+alias gfp='gpf'
 
 # git completion for shortcuts
 complete -o default -o nospace -F _git_status g
