@@ -24,6 +24,9 @@ $( shopt -s )
 "
 fi
 
+#Bash 4.3+ only
+bind 'set colored-stats on' &> /dev/null
+
 case ${PLATFORM} in
   darwin)
     # Set up bash completion on OSX with brew

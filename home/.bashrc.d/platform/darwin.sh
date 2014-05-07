@@ -34,7 +34,17 @@ if which grc &>/dev/null && [[ -n "${brew_prefix}" ]]; then
   source ${brew_prefix}/etc/grc.bashrc
 fi
 
+export JAVA_HOME=`/usr/libexec/java_home -v 1.6`
+
 # Enable git shell features for OSX (requires Xcode)
 darwin_git='/Applications/Xcode.app/Contents/Developer/usr/share/git-core/'
 [[ -f "${darwin_git}/git-completion.bash" ]] && . "${darwin_git}/git-completion.bash"
 [[ -f "${darwin_git}/git-prompt.sh" ]] && . "${darwin_git}/git-prompt.sh"
+
+function ssh-osx-tmux {
+  local jump_host="${1:-jmillerpc}"
+  shift 1
+  ssh -tt $jump_host -C 'tmux -CC attach -d' $@
+}
+
+complete -A hostname 'ssh-osx-tmux'
