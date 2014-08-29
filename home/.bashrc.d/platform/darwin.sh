@@ -1,6 +1,3 @@
-# make less more friendly for non-text input files, see lesspipe(1)
-eval "$(SHELL=/bin/sh lesspipe.sh)"
-
 function emptytrash {
   # Empty the Trash on all mounted volumes and the main HDD
   # Also, clear Apple’s System Logs to improve shell startup speed

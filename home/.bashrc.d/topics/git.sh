@@ -5,7 +5,7 @@ else
   hostname=$(hostname -f)
 fi
 
-# @PERSONALIZE@
+#TODO: Find a way to dynamically set this by repository, not just host/id
 if [[ ${hostname} =~ .+\.(ecovate|readytalk)\.com ]] || \
    [[ `id` =~ 'READYTALK' ]]; then
   export GIT_AUTHOR_EMAIL="jason.miller@readytalk.com"
