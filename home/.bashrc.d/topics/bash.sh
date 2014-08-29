@@ -35,7 +35,7 @@ case ${PLATFORM} in
     fi
     ;;
   *)
-    # Completion is critical; this needs to be set up before my aliases file
+    # Completion is critical; this needs to be set up before the aliases file
     if [[ -f /etc/bash_completion ]] && ! shopt -oq posix; then
       source /etc/bash_completion
     fi

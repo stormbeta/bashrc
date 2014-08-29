@@ -11,7 +11,8 @@ function source_platform {
 
   export PLATFORM=$(uname ${uname_flag} | tr "[:upper:]" "[:lower:]")
 
-  source ${HOME}/.bashrc.d/platform/${PLATFORM}.sh
+  echo "Sourcing ${PLATFORM}"
+  time source ${HOME}/.bashrc.d/platform/${PLATFORM}.sh
 }
 
 function sourced {
@@ -19,7 +20,8 @@ function sourced {
 
   if [[ -d ${dir} ]]; then
     while read dotd; do
-      source "${dotd}"
+      echo "Sourcing ${dotd}"
+      time source "${dotd}"
     done < <(find ${dir} -name '*.sh')
     unset dotd
   fi
