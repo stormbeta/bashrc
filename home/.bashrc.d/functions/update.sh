@@ -68,22 +68,23 @@ function update {
 }
 
 function ssh-init-home {
-  local target=${1}
+  local target
+  for target in $@; do
+    ssh-copy-id ${target}
+    scp ~/.ssh/known_hosts ${target}:./.ssh/known_hosts
+    scp -r "${HOME}/.homesick" ${target}:./
+    scp -r "${HOME}/.homeshick" ${target}:./
 
-  ssh-copy-id ${target}
-  scp ~/.ssh/known_hosts ${target}:./.ssh/known_hosts
-  scp -r "${HOME}/.homesick" ${target}:./
-  scp -r "${HOME}/.homeshick" ${target}:./
-
-  ssh -At ${target} bash <<EOF
-    export HOMESICK="\${HOME}/.homesick/repos"
-    export HOMESHICK="\${HOMESICK}/homeshick"
-    export HOMESICK_REPOS="${HOMESICK_REPOS}"
-    export HOMESICK_MKDIRS="${HOMESICK_MKDIRS}"
-    ssh-keyscan github.com >> ~/.ssh/known_hosts
-    $(declare -f updatehome)
-    updatehome
+    ssh -At ${target} bash <<EOF
+      export HOMESICK="\${HOME}/.homesick/repos"
+      export HOMESHICK="\${HOMESICK}/homeshick"
+      export HOMESICK_REPOS="${HOMESICK_REPOS}"
+      export HOMESICK_MKDIRS="${HOMESICK_MKDIRS}"
+      ssh-keyscan github.com >> ~/.ssh/known_hosts
+      $(declare -f updatehome)
+      updatehome
 EOF
+  done
 }
 
 # vim: set ft=sh ts=2 sw=2 tw=0 :
