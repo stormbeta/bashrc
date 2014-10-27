@@ -9,3 +9,5 @@ alias hs='homesick'
 alias v='vim'
 
 alias c='clear'
+
+alias ssh='TERM=xterm-256color ssh'

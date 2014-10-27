@@ -1,8 +1,6 @@
-# Keep my .ssh stuff private.
 chmod 700 ${HOMESICK}/bashrc/home/.ssh
 
-# Work stuff.
-alias ssh-proxy='ssh -D 9000 -Nf 1900.readytalk.com 2>/dev/null'
+#TODO: This doesn't work properly with tmux
 
 case ${PLATFORM} in
   darwin)
