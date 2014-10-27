@@ -71,6 +71,7 @@ function ssh-init-home {
   local target
   for target in $@; do
     ssh-copy-id ${target}
+    #TODO: Replace scp with rsync
     scp ~/.ssh/known_hosts ${target}:./.ssh/known_hosts
     scp -r "${HOME}/.homesick" ${target}:./
     scp -r "${HOME}/.homeshick" ${target}:./
@@ -83,7 +84,9 @@ function ssh-init-home {
       ssh-keyscan github.com >> ~/.ssh/known_hosts
       $(declare -f updatehome)
       updatehome
+
 EOF
+    rsync -az "${HOME}/.vim/bundle" ${target}:.vim/
   done
 }
 
