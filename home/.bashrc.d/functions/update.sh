@@ -1,3 +1,4 @@
+#TODO: Verify that I can bootstrap without a seed machine
 case ${PLATFORM} in
   darwin)
     function updateplatform {
