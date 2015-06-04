@@ -2,6 +2,7 @@
 # interactively, don't do anything
 [ -z "${PS1}" ] && export TERM='xterm' && return
 
+#Enabled italics if supported
 export TERM='xterm-256color-italic'
 (tput -T xterm-256color-italic rev &> /dev/null)
 [[ $? -eq 3 ]] && export TERM='xterm-256color'

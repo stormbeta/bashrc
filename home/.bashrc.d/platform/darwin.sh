@@ -16,6 +16,12 @@ function ssh-osx-tmux {
 # Recursively delete `.DS_Store` files
 alias dsclean="find . -type f -name '*.DS_Store' -ls -delete"
 
+# Use GNU coreutils if installed instead of BSD versions that come with OSX
+if [[ -f "/usr/local/opt/coreutils/libexec/gnubin" ]]; then
+  path-prepend "/usr/local/opt/coreutils/libexec/gnubin"
+  MANPATH="/usr/local/opt/coreutils/libexec/gnuman:$MANPATH"
+fi
+
 # Use linux-style colors for ls
 export CLICOLOR=1
 export LSCOLORS=ExGxBxDxCxEgEdxbxgxcxd
@@ -45,3 +51,9 @@ function ssh-osx-tmux {
 }
 
 complete -A hostname 'ssh-osx-tmux'
+
+function setjava {
+  export JAVA_HOME=`/usr/libexec/java_home -v 1.$1`
+}
+
+alias v='nvim'

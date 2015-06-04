@@ -12,6 +12,9 @@ if [[ ${hostname} =~ .+\.(ecovate|readytalk)\.com ]] || \
   export GIT_COMMITTER_EMAIL=${GIT_AUTHOR_EMAIL}
 fi
 
+export GIT_AUTHOR_EMAIL="jason.miller@readytalk.com"
+export GIT_COMMITTER_EMAIL=${GIT_AUTHOR_EMAIL}
+
 # git shortcuts
 alias g='git status'
 alias gco='git checkout'
@@ -20,6 +23,8 @@ alias gb='git branch'
 alias gd='git diff'
 alias gpf='git fetch --all && git pull -r || git pull --ff-only'
 alias gfp='gpf'
+
+alias gh="GIT_COMMITTER_EMAIL='stormbeta@gmail.com' GIT_AUTHOR_EMAIL='stormbeta@gmail.com' git"
 
 # git completion for shortcuts
 complete -o default -o nospace -F _git_status g
