@@ -56,4 +56,6 @@ function setjava {
   export JAVA_HOME=`/usr/libexec/java_home -v 1.$1`
 }
 
+setjava 8
+
 alias v='nvim'

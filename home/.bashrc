@@ -45,13 +45,12 @@ path-prepend /usr/local/bin
 
 bind 'set show-all-if-ambiguous on'
 
-export DOCKER_HOST='tcp://192.168.50.241:4244'
+export GOPATH=${HOME}/go
+export PATH="${PATH}:${GOPATH}/bin"
 
-if [[ -n "$(which powerline-daemon)" ]]; then
-  #TODO: This is extremely specific to OSX, and needs to be updated
-  #It's also very slow since it uses a python daemon; look into using promptline instead
-  powerline-daemon -q
-  #POWERLINE_BASH_CONTINUATION=1
-  #POWERLINE_BASH_SELECT=1
-  . /usr/local/lib/python2.7/site-packages/powerline/bindings/bash/powerline.sh
-fi
+#Promptline
+source ~/.shell_prompt.sh
+PATH="${PATH}:${HOME}/.android-sdk/platform-tools"
+
+# added by travis gem
+[ -f ${HOME}/.travis/travis.sh ] && source ${HOME}/.travis/travis.sh

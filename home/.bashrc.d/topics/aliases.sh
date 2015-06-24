@@ -6,8 +6,15 @@ alias l='ls -CF'
 alias sl='ls'
 
 alias hs='homesick'
-alias v='vim'
+
+if [[ -n "$(which nvim)" ]]; then
+  alias v='nvim'
+  alias n='nvim'
+else
+  alias v='vim'
+fi
 
 alias c='clear'
 
 alias ssh='TERM=xterm-256color ssh'
+
