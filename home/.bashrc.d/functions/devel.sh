@@ -12,3 +12,7 @@ function autorun-file {
     $@
   done
 }
+
+function stash-clone {
+  git clone "ssh://git@stash.ecovate.com/$1"
+}
