@@ -9,7 +9,10 @@
   browser = google-chrome
 
 [push]
-  default = tracking
+  default = current
+
+[remote]
+  pushdefault = origin
 
 [hub]
   protocol = https
@@ -85,3 +88,6 @@
 [diff]
   mnemonicprefix = true
   renames = copies
+
+[stash]
+  showPatch = true

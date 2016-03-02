@@ -27,6 +27,15 @@ fi
 #Bash 4.3+ only
 bind 'set colored-stats on' &> /dev/null
 
+# Treat hyphens and underscores as equivalent
+bind "set completion-map-case on"
+
+# Avoid duplicate entries
+HISTCONTROL="erasedups:ignoreboth"
+
+# Automatically trim long paths in the prompt (requires Bash 4.x)
+export PROMPT_DIRTRIM=2
+
 case ${PLATFORM} in
   darwin)
     # Set up bash completion on OSX with brew
@@ -41,3 +50,8 @@ case ${PLATFORM} in
     fi
     ;;
 esac
+
+#LastPass CLI config
+if [[ -n "$(which lpass)" ]]; then
+  LPASS_AGENT_TIMEOUT=6400
+fi
