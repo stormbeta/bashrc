@@ -91,3 +91,6 @@
 
 [stash]
   showPatch = true
+
+[rebase]
+  autostash = true
