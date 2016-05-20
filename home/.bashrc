@@ -49,7 +49,11 @@ export GOPATH=${HOME}/go
 export PATH="${PATH}:${GOPATH}/bin"
 
 #Promptline
-source ~/.shell_prompt.sh
+if [[ -z "${TMUX}" ]]; then
+  source ~/.shell_prompt.sh
+else
+  source ~/.tmux_prompt.sh
+fi
 PATH="${PATH}:${HOME}/.android-sdk/platform-tools"
 
 # added by travis gem
