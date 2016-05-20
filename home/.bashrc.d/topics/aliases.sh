@@ -17,4 +17,12 @@ fi
 alias c='clear'
 
 alias ssh='TERM=xterm-256color ssh'
+alias e='emacsclient -t'
+alias ec='emacsclient -c'
 
+#Unix-only
+alias lpw='lpass show --password -c'
+
+alias sshx='ssh -X'
+
+alias tf='terraform'
