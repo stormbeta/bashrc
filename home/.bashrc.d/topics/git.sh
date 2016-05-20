@@ -33,3 +33,5 @@ complete -o default -o nospace -F _git_fetch gf
 complete -o default -o nospace -F _git_branch gb
 complete -o default -o nospace -F _git_diff gd
 complete -o default -o nospace -F _git_cherry_pick gcp
+
+__git_complete gh __git_main
