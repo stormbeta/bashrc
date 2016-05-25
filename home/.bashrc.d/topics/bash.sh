@@ -1,6 +1,10 @@
 # don't put duplicate lines in the history. See bash(1) for more options
 HISTCONTROL=ignoreboth
 
+# Disable bash history size limits (in combination with histappend)
+export HISTSIZE=
+export HISTFILESIZE=
+
 # Some handy shell options
 shell_options="\
   checkhash \

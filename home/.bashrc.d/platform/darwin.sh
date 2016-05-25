@@ -8,7 +8,7 @@ function emptytrash {
 
 #Attach to remote shell via iTerm2 tmux integration
 function ssh-osx-tmux {
-  local jump_host="$1"
+  local jump_host="${1:-jm}"
   shift 1
   ssh -tt $jump_host -C 'tmux -CC attach' $@
 }
@@ -43,12 +43,6 @@ export JAVA_HOME=`/usr/libexec/java_home -v 1.6`
 darwin_git='/Applications/Xcode.app/Contents/Developer/usr/share/git-core/'
 [[ -f "${darwin_git}/git-completion.bash" ]] && . "${darwin_git}/git-completion.bash"
 [[ -f "${darwin_git}/git-prompt.sh" ]] && . "${darwin_git}/git-prompt.sh"
-
-function ssh-osx-tmux {
-  local jump_host="${1:-jmillerpc}"
-  shift 1
-  ssh -tt $jump_host -C 'tmux -CC attach -d' $@
-}
 
 complete -A hostname 'ssh-osx-tmux'
 

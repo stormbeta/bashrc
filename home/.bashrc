@@ -58,3 +58,7 @@ PATH="${PATH}:${HOME}/.android-sdk/platform-tools"
 
 # added by travis gem
 [ -f ${HOME}/.travis/travis.sh ] && source ${HOME}/.travis/travis.sh
+
+if [[ -f '~/.secret/aws' ]]; then
+  source '~/.secret/aws'
+fi
