@@ -13,3 +13,8 @@ function setjava {
 }
 
 source /usr/share/bash-completion/completions/git
+
+#tmux ssh socket stuff
+function ssh-fix {
+  export SSH_AUTH_SOCK="$(find /tmp/ssh-*/agent.*)"
+}
