@@ -12,7 +12,9 @@ function setjava {
   export JAVA_HOME="${jvmpath}"
 }
 
-source /usr/share/bash-completion/completions/git
+if [[ -f /usr/share/bash-completion/completions/git ]]; then
+  source /usr/share/bash-completion/completions/git
+fi
 
 #tmux ssh socket stuff
 function ssh-fix {
