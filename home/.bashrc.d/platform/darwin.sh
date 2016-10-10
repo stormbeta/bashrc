@@ -1,3 +1,38 @@
+#Homebrew settings
+brew_installed=${HOME}/.brew_installed
+
+# Use GNU userland.
+path-prepend /usr/local/opt/coreutils/libexec/gnubin
+path-prepend /usr/local/opt/coreutils/libexec/gnuman MANPATH
+
+# Stuff for brew.
+path-prepend /usr/local/bin
+path-append /usr/local/sbin
+
+function brew {
+  # Create a wrapper for brew that keeps a list of installed brew packages up to
+  # date.
+  if $(which brew) ${@}; then
+    case ${1} in
+      install)
+        cat <($(which brew) list) ${brew_installed} | \
+          sort | uniq > ${brew_installed}
+        ;;
+      remove|rm|uninstall)
+        shift
+        for package in ${@}; do
+          command grep -v "${package}" ${brew_installed} > temp && \
+            mv temp ${brew_installed}
+        done
+        ;;
+    esac
+  fi
+}
+
+function sync-brew {
+  brew install $(cat ${brew_installed})
+}
+
 function emptytrash {
   # Empty the Trash on all mounted volumes and the main HDD
   # Also, clear Apple’s System Logs to improve shell startup speed
@@ -37,8 +72,6 @@ if which grc &>/dev/null && [[ -n "${brew_prefix}" ]]; then
   source ${brew_prefix}/etc/grc.bashrc
 fi
 
-export JAVA_HOME=`/usr/libexec/java_home -v 1.6`
-
 # Enable git shell features for OSX (requires Xcode)
 darwin_git='/Applications/Xcode.app/Contents/Developer/usr/share/git-core/'
 [[ -f "${darwin_git}/git-completion.bash" ]] && . "${darwin_git}/git-completion.bash"
@@ -49,6 +82,11 @@ complete -A hostname 'ssh-osx-tmux'
 function setjava {
   export JAVA_HOME=`/usr/libexec/java_home -v 1.$1`
 }
+
+#Dinghy is usually setup to run a docker machine xhyve vm
+if command -v dinghy &>/dev/null; then
+  eval "$(dinghy env)"
+fi
 
 setjava 8
 

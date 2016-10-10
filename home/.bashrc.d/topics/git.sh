@@ -23,6 +23,7 @@ alias gb='git branch'
 alias gd='git diff'
 alias gpf='git fetch --all && git pull --rebase || git pull --ff-only'
 alias gfp='gpf'
+alias gadd='git add -pv'
 
 alias gh="GIT_COMMITTER_EMAIL='stormbeta@gmail.com' GIT_AUTHOR_EMAIL='stormbeta@gmail.com' git"
 
