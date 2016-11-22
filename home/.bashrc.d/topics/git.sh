@@ -12,9 +12,6 @@ if [[ ${hostname} =~ .+\.(ecovate|readytalk)\.com ]] || \
   export GIT_COMMITTER_EMAIL=${GIT_AUTHOR_EMAIL}
 fi
 
-export GIT_AUTHOR_EMAIL="jason.miller@readytalk.com"
-export GIT_COMMITTER_EMAIL=${GIT_AUTHOR_EMAIL}
-
 # git shortcuts
 alias g='git status'
 alias gco='git checkout'

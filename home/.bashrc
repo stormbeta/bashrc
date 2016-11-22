@@ -40,6 +40,9 @@ source_platform
 # Source the rest of the things.
 sourced topics
 
+# Source bash completion
+sourced completion
+
 path-remove /usr/local/bin
 path-prepend /usr/local/bin
 
