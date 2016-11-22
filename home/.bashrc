@@ -3,6 +3,7 @@
 [ -z "${PS1}" ] && export TERM='xterm' && return
 
 #Enabled italics if supported
+#TODO: Find a better way to support this that doesn't break remote terminals
 export TERM='xterm-256color-italic'
 (tput -T xterm-256color-italic rev &> /dev/null)
 [[ $? -eq 3 ]] && export TERM='xterm-256color'
@@ -40,6 +41,7 @@ source_platform
 # Source the rest of the things.
 sourced topics
 
+#TODO: Only source completion for commands found in the current environment
 # Source bash completion
 sourced completion
 

@@ -1,5 +1,9 @@
 #!/bin/bash
 
+#Source:
+#https://raw.githubusercontent.com/brbsix/vagrant-bash-completion/master/vagrant-bash-completion/etc/bash_completion.d/vagrant
+#d8f9f06e241bf7fdc1985e43dd462d147ed888ab
+
 # (The MIT License)
 #
 # Copyright (c) 2014 Kura

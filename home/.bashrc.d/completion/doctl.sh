@@ -1,3 +1,9 @@
+#Source: compiled from doctl source code
+#doctl/cmd/doctl/main.go:
+#cmd := commands.DoitCmd
+#       cmd.GenBashCompletionFile("doctl.sh")
+#Commit: f78ff5668fe6f80383da5cbd5ad72b251477c84f
+
 # bash completion for doctl                                -*- shell-script -*-
 
 __debug()
