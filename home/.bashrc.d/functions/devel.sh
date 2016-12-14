@@ -14,9 +14,15 @@ function autorun-file {
 }
 
 function stash-clone {
-  git clone "ssh://git@stash.ecovate.com/$1"
+  git clone "ssh://git@stash.ecovate.com/$1" "$1"
 }
 
 function gh-clone {
   GIT_COMMITTER_EMAIL='stormbeta@gmail.com' GIT_AUTHOR_EMAIL='stormbeta@gmail.com' git clone "git@github.com:$1.git"
+}
+
+#Set sudo ticket via lastpass-cli
+function lpw-sudo {
+  local password_id="${1:-sudo}"
+  lpass show --password "${password_id}" | sudo -Sv
 }
