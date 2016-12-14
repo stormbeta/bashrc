@@ -2,11 +2,6 @@
 # interactively, don't do anything
 [ -z "${PS1}" ] && export TERM='xterm' && return
 
-set-if-exists EDITOR "$(command -v vim)" \
-  || set-if-exists EDITOR "$(command -v vi)" \
-  || set-if-exists EDITOR "$(command -v nano)" \
-  || echo "WARNING: No editor found!"
-
 #Enabled italics if supported
 #TODO: Find a better way to support this that doesn't break remote terminals
 export TERM='xterm-256color-italic'
@@ -56,6 +51,11 @@ sourced completion
 path-remove /usr/local/bin
 path-prepend /usr/local/bin
 
+set-if-exists EDITOR "$(command -v vim)" \
+  || set-if-exists EDITOR "$(command -v vi)" \
+  || set-if-exists EDITOR "$(command -v nano)" \
+  || echo "WARNING: No editor found!"
+
 bind 'set show-all-if-ambiguous on'
 
 #Promptline
@@ -78,7 +78,9 @@ fi
 
 #Go setup
 set-if-exists GOPATH "${HOME}/go"
-add-path-if-exists "${GOPATH}/bin"
+if [[ -n "${GOPATH}" ]]; then
+  add-path-if-exists "${GOPATH}/bin"
+fi
 
 #Travis setup
 source-if-exists "${HOME}/.travis/travis.sh"

@@ -6,12 +6,12 @@ function path-exists {
   return $?
 }
 
-function set-if-exists {
+set-if-exists() {
   local var_name="$1"
   local check_path="$2"
-  if path-exists "$2"; then
-    typeset $var_name="${check_path}"
-    export "$var_name"
+  if path-exists "${check_path}"; then
+    #typeset -x doesn't work
+    eval "export ${var_name}=${check_path}"
   fi
 }
 
