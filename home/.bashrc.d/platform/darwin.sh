@@ -83,11 +83,10 @@ function setjava {
   export JAVA_HOME=`/usr/libexec/java_home -v 1.$1`
 }
 
-#Dinghy is usually setup to run a docker machine xhyve vm
-if command -v dinghy &>/dev/null; then
-  eval "$(dinghy env)"
-fi
-
 setjava 8
 
-alias v='nvim'
+if path-exists '/usr/local/opt/curl/bin'; then
+  export PATH="/usr/local/opt/curl/bin:${PATH}"
+fi
+
+set-if-exists GROOVY_HOME '/usr/local/opt/groovy/libexec'

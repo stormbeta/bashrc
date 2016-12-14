@@ -2,6 +2,11 @@
 # interactively, don't do anything
 [ -z "${PS1}" ] && export TERM='xterm' && return
 
+set-if-exists EDITOR "$(command -v vim)" \
+  || set-if-exists EDITOR "$(command -v vi)" \
+  || set-if-exists EDITOR "$(command -v nano)" \
+  || echo "WARNING: No editor found!"
+
 #Enabled italics if supported
 #TODO: Find a better way to support this that doesn't break remote terminals
 export TERM='xterm-256color-italic'
@@ -17,7 +22,10 @@ function source_platform {
 
   export PLATFORM=$(uname ${uname_flag} | tr "[:upper:]" "[:lower:]")
 
-  source ${HOME}/.bashrc.d/platform/${PLATFORM}.sh
+  local platform_config="${HOME}/.bashrc.d/platform/${PLATFORM}.sh"
+  if [[ -d "${platform_config}" ]]; then
+    source "${platform_config}"
+  fi
 }
 
 function sourced {
@@ -50,20 +58,32 @@ path-prepend /usr/local/bin
 
 bind 'set show-all-if-ambiguous on'
 
-export GOPATH=${HOME}/go
-export PATH="${PATH}:${GOPATH}/bin"
-
 #Promptline
-if [[ -z "${TMUX}" ]]; then
-  source ~/.shell_prompt.sh
-else
-  source ~/.tmux_prompt.sh
-fi
-PATH="${PATH}:${HOME}/.android-sdk/platform-tools"
+source ~/.shell_prompt.sh
+set-if-exists ANDROID_HOME "${HOME}/.android-sdk"
+add-path-if-exists "${ANDROID_HOME}/platform-tools"
 
-# added by travis gem
-[ -f ${HOME}/.travis/travis.sh ] && source ${HOME}/.travis/travis.sh
+#export RUST_SRC_PATH="/Users/jason.miller/git/hub/rust/src"
 
+#eval "$(pyenv init -)"
+#eval "$(pyenv virtualenv-init -)"
+
+#export NVM_DIR="/Users/jason.miller/.nvm"
+#[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
+
+#TODO: Interface with lastpass / other credential provider here instead
 if [[ -f '~/.secret/aws' ]]; then
   source '~/.secret/aws'
 fi
+
+#Go setup
+set-if-exists GOPATH "${HOME}/go"
+add-path-if-exists "${GOPATH}/bin"
+
+#Travis setup
+source-if-exists "${HOME}/.travis/travis.sh"
+
+#Google Cloud SDK setup
+set-if-exists GOOGLE_CLOUD_HOME "${HOME}/Downloads/google-cloud-sdk"
+source-if-exists "${GOOGLE_CLOUD_HOME}/path.bash.inc"
+source-if-exists "${GOOGLE_CLOUD_HOME}/completion.bash.inc"

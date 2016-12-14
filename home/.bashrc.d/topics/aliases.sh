@@ -26,3 +26,7 @@ alias lpw='lpass show --password -c'
 alias sshx='ssh -X'
 
 alias tf='terraform'
+
+alias less='less -R'
+
+alias os='openshift'

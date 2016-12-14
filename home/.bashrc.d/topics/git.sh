@@ -12,6 +12,12 @@ if [[ ${hostname} =~ .+\.(ecovate|readytalk)\.com ]] || \
   export GIT_COMMITTER_EMAIL=${GIT_AUTHOR_EMAIL}
 fi
 
+#TODO: Is there a way to auto-alias commands?
+#E.g.:
+#  gco -> Git CheckOut
+#  gcm -> Git CoMmit
+#  gcpv -> Git Commit -PV
+
 # git shortcuts
 alias g='git status'
 alias gco='git checkout'
