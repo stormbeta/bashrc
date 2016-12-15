@@ -18,7 +18,7 @@ function source_platform {
   export PLATFORM=$(uname ${uname_flag} | tr "[:upper:]" "[:lower:]")
 
   local platform_config="${HOME}/.bashrc.d/platform/${PLATFORM}.sh"
-  if [[ -d "${platform_config}" ]]; then
+  if [[ -f "${platform_config}" ]]; then
     source "${platform_config}"
   fi
 }
