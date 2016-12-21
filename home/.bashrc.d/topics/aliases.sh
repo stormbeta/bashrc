@@ -30,3 +30,21 @@ alias tf='terraform'
 alias less='less -R'
 
 alias os='openshift'
+
+function vimnote {
+  #TODO: Tab completion
+  #TODO: Should this update the timestamp in place?
+  local title="$1"
+  local notedir="${HOME}/notes"
+  #find -regex can't handle this pattern
+  local note="$(ls -St "${notedir}" | grep -P "${title}(\.md)?$" | head -n 1)"
+  if [[ -f "${notedir}/${note}" ]]; then
+    vim "${notedir}/${note}"
+  elif [[ -n "${note}" ]]; then
+    echo "Found multiple matches:"
+    echo "${note}"
+    return 1
+  else
+    vim "${notedir}/$(date +%Y%m%d)-${title}"
+  fi
+}
