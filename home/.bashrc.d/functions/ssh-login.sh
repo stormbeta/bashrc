@@ -53,9 +53,3 @@ function ssh-login {
     start_agent;
   fi
 }
-
-function fssh {
-  ssh-keygen -R ${1}.e.ecovate.com
-  ssh-keyscan -H ${1}.e.ecovate.com >> ~/.ssh/known_hosts
-  ssh ${1}
-}

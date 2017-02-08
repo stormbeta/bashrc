@@ -6,11 +6,11 @@ else
 fi
 
 #TODO: Find a way to dynamically set this by repository, not just host/id
-if [[ ${hostname} =~ .+\.(ecovate|readytalk)\.com ]] || \
-   [[ `id` =~ 'READYTALK' ]]; then
-  export GIT_AUTHOR_EMAIL="jason.miller@readytalk.com"
-  export GIT_COMMITTER_EMAIL=${GIT_AUTHOR_EMAIL}
-fi
+#if [[ ${hostname} =~ .+\.(example)\.com ]] || \
+   #[[ `id` =~ 'EXAMPLE' ]]; then
+  #export GIT_AUTHOR_EMAIL="jason.miller@example.com"
+  #export GIT_COMMITTER_EMAIL=${GIT_AUTHOR_EMAIL}
+#fi
 
 #TODO: Is there a way to auto-alias commands?
 #E.g.:
