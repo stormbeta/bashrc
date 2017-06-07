@@ -54,8 +54,3 @@ case ${PLATFORM} in
     fi
     ;;
 esac
-
-#LastPass CLI config
-if [[ -n "$(which lpass)" ]]; then
-  LPASS_AGENT_TIMEOUT=6400
-fi
