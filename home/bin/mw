@@ -1,0 +1,72 @@
+#!/bin/bash
+
+# Inspired by https://github.com/dougborg/gdub
+
+# DEFAULTS
+MVNW='mvnw'
+MAVEN_POM='pom.xml'
+#DEFAULT_BUILDFILE="${HOME}/.gradle/default/${GRADLE_BUILDFILE}"
+MW_ARGS=${@}
+
+function echo_error() {
+  echo "${@}" >&2
+}
+
+function lookup() {
+  local file=${1}
+  local curr_path=${2}
+  [[ -z "${curr_path}" ]] && curr_path=${PWD}
+
+  # Search recursively upwards for file.
+  until [[ "${curr_path}" == "/" ]]; do
+    if [[ -e "${curr_path}/${file}" ]]; then
+      echo "${curr_path}/${file}"
+      break
+    else
+      curr_path=$(dirname "${curr_path}")
+    fi
+  done
+}
+
+function select_maven() {
+  local dir=${1}
+  local gradle=$(lookup ${MVNW} ${dir})
+
+  # Deal with a missing wrapper by defaulting to system gradle.
+  if [[ -z "${maven}" ]]; then
+    gradle=$(which mvn &> /dev/null)
+    echo_error "There is no ${MVNW} set up for this project. You may want to consider setting one up."
+    echo_error "See: "
+  fi
+
+  # Check that we have an executable maven, and error out if not.
+  if [[ -x ${maven} ]];  then
+    echo ${maven}
+  else
+    echo_error "Unable to find an executable ${MVNW} or 'maven' is not installed and available on your path."
+    exit 1
+  fi
+}
+
+function execute_maven() {
+  local pom=$(lookup ${MAVEN_POM})
+
+  if [[ -z "${pom}" ]]; then
+    # No maven pom, so set up mw to run the default one.
+    pom=${DEFAULT_BUILDFILE}
+    maven=$(select_maven $(dirname ${DEFAULT_BUILDFILE}))
+    MW_ARGS="-f ${pom} ${MW_ARGS}"
+  else
+    # We got a good build file, start there.
+    working_dir=$(dirname ${pom})
+    maven=$(select_maven ${working_dir})
+    cd ${working_dir}
+  fi
+
+  # Say what we are gonna do, then do it.
+  echo -e "Using maven at '${maven}' to run '${pom}':\n"
+  "${maven}" ${MW_ARGS}
+}
+
+set -e
+execute_maven
