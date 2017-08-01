@@ -18,6 +18,13 @@ fi
 #  gcm -> Git CoMmit
 #  gcpv -> Git Commit -PV
 
+function git-lastauthor {
+  while read line; do
+    local hash=$(git log -n 1 --pretty=format:%H "$line")
+    echo "${line} $(git show -q --format="%ai %ar by %an" ${hash})"
+  done
+}
+
 # git shortcuts
 alias g='git status'
 alias gco='git checkout'

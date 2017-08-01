@@ -1,21 +1,21 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-# Inspired by https://github.com/dougborg/gdub
+# Modified version of https://github.com/dougborg/gdub for maven
 
-# DEFAULTS
-MVNW='mvnw'
-MAVEN_POM='pom.xml'
-#DEFAULT_BUILDFILE="${HOME}/.gradle/default/${GRADLE_BUILDFILE}"
+# DEFAULTS may be overridden by calling environment.
+MAVEN="${MAVEN:-mvn}"
+MVNW="${MVNW:-mvnw}"
+MAVEN_POM="${MAVEN_POM:-pom.xml}"
 MW_ARGS=${@}
 
-function echo_error() {
-  echo "${@}" >&2
+err() {
+  echo -e "${@}" >&2
 }
 
-function lookup() {
-  local file=${1}
-  local curr_path=${2}
-  [[ -z "${curr_path}" ]] && curr_path=${PWD}
+lookup() {
+  local file="${1}"
+  local curr_path="${2}"
+  [[ -z "${curr_path}" ]] && curr_path="${PWD}"
 
   # Search recursively upwards for file.
   until [[ "${curr_path}" == "/" ]]; do
@@ -28,45 +28,57 @@ function lookup() {
   done
 }
 
-function select_maven() {
-  local dir=${1}
-  local gradle=$(lookup ${MVNW} ${dir})
+select_maven() {
+  local dir="${1}"
 
-  # Deal with a missing wrapper by defaulting to system gradle.
-  if [[ -z "${maven}" ]]; then
-    gradle=$(which mvn &> /dev/null)
-    echo_error "There is no ${MVNW} set up for this project. You may want to consider setting one up."
-    echo_error "See: "
+  # Use project's gradlew if found.
+  local mavenw="$(lookup ${MVNW} ${dir})"
+  if [[ -z "${mavenw}" ]]; then
+    err "There is no ${MVNW} set up for this project. You may want to consider setting one up."
+    err "See: "
+  else
+    echo "${mavenw}"
+    return 0
   fi
 
-  # Check that we have an executable maven, and error out if not.
-  if [[ -x ${maven} ]];  then
-    echo ${maven}
+  # Deal with a missing wrapper by defaulting to system maven
+  local maven="$(command -v mvn 2> /dev/null)"
+  if [[ -z "${maven}" ]];  then
+    err "'${MAVEN}' not installed or not available in your PATH:"
+    err "${PATH}"
+    return 1
   else
-    echo_error "Unable to find an executable ${MVNW} or 'maven' is not installed and available on your path."
-    exit 1
+    echo "${maven}"
+    return 0
   fi
 }
 
 function execute_maven() {
-  local pom=$(lookup ${MAVEN_POM})
+  local pom="$(lookup "${MAVEN_POM}")"
+  local maven="$(select_maven "${working_dir}")"
+  local build_args=( ${BUILD_ARG} "$@" )
 
-  if [[ -z "${pom}" ]]; then
-    # No maven pom, so set up mw to run the default one.
-    pom=${DEFAULT_BUILDFILE}
-    maven=$(select_maven $(dirname ${DEFAULT_BUILDFILE}))
-    MW_ARGS="-f ${pom} ${MW_ARGS}"
+  if [[ -n "${pom}" ]]; then
+    # Maven pom present, go to it
+    cd "$(dirname "${pom}")"
   else
-    # We got a good build file, start there.
-    working_dir=$(dirname ${pom})
-    maven=$(select_maven ${working_dir})
-    cd ${working_dir}
+    err "Unable to find suitable ${MAVEN_POM}"
   fi
 
   # Say what we are gonna do, then do it.
-  echo -e "Using maven at '${maven}' to run '${pom}':\n"
-  "${maven}" ${MW_ARGS}
+  err "Using maven at '${maven}' to run pom '${pom}':\n"
+  if [[ -n "build_args[@]" ]]; then
+    "${maven}" "${build_args[@]}"
+  else
+    "${maven}"
+  fi
 }
 
-set -e
-execute_maven
+# mw may be sourced from other scripts as a library to select / run mvn(w).
+if [[ ${BASH_SOURCE[0]} != $0 ]]; then
+  export -f execute_maven select_maven lookup err
+else
+  set -e
+  execute_maven "$@"
+  exit $?
+fi

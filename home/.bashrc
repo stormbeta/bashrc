@@ -72,8 +72,8 @@ add-path-if-exists "${ANDROID_HOME}/platform-tools"
 #[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
 
 #TODO: Interface with lastpass / other credential provider here instead
-if [[ -f '~/.secret/aws' ]]; then
-  source '~/.secret/aws'
+if [[ -f ~/.secret/aws ]]; then
+  source ~/.secret/aws
 fi
 
 #Go setup
