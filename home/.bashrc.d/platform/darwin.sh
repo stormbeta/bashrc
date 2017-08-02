@@ -93,3 +93,9 @@ if path-exists '/usr/local/opt/curl/bin'; then
 fi
 
 set-if-exists GROOVY_HOME '/usr/local/opt/groovy/libexec'
+
+function bt-reset {
+  sudo kextunload -b com.apple.iokit.BroadcomBluetoothHostControllerUSBTransport
+  sleep 5
+  sudo kextload -b com.apple.iokit.BroadcomBluetoothHostControllerUSBTransport
+}

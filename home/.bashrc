@@ -60,6 +60,8 @@ bind 'set show-all-if-ambiguous on'
 
 #Promptline
 source ~/.shell_prompt.sh
+
+set-if-exists ANDROID_HOME "${HOME}/Library/Android/sdk"
 set-if-exists ANDROID_HOME "${HOME}/.android-sdk"
 add-path-if-exists "${ANDROID_HOME}/platform-tools"
 
