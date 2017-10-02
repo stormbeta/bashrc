@@ -1,9 +1,13 @@
-# don't put duplicate lines in the history. See bash(1) for more options
-HISTCONTROL=ignoreboth
+# Avoid duplicate entries
+HISTCONTROL="erasedups:ignoreboth"
 
 # Disable bash history size limits (in combination with histappend)
 export HISTSIZE=
 export HISTFILESIZE=
+
+# Auto-append new commands to the history
+# NOTE: keeps history of current session intact
+export PROMPT_COMMAND="history -a;${PROMPT_COMMAND}"
 
 # Some handy shell options
 shell_options="\
@@ -33,9 +37,6 @@ bind 'set colored-stats on' &> /dev/null
 
 # Treat hyphens and underscores as equivalent
 bind "set completion-map-case on"
-
-# Avoid duplicate entries
-HISTCONTROL="erasedups:ignoreboth"
 
 # Automatically trim long paths in the prompt (requires Bash 4.x)
 export PROMPT_DIRTRIM=2

@@ -20,6 +20,9 @@ alias ssh='TERM=xterm-256color ssh'
 alias e='emacsclient -t'
 alias ec='emacsclient -c'
 
+#NOTE: Shadows GNU calculator "dc"
+alias dc='docker-compose'
+
 #Unix-only
 alias lpw='lpass show --password -c'
 
