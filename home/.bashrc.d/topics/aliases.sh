@@ -20,6 +20,8 @@ alias ssh='TERM=xterm-256color ssh'
 alias e='emacsclient -t'
 alias ec='emacsclient -c'
 
+alias vf='vim $(fzf)'
+
 #NOTE: Shadows GNU calculator "dc"
 alias dc='docker-compose'
 
