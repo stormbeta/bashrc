@@ -72,6 +72,9 @@ if which grc &>/dev/null && [[ -n "${brew_prefix}" ]]; then
   source ${brew_prefix}/etc/grc.bashrc
 fi
 
+# Suspend all system activity and sleep - not the same as normal sleep
+alias standby='/System/Library/CoreServices/Menu\ Extras/user.menu/Contents/Resources/CGSession -suspend'
+
 # Enable git shell features for OSX (requires Xcode)
 darwin_git='/Applications/Xcode.app/Contents/Developer/usr/share/git-core/'
 [[ -f "${darwin_git}/git-completion.bash" ]] && . "${darwin_git}/git-completion.bash"
