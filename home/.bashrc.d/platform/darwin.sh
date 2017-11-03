@@ -61,6 +61,12 @@ fi
 export CLICOLOR=1
 export LSCOLORS=ExGxBxDxCxEgEdxbxgxcxd
 
+# Workaround for macOS Sierra ssh keychain problems
+# '/Users/USER/.ssh/...' should be in output if it's actually loaded
+if ssh-add -l | grep -vq Users; then
+  ssh-add -A
+fi
+
 # Handy shortcut for setting up socks proxy
 # alias socks='sudo networksetup -setsocksfirewallproxystate'
 
