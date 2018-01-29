@@ -7,6 +7,10 @@ alias sl='ls'
 
 alias hs='homesick'
 
+if command -v yq &>/dev/null; then
+  alias qy='yq --yaml-output .'
+fi
+
 if [[ -n "$(which nvim)" ]]; then
   alias v='nvim'
   alias n='nvim'
@@ -35,6 +39,7 @@ alias tf='terraform'
 alias less='less -R'
 
 alias os='openshift'
+alias kc='kubectl'
 
 function vimnote {
   #TODO: Tab completion

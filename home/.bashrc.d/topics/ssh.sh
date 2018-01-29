@@ -10,6 +10,11 @@ case ${PLATFORM} in
     else
       echo "SSH agent using key in OSX keychain."
     fi
+    if [[ -f "${HOME}/.ssh/id_rsa" ]]; then
+      if ! ssh-add -l | cut -d' ' -f3 | grep '.ssh/id_rsa'; then
+        ssh-add "${HOME}/.ssh/id_rsa"
+      fi
+    fi
     ;;
   *)
     # Setup ssh agent.
