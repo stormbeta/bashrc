@@ -40,6 +40,12 @@ alias less='less -R'
 
 alias os='openshift'
 alias kc='kubectl'
+alias dk='docker'
+alias cj='cd ..'
+
+complete -F _docker dk
+complete -F _docker_compose dc
+complete -F __start_kubectl kc
 
 function vimnote {
   #TODO: Tab completion
