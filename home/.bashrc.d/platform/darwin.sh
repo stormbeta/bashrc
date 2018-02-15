@@ -84,7 +84,7 @@ fi
 which brew &> /dev/null && brew_prefix=$( brew --prefix )
 
 # GRC colorizes nifty unix tools all over the place
-if which grc &>/dev/null && [[ -n "${brew_prefix}" ]]; then
+if command -v grc &>/dev/null && [[ -n "${brew_prefix}" ]]; then
   source ${brew_prefix}/etc/grc.bashrc
 fi
 

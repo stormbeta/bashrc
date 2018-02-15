@@ -5,9 +5,8 @@ HISTCONTROL="erasedups:ignoreboth"
 export HISTSIZE=
 export HISTFILESIZE=
 
-# Auto-append new commands to the history
-# NOTE: keeps history of current session intact
-export PROMPT_COMMAND="history -a;${PROMPT_COMMAND}"
+# Auto-append new commands to the history, then reload to sync
+export PROMPT_COMMAND="history -a; history -r; ${PROMPT_COMMAND}"
 
 # Some handy shell options
 shell_options="\
