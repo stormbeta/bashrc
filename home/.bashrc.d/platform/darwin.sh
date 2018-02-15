@@ -19,6 +19,8 @@ path-prepend /usr/local/opt/coreutils/libexec/gnuman MANPATH
 path-prepend /usr/local/bin
 path-append /usr/local/sbin
 
+# TODO: This needs to be revamped to support a work vs personal list
+#       also doesn't support brew cask I think
 function brew {
   # Create a wrapper for brew that keeps a list of installed brew packages up to
   # date.
@@ -104,18 +106,21 @@ function setjava {
 
 setjava 8
 
+# TODO/stale - I think this was originally added to use an alpha build of curl with http2 support?
 if path-exists '/usr/local/opt/curl/bin'; then
   export PATH="/usr/local/opt/curl/bin:${PATH}"
 fi
 
 set-if-exists GROOVY_HOME '/usr/local/opt/groovy/libexec'
 
+# Forcibly reload macOS bluetooth kernel module
 function bt-reset {
   sudo kextunload -b com.apple.iokit.BroadcomBluetoothHostControllerUSBTransport
   sleep 5
   sudo kextload -b com.apple.iokit.BroadcomBluetoothHostControllerUSBTransport
 }
 
+# Upgrade homebrew, os patches, and appstore applications (requires mas)
 function upgrade-all {
   brew upgrade && \
     brew cleanup && \

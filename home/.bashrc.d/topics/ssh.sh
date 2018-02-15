@@ -2,6 +2,8 @@ chmod 700 ${HOMESICK}/bashrc/home/.ssh
 
 #TODO: This doesn't work properly with tmux
 
+# TODO: Should this be in platforms?
+
 case ${PLATFORM} in
   darwin)
     # Setup ssh stuff.
