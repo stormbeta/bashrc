@@ -45,7 +45,11 @@ alias cj='cd ..'
 
 complete -F _docker dk
 complete -F _docker_compose dc
-complete -F __start_kubectl kc
+
+if command -v kubectl &>/dev/null; then
+  kubectl completion bash | sed -E 's/kubectl/kc/g' > /tmp/kcp
+  source /tmp/kcp
+fi
 
 function vimnote {
   #TODO: Tab completion

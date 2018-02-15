@@ -1,6 +1,16 @@
 #Homebrew settings
 brew_installed=${HOME}/.brew_installed
 
+# --------
+# Snippets for manual use - TODO: put these elsewhere
+
+# Create NFS-enabled docker-machine
+# docker-machine create --driver vmwarefusion --vmwarefusion-memory-size 4096 --vmwarefusion-cpu-count 4 --vmwarefusion-no-share --vmwarefusion-disk-size 30000 default
+# docker-machine-nfs default --shared-folder=$HOME
+
+
+# --------
+
 # Use GNU userland.
 path-prepend /usr/local/opt/coreutils/libexec/gnubin
 path-prepend /usr/local/opt/coreutils/libexec/gnuman MANPATH
