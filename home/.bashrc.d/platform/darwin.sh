@@ -115,3 +115,15 @@ function bt-reset {
   sleep 5
   sudo kextload -b com.apple.iokit.BroadcomBluetoothHostControllerUSBTransport
 }
+
+function upgrade-all {
+  brew upgrade && \
+    brew cleanup && \
+    softwareupdate -dia
+  if command -v mas &>/dev/null; then
+    mas upgrade
+  else
+    echo "mas not installed, can't update AppStore apps from CLI" 1>&2
+  fi
+}
+
