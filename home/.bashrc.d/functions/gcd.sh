@@ -30,4 +30,8 @@ function _git_cd {
   fi
 }
 
-complete -o nospace -F _git_cd gcd
+if [[ -n "$BASH" ]]; then
+  complete -o nospace -F _git_cd gcd
+elif [[ -n "$ZSH_NAME" ]]; then
+  true
+fi

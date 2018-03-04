@@ -43,8 +43,11 @@ alias kc='kubectl'
 alias dk='docker'
 alias cj='cd ..'
 
-complete -F _docker dk
-complete -F _docker_compose dc
+
+if [[ -n "$BASH" ]]; then
+  complete -F _docker dk
+  complete -F _docker_compose dc
+fi
 
 if command -v kubectl &>/dev/null; then
   kubectl completion bash | sed -E 's/kubectl/kc/g' > /tmp/kcp

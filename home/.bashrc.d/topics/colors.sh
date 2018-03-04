@@ -1,7 +1,12 @@
 # Oh, THE COLORS!
 if which dircolors >/dev/null 2>&1; then
-  test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || \
-    eval "$(dircolors -b)"
+  if [[ -n "$BASH" ]]; then
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || \
+      eval "$(dircolors -b)"
+  elif [[ -n "$ZSH_NAME" ]]; then
+    # TODO: I don't know why, but zsh chokes on the above
+    true
+  fi
 
   alias ls='ls --color=auto'
   alias dir='dir --color=auto'

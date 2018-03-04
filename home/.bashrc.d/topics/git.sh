@@ -37,12 +37,14 @@ alias gadd='git add -pv'
 
 alias gh="GIT_COMMITTER_EMAIL='stormbeta@gmail.com' GIT_AUTHOR_EMAIL='stormbeta@gmail.com' git"
 
-# git completion for shortcuts
-complete -o default -o nospace -F _git_status g
-complete -o default -o nospace -F _git_checkout gco
-complete -o default -o nospace -F _git_fetch gf
-complete -o default -o nospace -F _git_branch gb
-complete -o default -o nospace -F _git_diff gd
-complete -o default -o nospace -F _git_cherry_pick gcp
-
-__git_complete gh __git_main
+if [[ -n "$BASH" ]]; then
+  # git completion for shortcuts
+  complete -o default -o nospace -F _git_status g
+  complete -o default -o nospace -F _git_checkout gco
+  complete -o default -o nospace -F _git_fetch gf
+  complete -o default -o nospace -F _git_branch gb
+  complete -o default -o nospace -F _git_diff gd
+  complete -o default -o nospace -F _git_cherry_pick gcp
+  complete -o default -o nospace -F __git_complete gh
+elif [[ -n "$ZSH_NAME" ]]; then
+fi
