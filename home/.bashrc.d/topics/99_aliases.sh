@@ -8,7 +8,7 @@ alias sl='ls'
 alias hs='homesick'
 
 if command -v yq &>/dev/null; then
-  alias qy='yq --yaml-output .'
+  alias jy='yq --yaml-output .'
 fi
 
 if [[ -n "$(which nvim)" ]]; then
@@ -26,30 +26,17 @@ alias ec='emacsclient -c'
 
 alias vf='vim $(fzf)'
 
-#NOTE: Shadows GNU calculator "dc"
-alias dc='docker-compose'
-
 #Unix-only
-alias lpw='lpass show --password -c'
-
 alias sshx='ssh -X'
-
-alias tf='terraform'
-
 alias less='less -R'
-
-alias os='openshift'
-alias kc='kubectl'
-alias dk='docker'
 alias cj='cd ..'
 
-complete -F _docker dk
-complete -F _docker_compose dc
-
-if command -v kubectl &>/dev/null; then
-  kubectl completion bash | sed -E 's/kubectl/kc/g' > /tmp/kcp
-  source /tmp/kcp
-fi
+# Completion-aware aliases
+complete-alias tf terraform
+complete-alias kc kubectl
+complete-alias dk docker
+#NOTE: Shadows GNU calculator "dc"
+complete-alias dc docker-compose
 
 function vimnote {
   #TODO: Tab completion

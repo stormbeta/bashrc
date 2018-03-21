@@ -6,7 +6,7 @@ export HISTSIZE=
 export HISTFILESIZE=
 
 # Auto-append new commands to the history, then reload to sync
-export PROMPT_COMMAND="history -a; history -r; ${PROMPT_COMMAND}"
+export PROMPT_COMMAND="history -a; ${PROMPT_COMMAND}"
 
 # Some handy shell options
 shell_options="\
