@@ -15,11 +15,12 @@ function make-completion-wrapper () {
 }
 
 # *actually* alias a command, with real completion intact
+# Supports command + args
+# Usage: complete-alias ALIAS command...
 function complete-alias {
   local al="$1"
   shift 1
-  # TODO: fix sed command to be more portable
-  local compfunc="$(complete | grep '\-F' | grep -oP "\w+ ${1}\$" | gsed -r 's/ [^\s]+$//')"
+  local compfunc="$(complete | grep '\-F' | grep -Eo "\w+ ${1}\$" | awk '{$NF="";sub(/[ \t]+$/,"")}1')"
   # TODO: Verify this isn't already taken
   local alcomp="___${al}"
   make-completion-wrapper "${compfunc}" "${alcomp}" $@
