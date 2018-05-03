@@ -10,7 +10,7 @@ function watch-file {
         echo "fswatch not installed, cannot execute" >&2
         exit 1
       fi
-      fswatch -o "${path}" | xargs -n1 $@
+      fswatch "${path}" | xargs -n1 -I{} $@
       ;;
     *)
       if ! command -v inotify-wait; then

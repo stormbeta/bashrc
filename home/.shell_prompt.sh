@@ -8,6 +8,24 @@ function __promptline_last_exit_code {
 
   printf "%s" "$last_exit_code"
 }
+
+function __blue {
+  local context="$(kubectl config current-context)"
+  local namespace="$(kubectl config view -o json | jq '.["current-context"] as $curr | .contexts[] | select(.name == $curr) | .context.namespace // "default"' -r)"
+  if [[ "${context}" =~ ^kubernetes ]]; then
+    local region="$(echo "${context}" | sed -E 's/kubernetes\.([0-9a-z-]+).*$/\1/')"
+    echo "p14c-${region} ${alt_sep} ${namespace}"
+  else
+    echo "${context} ${alt_sep} ${namespace}"
+  fi
+}
+
+function __orange {
+  local python="${VIRTUAL_ENV##*/}"
+  local ruby="$( if [[ -e "$(command git rev-parse --show-cdup 2>/dev/null).ruby-version" ]]; then ruby --version | grep -Eo '^j?ruby [^ ]+'; fi )"
+  echo "${python}${ruby}"
+}
+
 function __promptline_ps1 {
   local slice_prefix slice_empty_prefix slice_joiner slice_suffix is_prompt_empty=1
 

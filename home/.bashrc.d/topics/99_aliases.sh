@@ -37,6 +37,8 @@ complete-alias kc kubectl
 complete-alias dk docker
 #NOTE: Shadows GNU calculator "dc"
 complete-alias dc docker-compose
+complete-alias kcl kubectl logs -f
+complete-alias kj kubectl -o json
 
 function vimnote {
   #TODO: Tab completion

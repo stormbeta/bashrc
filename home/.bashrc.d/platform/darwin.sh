@@ -123,8 +123,8 @@ function bt-reset {
 # Upgrade homebrew, os patches, and appstore applications (requires mas)
 function upgrade-all {
   brew upgrade && \
-    brew cleanup && \
     softwareupdate -dia
+    # brew cleanup # Disabled as sometimes I need to revert
   if command -v mas &>/dev/null; then
     mas upgrade
   else
