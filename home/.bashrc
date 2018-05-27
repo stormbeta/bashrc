@@ -86,3 +86,13 @@ source-if-exists "${HOME}/.travis/travis.sh"
 set-if-exists GOOGLE_CLOUD_HOME "${HOME}/Downloads/google-cloud-sdk"
 source-if-exists "${GOOGLE_CLOUD_HOME}/path.bash.inc"
 source-if-exists "${GOOGLE_CLOUD_HOME}/completion.bash.inc"
+
+if command -v minikube &>/dev/null; then
+  eval "$(minikube completion bash)"
+fi
+if command -v helm &>/dev/null; then
+  eval "$(helm completion bash)"
+fi
+
+# Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
+export PATH="$PATH:$HOME/.rvm/bin"

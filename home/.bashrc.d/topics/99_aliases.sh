@@ -39,6 +39,9 @@ complete-alias dk docker
 complete-alias dc docker-compose
 complete-alias kcl kubectl logs -f
 complete-alias kj kubectl -o json
+complete-alias kd kubectl --namespace default
+complete-alias mk minikube
+
 
 function vimnote {
   #TODO: Tab completion
