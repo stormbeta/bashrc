@@ -41,6 +41,7 @@ complete-alias kcl kubectl logs -f
 complete-alias kj kubectl -o json
 complete-alias kd kubectl --namespace default
 complete-alias mk minikube
+complete-alias kx kubectx
 
 
 function vimnote {
