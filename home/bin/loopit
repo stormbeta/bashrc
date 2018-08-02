@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+files=()
+while [[ "$1" != "--" ]] && [[ "$#" -ne 1 ]]; do
+  files+=("$1")
+  shift 1
+done
+
+#watching="$1"
+#shift 1
+fswatch "${files[@]}" | xargs -n1 -I{} bash -c "${@}"
+
