@@ -1,12 +1,27 @@
 #!/usr/bin/env bash
 
+# Usage:
+# 1. loopit FILES 'shell commands as string literal'
+#    NOTE: It's very important that the command string be completely quoted as the last arg
+#
+# 2. loopit FILES -- shell commands
+#
+# 3. loopit FILENAME
+#    NOTE: Only suitable for watching a single file that can be ran as ./FILENAME
+#
+# e.g. to watch a whole directory:
+#    loopit directory/** 'echo "It changed!"'
+
+if [[ "$#" -eq 1 ]]; then
+  set -- "$@" "$(realpath "$1")"
+fi
+
 files=()
 while [[ "$1" != "--" ]] && [[ "$#" -ne 1 ]]; do
   files+=("$1")
   shift 1
 done
 
-#watching="$1"
-#shift 1
-fswatch "${files[@]}" | xargs -n1 -I{} bash -c "${@}"
-
+# NOTE: -o is required to workaround issues with some utilities that
+#       behave strangely in the presence of stdin not being a tty
+fswatch "${files[@]}" | xargs -n1 -I{} -o /usr/bin/env bash -c "${@}"
