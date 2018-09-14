@@ -1,30 +1,36 @@
+#!/usr/bin/env bash
 #TODO: Verify that I can bootstrap without a seed machine
-case ${PLATFORM} in
+case $PLATFORM in
   darwin)
-    function updateplatform {
-      # Update all teh OSX things.
-      sudo softwareupdate -i -a
-      if which brew &> /dev/null; then
-        brew update
-        brew upgrade
-        brew cleanup
+    function upgrade-all {
+      # Upgrade homebrew, os patches, and appstore applications (requires mas)
+      if command -v brew &>/dev/null; then
+        brew upgrade && brew cask upgrade
+        if command -v mas &>/dev/null; then
+          mas upgrade
+        else
+          echo "Mas not installed, can't update AppStore apps from CLI" 1>&2
+        fi
+        sudo softwareupdate -dia
       fi
-      which npm &> /dev/null && npm update npm -g && npm update -g
-      which gem &> /dev/null && sudo gem update
+      #command -v npm &> /dev/null && npm update npm -g && npm update -g
+      #command -v gem &> /dev/null && sudo gem update
     }
     ;;
   linux)
     function updateplatform {
       # Update all teh Linux things.
-      which apt-get &>/dev/null && sudo apt-get update && sudo apt-get upgrade
-      which yum &> /dev/null && sudo yum update && sudo yum upgrade
-      which npm &> /dev/null && npm update npm -g && npm update -g
-      which gem &> /dev/null && sudo gem update
+      command -v apt-get &>/dev/null && sudo apt-get update && sudo apt-get upgrade
+      command -v yum &> /dev/null && sudo yum update && sudo yum upgrade
+      command -v npm &> /dev/null && npm update npm -g && npm update -g
+      command -v gem &> /dev/null && sudo gem update
     }
     ;;
   *)
     function updateplatform {
-      echo " I don't know how to update all teh things on this platform (${PLATFORM})."
+      # TODO: support chocolatey on windows?
+      #       though bash on windows these days is normally ran via WSFL, which would report as Linux
+      echo " I don't know how to update things on this platform (${PLATFORM})."
     }
     ;;
 esac
@@ -63,32 +69,28 @@ function updatehome {
   ( cd ${HOME}/.vim; ./update.sh )
 }
 
-function update {
-  updateplatform
-  updatehome
-}
+# TODO: This needs updating
+#function ssh-init-home {
+  #local target
+  #for target in $@; do
+    #ssh-copy-id ${target}
+    ##TODO: Replace scp with rsync
+    #scp ~/.ssh/known_hosts ${target}:./.ssh/known_hosts
+    #scp -r "${HOME}/.homesick" ${target}:./
+    #scp -r "${HOME}/.homeshick" ${target}:./
 
-function ssh-init-home {
-  local target
-  for target in $@; do
-    ssh-copy-id ${target}
-    #TODO: Replace scp with rsync
-    scp ~/.ssh/known_hosts ${target}:./.ssh/known_hosts
-    scp -r "${HOME}/.homesick" ${target}:./
-    scp -r "${HOME}/.homeshick" ${target}:./
+    #ssh -At ${target} bash <<EOF
+      #export HOMESICK="\${HOME}/.homesick/repos"
+      #export HOMESHICK="\${HOMESICK}/homeshick"
+      #export HOMESICK_REPOS="${HOMESICK_REPOS}"
+      #export HOMESICK_MKDIRS="${HOMESICK_MKDIRS}"
+      #ssh-keyscan github.com >> ~/.ssh/known_hosts
+      #$(declare -f updatehome)
+      #updatehome
 
-    ssh -At ${target} bash <<EOF
-      export HOMESICK="\${HOME}/.homesick/repos"
-      export HOMESHICK="\${HOMESICK}/homeshick"
-      export HOMESICK_REPOS="${HOMESICK_REPOS}"
-      export HOMESICK_MKDIRS="${HOMESICK_MKDIRS}"
-      ssh-keyscan github.com >> ~/.ssh/known_hosts
-      $(declare -f updatehome)
-      updatehome
-
-EOF
-    rsync -az "${HOME}/.vim/bundle" ${target}:.vim/
-  done
-}
+#EOF
+    #rsync -az "${HOME}/.vim/bundle" ${target}:.vim/
+  #done
+#}
 
 # vim: set ft=sh ts=2 sw=2 tw=0 :

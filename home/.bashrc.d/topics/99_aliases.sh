@@ -11,6 +11,10 @@ if command -v yq &>/dev/null; then
   alias jy='yq --yaml-output .'
 fi
 
+if command -v prettyping &>/dev/null; then
+  alias ping='prettyping'
+fi
+
 if [[ -n "$(which nvim)" ]]; then
   alias v='nvim'
   alias n='nvim'
@@ -42,6 +46,9 @@ complete-alias kj kubectl -o json
 complete-alias kd kubectl --namespace default
 complete-alias mk minikube
 complete-alias kx kubectx
+
+# Git
+complete-alias gpv git commit -pv
 
 
 function vimnote {
