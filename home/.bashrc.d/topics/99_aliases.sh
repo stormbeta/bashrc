@@ -38,9 +38,6 @@ alias cj='cd ..'
 # Completion-aware aliases
 complete-alias tf terraform
 complete-alias kc kubectl
-complete-alias dk docker
-#NOTE: Shadows GNU calculator "dc"
-complete-alias dc docker-compose
 complete-alias kcl kubectl logs -f
 complete-alias kj kubectl -o json
 complete-alias kd kubectl --namespace default
@@ -49,6 +46,12 @@ complete-alias kx kubectx
 
 # Git
 complete-alias gpv git commit -pv
+
+# Docker
+complete-alias dk docker
+#NOTE: Shadows GNU calculator "dc"
+complete-alias dc docker-compose
+complete-alias dr docker run -it --rm -v "\${PWD}:/local"
 
 
 function vimnote {
