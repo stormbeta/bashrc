@@ -15,6 +15,8 @@ if command -v prettyping &>/dev/null; then
   alias ping='prettyping'
 fi
 
+alias bat='bat --theme GitHub'
+
 if [[ -n "$(which nvim)" ]]; then
   alias v='nvim'
   alias n='nvim'

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#TODO: Verify that I can bootstrap without a seed machine
+export PLATFORM="$(uname -s | tr "[:upper:]" "[:lower:]")"
 case $PLATFORM in
   darwin)
     function upgrade-all {
@@ -13,13 +13,13 @@ case $PLATFORM in
         fi
         sudo softwareupdate -dia
       fi
+      pip3 list | grep -Eo '^\w+' | xargs -n1 -I{} pip3 install --upgrade '{}'
       #command -v npm &> /dev/null && npm update npm -g && npm update -g
       #command -v gem &> /dev/null && sudo gem update
     }
     ;;
   linux)
-    function updateplatform {
-      # Update all teh Linux things.
+    function upgrade-all {
       command -v apt-get &>/dev/null && sudo apt-get update && sudo apt-get upgrade
       command -v yum &> /dev/null && sudo yum update && sudo yum upgrade
       command -v npm &> /dev/null && npm update npm -g && npm update -g
@@ -27,7 +27,7 @@ case $PLATFORM in
     }
     ;;
   *)
-    function updateplatform {
+    function upgrade-all {
       # TODO: support chocolatey on windows?
       #       though bash on windows these days is normally ran via WSFL, which would report as Linux
       echo " I don't know how to update things on this platform (${PLATFORM})."
