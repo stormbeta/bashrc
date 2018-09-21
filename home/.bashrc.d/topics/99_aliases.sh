@@ -17,9 +17,10 @@ fi
 
 alias bat='bat --theme GitHub'
 
-if [[ -n "$(which nvim)" ]]; then
-  alias v='nvim'
-  alias n='nvim'
+if command -v nvim &>/dev/null; then
+  alias vim='nvim -p'
+  alias v='nvim -p'
+  alias n='nvim -p'
 else
   alias v='vim'
 fi

@@ -13,7 +13,7 @@ case $PLATFORM in
         fi
         sudo softwareupdate -dia
       fi
-      pip3 list | grep -Eo '^\w+' | xargs -n1 -I{} pip3 install --upgrade '{}'
+      #pip3 list | grep -Eo '^\w+' | xargs -n1 -I{} pip3 install --upgrade '{}'
       #command -v npm &> /dev/null && npm update npm -g && npm update -g
       #command -v gem &> /dev/null && sudo gem update
     }
