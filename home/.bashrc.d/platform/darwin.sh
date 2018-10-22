@@ -101,10 +101,16 @@ darwin_git='/Applications/Xcode.app/Contents/Developer/usr/share/git-core/'
 complete -A hostname 'ssh-osx-tmux'
 
 function setjava {
-  export JAVA_HOME=`/usr/libexec/java_home -v 1.$1`
+  local javahome="$(/usr/libexec/java_home -v $1)"
+  if "${javahome}/bin/java" -version 2>&1 | grep -q OpenJDK; then
+    export JAVA_HOME="$javahome"
+  else
+    echo "Java at '${javahome}' is not OpenJDK, refusing to set JAVA_HOME" 1>&2
+    return 1
+  fi
 }
 
-setjava 8
+setjava 11
 
 # TODO/stale - I think this was originally added to use an alpha build of curl with http2 support?
 if path-exists '/usr/local/opt/curl/bin'; then
