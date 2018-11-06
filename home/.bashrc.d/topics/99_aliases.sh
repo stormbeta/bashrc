@@ -56,6 +56,9 @@ complete-alias dk docker
 complete-alias dc docker-compose
 complete-alias dr docker run -it --rm -v "\${PWD}:/local"
 
+# Typical watch alias, perserves alias expansion
+alias ww='watch --color -n 1 '
+alias watch='watch --color '
 
 function vimnote {
   #TODO: Tab completion
