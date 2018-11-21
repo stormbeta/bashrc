@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+app_name="$1"
+shortcut="$(grep -l "Applications/${app_name}.app" /usr/local/bin/* 2>/dev/null | head -n1)"
+if [[ -n "$shortcut" ]]; then
+  echo "Shortcut found at ${shortcut}" 1>&2
+  latest_path="$(ls -dt ~/Library/Preferences/${app_name}* | head -n1)"
+  latest_name="$(basename "$latest_path")"
+  sed -E -i.bak "s:${app_name}[0-9].+'$:${latest_name}':" "$shortcut"
+else
+  echo "No shortcut found for JetBrains IDE named ${app_name}" 1>&2
+fi
