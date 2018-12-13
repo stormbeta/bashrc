@@ -23,7 +23,7 @@ function __blue {
 function __orange {
   local python="${VIRTUAL_ENV##*/}"
   local ruby="$( if [[ -e "$(command git rev-parse --show-cdup 2>/dev/null).ruby-version" ]]; then ruby --version | grep -Eo '^j?ruby [^ ]+'; fi )"
-  echo "${python}${ruby}"
+  echo "${python} ${ruby}"
 }
 
 function __promptline_ps1 {
