@@ -46,6 +46,7 @@ complete-alias kj kubectl -o json
 complete-alias kd kubectl --namespace default
 complete-alias mk minikube
 complete-alias kx kubectx
+complete-alias kxec kubectl -it exec
 
 # Git
 complete-alias gpv git commit -pv
