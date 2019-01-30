@@ -19,6 +19,9 @@ path-prepend /usr/local/opt/coreutils/libexec/gnuman MANPATH
 path-prepend /usr/local/bin
 path-append /usr/local/sbin
 
+# Set GOROOT for brew-installed go if present
+command -v go >/dev/null && export GOROOT='/usr/local/opt/go/libexec'
+
 # TODO: This needs to be revamped to support a work vs personal list
 #       also doesn't support brew cask I think
 function brew {
