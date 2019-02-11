@@ -3,8 +3,9 @@
 set -eo pipefail
 
 if [[ $# -lt 1 ]]; then
-  echo "Usage ${0} MFA_TOKEN [USER]"
-  exit 4
+  read -rp 'MFA Token: ' MFA_TOKEN
+else
+  MFA_TOKEN="$1"
 fi
 
 if ! command -v aws >/dev/null; then

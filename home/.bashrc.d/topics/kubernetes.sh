@@ -1,6 +1,13 @@
 #!/usr/bin/env bash
 # Kubernetes stuff
 
+function kubectl-mfa {
+  if [[ -n "$(find "${HOME}/.aws/credentials" -mmin +2160)" ]]; then
+    ~/bin/aws-mfa-gen
+  fi
+  kubectl "$@"
+}
+
 # Merge kubeconfigs from ~/.kube/config.d automatically so that we can keep clusters separate
 
 function reload-kubeconfigs {
