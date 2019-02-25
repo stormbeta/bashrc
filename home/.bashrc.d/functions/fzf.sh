@@ -2,28 +2,6 @@
 
 #These are pointless if fzf doesn't exist
 if command -v fzf 2>&1 > /dev/null; then
-  #LastPass fuzzy selection
-  function lps {
-    #Ensure login state first; fzf can't handle nested interactive input
-    lpass status --quiet || lpass sync
-    local lpass_id="$(lpass ls --long | fzf --select-1 --query="$1" | grep -Po '(?<=id: )\d+')"
-    lpass show --url ${lpass_id}
-    lpass show --clip --password ${lpass_id}
-  }
-
-  function lpo {
-    #Ensure login state first; fzf can't handle nested interactive input
-    lpass status --quiet || lpass sync
-    local lpass_id="$(lpass ls --long | fzf --select-1 --query="$1" | grep -Po '(?<=id: )\d+')"
-    lpass show --clip --password ${lpass_id}
-    if [[ "$(uname -o)" == 'Darwin' ]]; then
-      local lpass_url="$(lpass show --url ${lpass_id})"
-      open "${lpass_url}"
-    else
-      lpass show --url ${lpass_id}
-    fi
-  }
-
   function agf {
     if [[ -n "$1" ]]; then
       local result="$(ag -l "$1" \
