@@ -53,9 +53,9 @@ export LSCOLORS=ExGxBxDxCxEgEdxbxgxcxd
 
 # Workaround for macOS Sierra ssh keychain problems
 # '/Users/USER/.ssh/...' should be in output if it's actually loaded
-if ssh-add -l | grep -vq Users; then
+if ssh-add -l 2>/dev/null | grep -vq Users; then
   # Use absolute path in case GNU version is installed with brew
-  /usr/bin/ssh-add -A
+  /usr/bin/ssh-add -A &>/dev/null
 fi
 
 # Handy shortcut for setting up socks proxy
@@ -78,6 +78,7 @@ alias standby='/System/Library/CoreServices/Menu\ Extras/user.menu/Contents/Reso
 
 complete -A hostname 'ssh-osx-tmux'
 
+# TODO: This no longer works well when using OpenJDK via AdoptOpenJDK
 function setjava {
   local javahome="$(/usr/libexec/java_home -v $1)"
   if "${javahome}/bin/java" -version 2>&1 | grep -q OpenJDK; then
@@ -87,8 +88,6 @@ function setjava {
     return 1
   fi
 }
-
-setjava 8
 
 set-if-exists GROOVY_HOME '/usr/local/opt/groovy/libexec'
 
