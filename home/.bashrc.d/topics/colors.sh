@@ -1,5 +1,5 @@
 # Oh, THE COLORS!
-if which dircolors >/dev/null 2>&1; then
+if command -v dircolors >/dev/null 2>&1; then
   test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || \
     eval "$(dircolors -b)"
 

@@ -1,3 +1,5 @@
+# TODO: do I really need any of this stuff anymore?
+
 function ssh_clean {
   local ssh_dir="${HOME}/.ssh"
 

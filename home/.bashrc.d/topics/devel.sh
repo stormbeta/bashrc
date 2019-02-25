@@ -1,3 +1,4 @@
+# TODO: Probably superceded by the loopit script?
 function watch-file {
   # Executes a command everytime a file or directory's contents change
   # Useful for iterative development
@@ -23,14 +24,4 @@ function watch-file {
       done
       ;;
   esac
-}
-
-function gh-clone {
-  GIT_COMMITTER_EMAIL='stormbeta@gmail.com' GIT_AUTHOR_EMAIL='stormbeta@gmail.com' git clone "git@github.com:$1.git" $1
-}
-
-#Set sudo ticket via lastpass-cli
-function lpw-sudo {
-  local password_id="${1:-sudo}"
-  lpass show --password "${password_id}" | sudo -Sv
 }
