@@ -1,53 +1,36 @@
-# This bash library contains useful functions for viewing and manipulating
-# your PATH environment variable, and other similar environment variables.
+# Utility functions for manipulating PATH vars
+# Should be compatible with both bash and zsh
 
-# List each directory in your PATH, one per line
-path-list() {
-  local path
-  local d
-  if [ "$#" -eq 1 ]; then eval path=\$$1; else path="$PATH"; fi
-  for d in `echo $path | sed -e 's/:/ /g'`; do
-    echo "$d"
-  done
+# NOTE: _path is used because zsh is dumb and shadows `path` with some incompatible nonsense
+
+# path-remove directory [PATH]
+function path-remove {
+  local _path="$1"
+  local pathVar="${2:-PATH}"
+  local currPath
+  if [[ -n "$BASH_VERSION" ]]; then currPath="${!pathVar}"; else currPath="${(P)pathVar}"; fi
+  local newPath="$(echo -n "$currPath" | tr ':' '\n' | grep -vxF "$_path" | tr '\n' ':' | sed 's/:$//')"
+  export "$pathVar"="$newPath"
 }
 
-# Remove a directory from your PATH
-path-remove() {
-  local path
-  local d
-  local p=""
-  if [ "$#" -eq 2 ]; then eval path=\$$2; else path="$PATH"; fi
-  for d in `echo $path | sed -e 's/:/ /g'`; do
-    if [ "$d" != "$1" ]; then
-      if [ "$p" = "" ]; then
-        p="$d"
-      else
-        p="$p:$d"
-      fi
-    fi
-  done
-  if [ "$#" -eq 2 ]; then eval $2=\$p; else PATH="$p"; fi
+# Add or update directory to beginning of path
+# path-prepend directory [PATH]
+function path-prepend {
+  local _path="$1"
+  local pathVar="${2:-PATH}"
+  path-remove "$_path" "$pathVar"
+  local cleanPath
+  if [[ -n "$BASH_VERSION" ]]; then cleanPath="${!pathVar}"; else cleanPath="${(P)pathVar}"; fi
+  export "$pathVar"="${_path}:${cleanPath}"
 }
 
-# Add a directory to the start of your PATH while removing old references.
-path-prepend() {
-  local path
-  path-remove $*
-  if [ "$#" -eq 2 ]; then eval path=\$$2; else path="$PATH"; fi
-  path="$1:$path"
-  if [ "$#" -eq 2 ]; then eval "$2=$path"; else PATH="$path"; fi
+# Add or update directory to end of path
+# path-append directory [PATH]
+function path-append {
+  local _path="$1"
+  local pathVar="${2:-PATH}"
+  path-remove "$_path" "$pathVar"
+  local cleanPath
+  if [[ -n "$BASH_VERSION" ]]; then cleanPath="${!pathVar}"; else cleanPath="${(P)pathVar}"; fi
+  export "$pathVar"="${cleanPath}:${_path}"
 }
-
-# Add a directory to the end of your PATH while removing old references.
-path-append() {
-  local path
-  path-remove $*
-  if [ "$#" -eq 2 ]; then eval path=\$$2; else path="$PATH"; fi
-  path="$path:$1"
-  if [ "$#" -eq 2 ]; then eval $2=\$path; else PATH="$path"; fi
-}
-
-# Copyright © 2011 Ingy dot Net <ingy@ingy.net>
-#
-# This library is free software, distributed under the ISC License.
-# See the LICENSE file distributed with this library.
