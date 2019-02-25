@@ -104,3 +104,10 @@ if [[ -d "${HOME}/Downloads/google-cloud-sdk" ]]; then
 fi
 
 path-append "${HOME}/.rvm/bin"
+
+JAVA_HOME=/Library/Java/JavaVirtualMachines/adoptopenjdk-8.jdk/Contents/Home
+
+# Workaround for some machine-specific variables
+if [[ -d "${HOME}/backup/env" ]]; then
+  source "${HOME}/backup/env"
+fi
