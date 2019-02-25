@@ -2,3 +2,4 @@
 # Incremental searching with Up and Down is configured in .inputrc
 "\e[A": history-search-backward
 "\e[B": history-search-forward
+set completion-ignore-case On

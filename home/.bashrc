@@ -8,6 +8,15 @@ export TERM='xterm-256color-italic'
 (tput -T xterm-256color-italic rev &> /dev/null)
 [[ $? -eq 3 ]] && export TERM='xterm-256color'
 
+export SHELL_NAME
+if [[ -n "$BASH_VERSION" ]]; then
+  SHELL_NAME=bash
+elif [[ -n "$ZSH_VERSION" ]]; then
+  SHELL_NAME=zsh
+else
+  echo "Unknown shell - this is unsupported and will likely break!" 1>&2
+fi
+
 function source_platform {
   if [[ ${OS} =~ Windows ]]; then
     uname_flag='-o'
@@ -34,6 +43,10 @@ function sourced {
   fi
 }
 
+#TODO: Only source completion for commands found in the current environment
+# Source tab-complete related config
+sourced completion
+
 # Source my functions and start setting up my PATH
 sourced functions
 path-prepend ${HOME}/bin
@@ -43,10 +56,6 @@ source_platform
 
 # Source the rest of the things.
 sourced topics
-
-#TODO: Only source completion for commands found in the current environment
-# Source bash completion
-sourced completion
 
 path-remove /usr/local/bin
 path-prepend /usr/local/bin
@@ -59,8 +68,9 @@ set-if-exists EDITOR "$(command -v vim)" \
 bind 'set show-all-if-ambiguous on'
 
 #Promptline
-source ~/.shell_prompt.sh
+source "${HOME}/.shell_prompt.sh"
 
+# TODO: we should be able to combine these
 set-if-exists ANDROID_HOME "${HOME}/Library/Android/sdk"
 set-if-exists ANDROID_HOME "${HOME}/.android-sdk"
 add-path-if-exists "${ANDROID_HOME}/platform-tools"
@@ -83,16 +93,10 @@ fi
 source-if-exists "${HOME}/.travis/travis.sh"
 
 #Google Cloud SDK setup
-set-if-exists GOOGLE_CLOUD_HOME "${HOME}/Downloads/google-cloud-sdk"
-source-if-exists "${GOOGLE_CLOUD_HOME}/path.bash.inc"
-source-if-exists "${GOOGLE_CLOUD_HOME}/completion.bash.inc"
-
-if command -v minikube &>/dev/null; then
-  eval "$(minikube completion bash)"
-fi
-if command -v helm &>/dev/null; then
-  eval "$(helm completion bash)"
+if [[ -d "${HOME}/Downloads/google-cloud-sdk" ]]; then
+  export GOOGLE_CLOUD_HOME="${HOME}/Downloads/google-cloud-sdk"
+  source-if-exists "${GOOGLE_CLOUD_HOME}/path.${SHELL_NAME}.inc"
+  source-if-exists "${GOOGLE_CLOUD_HOME}/completion.${SHELL_NAME}.inc"
 fi
 
-# Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
-export PATH="$PATH:$HOME/.rvm/bin"
+path-append "${HOME}/.rvm/bin"

@@ -1,5 +1,5 @@
 # Based on https://unix.stackexchange.com/questions/4219/how-do-i-get-bash-completion-for-command-aliases
-function make-completion-wrapper () {
+function make-completion-wrapper {
   local function_name="$2"
   local arg_count=$(($#-3))
   local comp_function_name="$1"
@@ -27,3 +27,11 @@ function complete-alias {
   eval "alias ${al}='$@'"
   complete -o default -F "${alcomp}" "${al}"
 }
+
+if command -v minikube &>/dev/null; then
+  eval "$(minikube completion "$SHELL_NAME")"
+fi
+
+if command -v helm &>/dev/null; then
+  eval "$(helm completion "$SHELL_NAME")"
+fi
