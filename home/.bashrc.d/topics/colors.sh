@@ -16,5 +16,6 @@ fi
 export ANT_OPTS="-Dant.logger.defaults=${HOME}/.ant_settings"
 
 # Create aliases for color version of optional commands if they both exist
-smart-alias svn 'colorsvn'
-smart-alias ant 'ant -logger org.apache.tools.ant.listener.AnsiColorLogger'
+# TODO: Are these even relevant to me anymore?
+#smart-alias svn 'colorsvn'
+#smart-alias ant 'ant -logger org.apache.tools.ant.listener.AnsiColorLogger'

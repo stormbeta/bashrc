@@ -8,7 +8,7 @@ function ssh_clean {
 
   while read host line; do
     if [[ ${host} != "localhost" ]]; then
-      echo ${host} ${line} >> ${known_hosts_tmp} 
+      echo ${host} ${line} >> ${known_hosts_tmp}
     fi
   done < ${known_hosts}
 

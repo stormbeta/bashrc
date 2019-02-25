@@ -1,4 +1,4 @@
-if [[ -n "$HOMESHICK" ]]; then
+if [[ -n "$HOMESHICK" ]] && [[ -d "${HOMESHICK}/bashrc/home/.ssh" ]]; then
   chmod 700 "${HOMESHICK}/bashrc/home/.ssh"
 fi
 

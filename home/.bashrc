@@ -43,19 +43,23 @@ function sourced {
   fi
 }
 
+# Base utilities used by other config
+source "${HOME}/.bashrc.d/path-manip.sh"
+source "${HOME}/.bashrc.d/utils.sh"
+
 #TODO: Only source completion for commands found in the current environment
-# Source tab-complete related config
+# Source bash completion
 sourced completion
 
 # Source my functions and start setting up my PATH
 sourced functions
 path-prepend ${HOME}/bin
 
-# Source platform dependent stuff first to help with paths, etc.
-source_platform
-
 # Source the rest of the things.
 sourced topics
+
+# Source platform dependent stuff first to help with paths, etc.
+source_platform
 
 path-remove /usr/local/bin
 path-prepend /usr/local/bin
