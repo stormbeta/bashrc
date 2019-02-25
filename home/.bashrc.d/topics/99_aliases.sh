@@ -50,6 +50,9 @@ complete-alias kxec kubectl -it exec
 
 # Git
 complete-alias gpv git commit -pv
+complete-alias gco git checkout
+# TODO: Figure out why this doesn't work
+#complete-alias gh GIT_COMMITTER_EMAIL='stormbeta@gmail.com' GIT_AUTHOR_EMAIL='stormbeta@gmail.com' git
 
 # Docker
 complete-alias dk docker

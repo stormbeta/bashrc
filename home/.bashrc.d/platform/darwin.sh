@@ -22,32 +22,6 @@ path-append /usr/local/sbin
 # Set GOROOT for brew-installed go if present
 command -v go >/dev/null && export GOROOT='/usr/local/opt/go/libexec'
 
-# TODO: This needs to be revamped to support a work vs personal list
-#       also doesn't support brew cask I think
-function brew {
-  # Create a wrapper for brew that keeps a list of installed brew packages up to
-  # date.
-  if $(which brew) ${@}; then
-    case ${1} in
-      install)
-        cat <($(which brew) list) ${brew_installed} | \
-          sort | uniq > ${brew_installed}
-        ;;
-      remove|rm|uninstall)
-        shift
-        for package in ${@}; do
-          command grep -v "${package}" ${brew_installed} > temp && \
-            mv temp ${brew_installed}
-        done
-        ;;
-    esac
-  fi
-}
-
-function sync-brew {
-  brew install $(cat ${brew_installed})
-}
-
 function emptytrash {
   # Empty the Trash on all mounted volumes and the main HDD
   # Also, clear Apple’s System Logs to improve shell startup speed
@@ -64,6 +38,7 @@ function ssh-osx-tmux {
 }
 
 # Recursively delete `.DS_Store` files
+# TODO: Is this even still an issue on modern macOS now?
 alias dsclean="find . -type f -name '*.DS_Store' -ls -delete"
 
 # Use GNU coreutils if installed instead of BSD versions that come with OSX
@@ -86,9 +61,7 @@ fi
 # Handy shortcut for setting up socks proxy
 # alias socks='sudo networksetup -setsocksfirewallproxystate'
 
-# Setup brew prefix.
-which brew &> /dev/null && brew_prefix=$( brew --prefix )
-
+command -v brew &> /dev/null && brew_prefix=$( brew --prefix )
 # GRC colorizes nifty unix tools all over the place
 if command -v grc &>/dev/null && [[ -n "${brew_prefix}" ]]; then
   source ${brew_prefix}/etc/grc.bashrc
@@ -98,9 +71,10 @@ fi
 alias standby='/System/Library/CoreServices/Menu\ Extras/user.menu/Contents/Resources/CGSession -suspend'
 
 # Enable git shell features for OSX (requires Xcode)
-darwin_git='/Applications/Xcode.app/Contents/Developer/usr/share/git-core/'
-[[ -f "${darwin_git}/git-completion.bash" ]] && . "${darwin_git}/git-completion.bash"
-[[ -f "${darwin_git}/git-prompt.sh" ]] && . "${darwin_git}/git-prompt.sh"
+# TODO: Pretty sure this is deprecated for those of us installing git via brew
+#darwin_git='/Applications/Xcode.app/Contents/Developer/usr/share/git-core/'
+#[[ -f "${darwin_git}/git-completion.bash" ]] && . "${darwin_git}/git-completion.bash"
+#[[ -f "${darwin_git}/git-prompt.sh" ]] && . "${darwin_git}/git-prompt.sh"
 
 complete -A hostname 'ssh-osx-tmux'
 
@@ -114,16 +88,12 @@ function setjava {
   fi
 }
 
-setjava 11
-
-# TODO/stale - I think this was originally added to use an alpha build of curl with http2 support?
-if path-exists '/usr/local/opt/curl/bin'; then
-  export PATH="/usr/local/opt/curl/bin:${PATH}"
-fi
+setjava 8
 
 set-if-exists GROOVY_HOME '/usr/local/opt/groovy/libexec'
 
 # Forcibly reload macOS bluetooth kernel module
+# TODO: Probably not needed anymore, was used to workaround a bug on an old laptop
 function bt-reset {
   sudo kextunload -b com.apple.iokit.BroadcomBluetoothHostControllerUSBTransport
   sleep 5
