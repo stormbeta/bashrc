@@ -2,20 +2,22 @@
 
 #These are pointless if fzf doesn't exist
 if command -v fzf 2>&1 > /dev/null; then
-  function agf {
-    if [[ -n "$1" ]]; then
-      local result="$(ag -l "$1" \
-        | fzf --ansi --preview="cat {} | ag --color $1" \
-        | perl -pe 's/(^[^:]+):(\d+):.*/+\2 \1/')"
-      if [[ -n "$result" ]]; then
-        vim $result
+  if command -v rg &>/dev/null; then
+    function rf {
+      if [[ -n "$1" ]]; then
+        local result="$(rg -l "$1" \
+          | fzf --ansi --preview="cat {} | rg --color always $1" \
+          | perl -pe 's/(^[^:]+):(\d+):.*/+\2 \1/')"
+        if [[ -n "$result" ]]; then
+          vim $result
+        else
+          return 1
+        fi
       else
         return 1
       fi
-    else
-      return 1
-    fi
-  }
+    }
+  fi
 
   function vimf {
     local result=''
