@@ -55,11 +55,11 @@ sourced completion
 sourced functions
 path-prepend ${HOME}/bin
 
-# Source the rest of the things.
-sourced topics
-
 # Source platform dependent stuff first to help with paths, etc.
 source_platform
+
+# Source the rest of the things.
+sourced topics
 
 path-remove /usr/local/bin
 path-prepend /usr/local/bin
