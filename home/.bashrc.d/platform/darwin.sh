@@ -76,7 +76,8 @@ alias standby='/System/Library/CoreServices/Menu\ Extras/user.menu/Contents/Reso
 #[[ -f "${darwin_git}/git-completion.bash" ]] && . "${darwin_git}/git-completion.bash"
 #[[ -f "${darwin_git}/git-prompt.sh" ]] && . "${darwin_git}/git-prompt.sh"
 
-complete -A hostname 'ssh-osx-tmux'
+# TODO: Deprecate?
+#complete -A hostname 'ssh-osx-tmux'
 
 # TODO: This no longer works well when using OpenJDK via AdoptOpenJDK
 function setjava {

@@ -33,13 +33,11 @@ function source_platform {
 }
 
 function sourced {
-  local dir=${HOME}/.bashrc.d/${1}
-
-  if [[ -d ${dir} ]]; then
-    while read dotd; do
-      source "${dotd}"
-    done < <(find ${dir} -name '*.sh')
-    unset dotd
+  local dir="${HOME}/.bashrc.d/$1"
+  if [[ -d "$dir" ]]; then
+    for script in "$dir"/*.sh; do
+      source "$script"
+    done
   fi
 }
 

@@ -32,3 +32,16 @@ reload-kubeconfigs
 function k8sh {
   kubectl run -i --tty "$USER-shell-$RANDOM" --image="$1" --restart=Never -- sh
 }
+
+function kg {
+  "$@" -oname | fzf --ansi # | "$@" -ojson "$(</dev/stdin)" | jq .
+}
+
+complete-alias kc kubectl
+complete-alias kcl kubectl logs -f
+complete-alias kj kubectl -o json
+complete-alias kd kubectl --namespace default
+complete-alias kp kubectl --namespace ping-services
+complete-alias mk minikube
+complete-alias kx kubectx
+complete-alias kxec kubectl -it exec
