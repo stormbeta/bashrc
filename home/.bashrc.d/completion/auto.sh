@@ -1,7 +1,11 @@
 if command -v minikube &>/dev/null; then
-  eval "$(minikube completion "$SHELL_NAME")"
+  source <(minikube completion "$SHELL_NAME")
 fi
 
 if command -v helm &>/dev/null; then
-  eval "$(helm completion "$SHELL_NAME")"
+  source <(helm completion "$SHELL_NAME")
+fi
+
+if command -v kubeclt &>/dev/null; then
+  source <(kubectl completion "$SHELL_NAME")
 fi

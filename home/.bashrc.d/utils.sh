@@ -1,5 +1,13 @@
 # Compatible with bash and zsh
 
+function _log-warn {
+  local msg="[WARN]: $0: $*"
+  echo "$(date) ${msg}" >> ~/.bash_warnings
+  if [[ -n "$SHELL_INIT_DEBUG" ]]; then
+    echo "$msg" 1>&2
+  fi
+}
+
 function path-exists {
   local check_path="$1"
   [[ -e "$check_path" ]]

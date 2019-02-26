@@ -19,23 +19,19 @@ if command -v fzf 2>&1 > /dev/null; then
     }
   fi
 
-  function vimf {
-    local result=''
-    if [[ -n "$2" ]]; then
-      local result="$(ag -G "$1$" --vimgrep "$1" | fzf | perl -pe 's/(^[^:]+):(\d+):.*/+\2 \1/')"
-    elif [[ -n "$1" ]]; then
-      result="$(ag -l -G "$1$" . | fzf)"
-    else
-      result="$(fzf)"
-    fi
 
-    if [[ -n "$result" ]]; then
-      vim $result
-    else
-      return 1
-    fi
-  }
+  if command -v fasd &>/dev/null; then
+    function v {
+      if [[ $# -lt 1 ]]; then
+        nvim "$(fasd -f | fzf --tiebreak=index --tac --preview='cat "$(echo {} | grep -Eo "/.*$")"' --preview-window=up:25 | grep -Eo '/.*$')"
+      else
+        nvim "$@"
+      fi
+    }
+  else
+    _log-warn "fasd not found, 'v' fzf shortcut disabled"
+  fi
 else
-  echo '[WARN]: fzf not installed, skipping fzf-based functions and aliases' 1>&2 >> ~/.bash_warnings
+  _log-warn "fzf not found, skipping rf/v shortcuts"
 fi
 

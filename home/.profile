@@ -5,7 +5,7 @@
 # the files are located in the bash-doc package.
 
 # This file should most likely NOT get evaluated, but just in case...
-if [ -n "$BASH_VERSION" ]; then
+if [[ -n "$BASH_VERSION" ]]; then
     if [ -f "$HOME/.bash_profile" ]; then
       . "$HOME/.bash_profile"
     fi

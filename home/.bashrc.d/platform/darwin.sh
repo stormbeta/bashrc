@@ -90,6 +90,7 @@ function setjava {
   fi
 }
 
+setjava 1.8
 set-if-exists GROOVY_HOME '/usr/local/opt/groovy/libexec'
 
 # Forcibly reload macOS bluetooth kernel module

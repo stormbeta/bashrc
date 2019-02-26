@@ -11,6 +11,8 @@ export TERM='xterm-256color-italic'
 export SHELL_NAME
 if [[ -n "$BASH_VERSION" ]]; then
   SHELL_NAME=bash
+  #Promptline
+  source "${HOME}/.shell_prompt.sh"
 elif [[ -n "$ZSH_VERSION" ]]; then
   SHELL_NAME=zsh
 else
@@ -62,15 +64,16 @@ sourced topics
 path-remove /usr/local/bin
 path-prepend /usr/local/bin
 
+# FASD support
+# TODO: Enable caching of this and other automated sourcing
+command -v fasd &>/dev/null && eval "$(fasd --init auto)"
+
 set-if-exists EDITOR "$(command -v vim)" \
   || set-if-exists EDITOR "$(command -v vi)" \
   || set-if-exists EDITOR "$(command -v nano)" \
   || echo "WARNING: No editor found!"
 
 bind 'set show-all-if-ambiguous on'
-
-#Promptline
-source "${HOME}/.shell_prompt.sh"
 
 # TODO: we should be able to combine these
 set-if-exists ANDROID_HOME "${HOME}/Library/Android/sdk"
@@ -82,8 +85,8 @@ add-path-if-exists "${ANDROID_HOME}/platform-tools"
 #eval "$(pyenv init -)"
 #eval "$(pyenv virtualenv-init -)"
 
-#export NVM_DIR="/Users/jason.miller/.nvm"
-#[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
+export NVM_DIR="${HOME}/.nvm"
+[[ -f "$NVM_DIR/nvm.sh" ]] && . "$NVM_DIR/nvm.sh"  # This loads nvm
 
 #Go setup
 set-if-exists GOPATH "${HOME}/go"
@@ -103,9 +106,7 @@ fi
 
 path-append "${HOME}/.rvm/bin"
 
-JAVA_HOME=/Library/Java/JavaVirtualMachines/adoptopenjdk-8.jdk/Contents/Home
-
 # Workaround for some machine-specific variables
-if [[ -d "${HOME}/backup/env" ]]; then
+if [[ -f "${HOME}/backup/env" ]]; then
   source "${HOME}/backup/env"
 fi
