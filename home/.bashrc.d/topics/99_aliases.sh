@@ -31,7 +31,7 @@ alias ssh='TERM=xterm-256color ssh'
 alias e='emacsclient -t'
 alias ec='emacsclient -c'
 
-alias vf='vim $(fzf)'
+alias vf='vim $(fzf --preview="cat {}" --preview-window=top:25)'
 
 #Unix-only
 alias sshx='ssh -X'
