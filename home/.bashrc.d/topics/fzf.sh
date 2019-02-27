@@ -8,24 +8,34 @@ if command -v fzf 2>&1 > /dev/null; then
         local result="$(rg -l "$1" \
           | fzf --ansi --preview="cat {} | rg --color always $1" \
           | perl -pe 's/(^[^:]+):(\d+):.*/+\2 \1/')"
-        if [[ -n "$result" ]]; then
-          vim $result
-        else
-          return 1
-        fi
+        [[ -n "$result" ]] || return 1
+        vim "$result"
       else
         return 1
       fi
     }
   fi
 
+  function vf {
+    local result
+    result=$(fzf --preview="cat {}" --preview-window=top:25)
+    [[ -n "$result" ]] || return 1
+    # Ensure result is in history for up-arrow completion
+    history -r && history -s vim "$result"
+    vim "$result"
+  }
 
   if command -v fasd &>/dev/null; then
     function v {
       if [[ $# -lt 1 ]]; then
-        nvim "$(fasd -f | fzf --tiebreak=index --tac --preview='cat "$(echo {} | grep -Eo "/.*$")"' --preview-window=up:25 | grep -Eo '/.*$')"
+        local result
+        result="$(fasd -fl | fzf --tiebreak=index --tac --preview='cat {}' --preview-window=up:25)"
+        [[ -n "$result" ]] || return 1
+        # Ensure result is in history for up-arrow completion
+        history -r && history -s v "$result"
+        vim "$result"
       else
-        nvim "$@"
+        vim "$@"
       fi
     }
   else

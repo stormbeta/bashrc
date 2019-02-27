@@ -43,9 +43,7 @@ export PROMPT_DIRTRIM=2
 case ${PLATFORM} in
   darwin)
     # Set up bash completion on OSX with brew
-    if [[ -f `brew --prefix`/etc/bash_completion ]]; then
-      source `brew --prefix`/etc/bash_completion
-    fi
+    source "$(brew --prefix)/etc/bash_completion"
     ;;
   *)
     # Completion is critical; this needs to be set up before the aliases file
