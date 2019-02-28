@@ -1,4 +1,4 @@
-#/usr/bin/env bash
+# fuzzy-finder + fasd utils
 
 #These are pointless if fzf doesn't exist
 if command -v fzf 2>&1 > /dev/null; then
@@ -26,6 +26,11 @@ if command -v fzf 2>&1 > /dev/null; then
   }
 
   if command -v fasd &>/dev/null; then
+    function cdp {
+      #fasd_cd -d "$(fasd -d | fzf --tiebreak=index --tac | grep -Eo '/.*$')"
+      fasd_cd -d "$(fasd -d | fzf --tiebreak=index --tac --preview-window=bottom:1 --preview='(cd "$(echo {} | grep -Eo "/.*$")" && cat ./$(git rev-parse --show-cdup)/.git/HEAD)' | grep -Eo '/.*$')"
+    }
+
     function v {
       if [[ $# -lt 1 ]]; then
         local result
