@@ -74,7 +74,7 @@ set-if-exists EDITOR "$(command -v vim)" \
 bind 'set show-all-if-ambiguous on'
 
 #Promptline
-source "${HOME}/.shell_prompt.sh"
+source "${HOME}/.bashrc.d/prompt.sh"
 
 # TODO: we should be able to combine these
 set-if-exists ANDROID_HOME "${HOME}/Library/Android/sdk"
