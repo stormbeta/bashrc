@@ -11,8 +11,6 @@ export TERM='xterm-256color-italic'
 export SHELL_NAME
 if [[ -n "$BASH_VERSION" ]]; then
   SHELL_NAME=bash
-  #Promptline
-  source "${HOME}/.shell_prompt.sh"
 elif [[ -n "$ZSH_VERSION" ]]; then
   SHELL_NAME=zsh
 else
@@ -74,6 +72,9 @@ set-if-exists EDITOR "$(command -v vim)" \
   || echo "WARNING: No editor found!"
 
 bind 'set show-all-if-ambiguous on'
+
+#Promptline
+source "${HOME}/.shell_prompt.sh"
 
 # TODO: we should be able to combine these
 set-if-exists ANDROID_HOME "${HOME}/Library/Android/sdk"
