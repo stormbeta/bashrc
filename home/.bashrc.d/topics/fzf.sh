@@ -45,7 +45,7 @@ if command -v fzf 2>&1 > /dev/null; then
       result="$(fasd -fl | fzf --tiebreak=index --tac --preview='cat {}' --preview-window=up:25 $query)"
       [[ -n "$result" ]] || return 1
       # Ensure result is in history for up-arrow completion
-      history -r && history -s v "$result"
+      history -r && history -s vim "$result"
       vim "$result"
     }
   else

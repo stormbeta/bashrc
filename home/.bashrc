@@ -45,25 +45,17 @@ function sourced {
 source "${HOME}/.bashrc.d/path-manip.sh"
 source "${HOME}/.bashrc.d/utils.sh"
 
-#TODO: Only source completion for commands found in the current environment
-# Source bash completion
+# tab completion
 sourced completion
 
-# Source my functions and start setting up my PATH
-sourced functions
-path-prepend ${HOME}/bin
+path-prepend "${HOME}/bin"
 
-# Source platform dependent stuff first to help with paths, etc.
 source_platform
-
-# Source the rest of the things.
 sourced topics
 
-path-remove /usr/local/bin
 path-prepend /usr/local/bin
 
 # FASD support
-# TODO: Enable caching of this and other automated sourcing
 command -v fasd &>/dev/null && eval "$(fasd --init auto)"
 
 set-if-exists EDITOR "$(command -v vim)" \
@@ -71,41 +63,16 @@ set-if-exists EDITOR "$(command -v vim)" \
   || set-if-exists EDITOR "$(command -v nano)" \
   || echo "WARNING: No editor found!"
 
-bind 'set show-all-if-ambiguous on'
-
 #Promptline
 source "${HOME}/.bashrc.d/prompt.sh"
-
-# TODO: we should be able to combine these
-set-if-exists ANDROID_HOME "${HOME}/Library/Android/sdk"
-set-if-exists ANDROID_HOME "${HOME}/.android-sdk"
-add-path-if-exists "${ANDROID_HOME}/platform-tools"
 
 #export RUST_SRC_PATH="/Users/jason.miller/git/hub/rust/src"
 
 #eval "$(pyenv init -)"
 #eval "$(pyenv virtualenv-init -)"
 
-export NVM_DIR="${HOME}/.nvm"
-[[ -f "$NVM_DIR/nvm.sh" ]] && . "$NVM_DIR/nvm.sh"  # This loads nvm
-
-#Go setup
-set-if-exists GOPATH "${HOME}/go"
-if [[ -n "${GOPATH}" ]]; then
-  add-path-if-exists "${GOPATH}/bin"
-fi
-
 #Travis setup
 source-if-exists "${HOME}/.travis/travis.sh"
-
-#Google Cloud SDK setup
-if [[ -d "${HOME}/Downloads/google-cloud-sdk" ]]; then
-  export GOOGLE_CLOUD_HOME="${HOME}/Downloads/google-cloud-sdk"
-  source-if-exists "${GOOGLE_CLOUD_HOME}/path.${SHELL_NAME}.inc"
-  source-if-exists "${GOOGLE_CLOUD_HOME}/completion.${SHELL_NAME}.inc"
-fi
-
-path-append "${HOME}/.rvm/bin"
 
 # Workaround for some machine-specific variables
 if [[ -f "${HOME}/backup/env" ]]; then

@@ -8,33 +8,24 @@ function _log-warn {
   fi
 }
 
-function path-exists {
-  local check_path="$1"
-  [[ -e "$check_path" ]]
-  return $?
-}
-
+# set-if-exists VAR PATH
 set-if-exists() {
-  local var_name="$1"
-  local check_path="$2"
-  if path-exists "${check_path}"; then
-    #typeset -x doesn't work
-    eval "export ${var_name}=${check_path}"
-  fi
+  [[ -e "$2" ]] && export "$1"="$2"
 }
 
-function add-path-if-exists {
-  local check_path="$1"
-  if path-exists "$check_path"; then
-    path-prepend "$check_path"
-  fi
+add-path-if-exists() {
+  [[ -e "$1" ]] && path-prepend "$1"
 }
 
-function source-if-exists {
-  local check_path="$1"
-  if path-exists "$check_path"; then
-    source "$check_path"
-  fi
+source-if-exists() {
+  [[ -e "$1" ]] && source "$1"
+}
+
+# TODO: profile to see if this is actually useful
+function cacheable-source {
+  local cachefile="${HOME}/.bashrc.d/cache/${1}.cache.sh"
+  [[ "$cachefile" -nt "$1" || ! -f "$cachefile" ]] && "$@" >| "$cachefile"
+  source "$cachefile"
 }
 
 if [[ -n "$BASH_VERSION" ]]; then

@@ -21,9 +21,9 @@
   helper = osxkeychain
 
 [alias]
-  promote = ~/bin/git-promote
-  wtf     = ~/bin/git-wtf
-  rank-contributers = ~/bin/git-rank-contributers
+  ;promote = ~/bin/git-promote
+  ;wtf     = ~/bin/git-wtf
+  ;rank-contributers = ~/bin/git-rank-contributers
 
   co = checkout
   c  = commit
@@ -34,6 +34,7 @@
   fpull = "!f() { git fetch --all && git pull $@; }; f"
   push-local = "!f() { local target=$1; shift; git push . HEAD:$target $@; }; f"
 
+  ; checkout to new branch with tracking auto-enabled
   cb = "!f() { local target=$1; git checkout -b $1; git branch -u origin/$1; }; f"
 
   # Diffs
