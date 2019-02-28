@@ -27,8 +27,10 @@ if command -v fzf 2>&1 > /dev/null; then
 
   if command -v fasd &>/dev/null; then
     function cdp {
-      #fasd_cd -d "$(fasd -d | fzf --tiebreak=index --tac | grep -Eo '/.*$')"
-      fasd_cd -d "$(fasd -d | fzf --tiebreak=index --tac --preview-window=bottom:1 --preview='(cd "$(echo {} | grep -Eo "/.*$")" && cat ./$(git rev-parse --show-cdup)/.git/HEAD)' | grep -Eo '/.*$')"
+      local result
+      result="$(fasd -dl | fzf --tiebreak=index --tac --preview-window=bottom:1 --preview='(cd {} && cat ./$(git rev-parse --show-cdup)/.git/HEAD)')"
+      [[ -n "$result" ]] || return 1
+      fasd_cd -d "$result"
     }
 
     function v {
