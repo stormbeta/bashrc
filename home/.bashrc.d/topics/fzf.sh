@@ -17,8 +17,10 @@ if command -v fzf 2>&1 > /dev/null; then
   fi
 
   function vf {
+    local query
+    [[ $# -gt 0 ]] && query="--query=$1 --select-1"
     local result
-    result=$(fzf --preview="cat {}" --preview-window=top:25)
+    result=$(fzf --preview="cat {}" --preview-window=top:25 $query)
     [[ -n "$result" ]] || return 1
     # Ensure result is in history for up-arrow completion
     history -r && history -s vim "$result"
@@ -27,23 +29,24 @@ if command -v fzf 2>&1 > /dev/null; then
 
   if command -v fasd &>/dev/null; then
     function cdp {
+      local query
+      [[ $# -gt 0 ]] && query="--query=$1 --select-1"
       local result
-      result="$(fasd -dl | fzf --tiebreak=index --tac --preview-window=bottom:1 --preview='(cd {} && cat ./$(git rev-parse --show-cdup)/.git/HEAD)')"
+      # TODO: Might want to make this smarter so that it only matches git repos?
+      result="$(fasd -dl | fzf --tiebreak=index --tac --preview-window=bottom:1 --preview='(cd {} && cat ./$(git rev-parse --show-cdup)/.git/HEAD)' $query)"
       [[ -n "$result" ]] || return 1
       fasd_cd -d "$result"
     }
 
     function v {
-      if [[ $# -lt 1 ]]; then
-        local result
-        result="$(fasd -fl | fzf --tiebreak=index --tac --preview='cat {}' --preview-window=up:25)"
-        [[ -n "$result" ]] || return 1
-        # Ensure result is in history for up-arrow completion
-        history -r && history -s v "$result"
-        vim "$result"
-      else
-        vim "$@"
-      fi
+      local query
+      [[ $# -gt 0 ]] && query="--query=$1 --select-1"
+      local result
+      result="$(fasd -fl | fzf --tiebreak=index --tac --preview='cat {}' --preview-window=up:25 $query)"
+      [[ -n "$result" ]] || return 1
+      # Ensure result is in history for up-arrow completion
+      history -r && history -s v "$result"
+      vim "$result"
     }
   else
     _log-warn "fasd not found, 'v' fzf shortcut disabled"
