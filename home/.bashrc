@@ -45,12 +45,12 @@ function sourced {
 source "${HOME}/.bashrc.d/path-manip.sh"
 source "${HOME}/.bashrc.d/utils.sh"
 
-# tab completion
-sourced completion
-
 path-prepend "${HOME}/bin"
 
 source_platform
+# tab completion
+sourced completion
+
 sourced topics
 
 path-prepend /usr/local/bin
