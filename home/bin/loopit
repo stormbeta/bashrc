@@ -15,6 +15,8 @@
 if [[ "$#" -eq 1 ]]; then
   chmod +x "$(realpath "$1")"
   set -- "$@" "$(realpath "$1")"
+else
+  batch='-o'
 fi
 
 files=()
@@ -25,4 +27,4 @@ done
 
 # NOTE: -o is required to workaround issues with some utilities that
 #       behave strangely in the presence of stdin not being a tty
-fswatch "${files[@]}" | xargs -n1 -I{} -o /usr/bin/env bash -c "${@}"
+fswatch $batch "${files[@]}" | xargs -n1 -I{} -o /usr/bin/env bash -c "${@}"

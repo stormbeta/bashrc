@@ -1,5 +1,10 @@
 # fuzzy-finder + fasd utils
 
+# NOTE: these methods should all follow the same basic pattern:
+# 1. If the user aborts from fzf, the function should return non-zero immediately
+# 2. If the result would normally be ran as an interactive command, make sure it's added to the shell history as if ran the normal way
+# 3. If passed an argument, it should be used as the query to fzf, and fzf should auto-select it if it's the only match
+
 #These are pointless if fzf doesn't exist
 if command -v fzf 2>&1 > /dev/null; then
   if command -v rg &>/dev/null; then
@@ -28,6 +33,28 @@ if command -v fzf 2>&1 > /dev/null; then
   }
 
   if command -v fasd &>/dev/null; then
+    # Fuzzy match from shell history and execute it
+    function hst {
+      local query
+      [[ $# -gt 0 ]] && query="--query=$1 --select-1"
+      # NOTE: bash-specific
+      local result
+      result="$(history | fzf --tiebreak=index $query | sed -E 's/^[0-9]+ +//g')"
+      [[ -n "$result" ]] || return 1
+      history -r && history -s "$result"
+      eval $result
+    }
+
+    # fuzzy cd to subdirectories
+    function cf {
+      local query
+      [[ $# -gt 0 ]] && query="--query=$1 --select-1"
+      local result
+      result="$(find . -type d | fzf $query)"
+      [[ -n "$result" ]] || return 1
+      fasd_cd -d "$(realpath "$result")"
+    }
+
     function cdp {
       local query
       [[ $# -gt 0 ]] && query="--query=$1 --select-1"

@@ -45,8 +45,6 @@ function sourced {
 source "${HOME}/.bashrc.d/path-manip.sh"
 source "${HOME}/.bashrc.d/utils.sh"
 
-path-prepend "${HOME}/bin"
-
 source_platform
 # tab completion
 sourced completion
@@ -54,6 +52,7 @@ sourced completion
 sourced topics
 
 path-prepend /usr/local/bin
+path-prepend "${HOME}/bin"
 
 # FASD support
 command -v fasd &>/dev/null && eval "$(fasd --init auto)"
