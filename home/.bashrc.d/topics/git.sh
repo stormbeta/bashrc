@@ -53,6 +53,13 @@ function git-lastauthor {
   done
 }
 
+function gh-clone {
+  GIT_COMMITTER_EMAIL='stormbeta@gmail.com' \
+    GIT_AUTHOR_EMAIL='stormbeta@gmail.com' \
+    git clone "git@github.com:$1.git" "$1"
+  cd "$1"
+}
+
 alias gpf='git fetch --all && git pull --rebase || git pull --ff-only'
 alias gfp='gpf'
 alias gh="GIT_COMMITTER_EMAIL='stormbeta@gmail.com' GIT_AUTHOR_EMAIL='stormbeta@gmail.com' git"

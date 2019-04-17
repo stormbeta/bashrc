@@ -23,7 +23,7 @@ VALIDATE_PROFILE="$AWS_PROFILE"
 MFA_TOKEN="$1"
 USERNAME="${USER:-$2}"
 echo "Authenticating as ${USERNAME}"
-HOURS=24
+HOURS=36
 DURATION=$((( HOURS * 3600 )))
 
 function generate-creds {
