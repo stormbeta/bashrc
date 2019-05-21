@@ -1,5 +1,20 @@
 # fuzzy-finder + fasd utils
 
+# cdp
+# Jump to any directory you've previously cd'd into based on fuzzy matching as-you-type,
+# prioritizes by recency and frequency of access. Extremely useful
+# to jump between projects and directories quickly, think of it as the turbo
+# version of zsh's `d` command
+# Bonus: displays current git branch (if any) of target dir at bottom of screen
+
+# vf / v
+# Open file in vim via fuzzy-matching. `v` is global, `vf` is local directory tree only
+# Ensures that actual open command is recorded in shell history
+# Bonus: Displays preview of file contents at top of screen as-you-type
+
+# cf
+# Jump to directory in local tree via fuzzy matching
+
 # NOTE: these methods should all follow the same basic pattern:
 # 1. If the user aborts from fzf, the function should return non-zero immediately
 # 2. If the result would normally be ran as an interactive command, make sure it's added to the shell history as if ran the normal way
