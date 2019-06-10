@@ -54,6 +54,7 @@ function git-lastauthor {
 }
 
 function gh-clone {
+  cd "${HOME}/github"
   GIT_COMMITTER_EMAIL='stormbeta@gmail.com' \
     GIT_AUTHOR_EMAIL='stormbeta@gmail.com' \
     git clone "git@github.com:$1.git" "$1"
