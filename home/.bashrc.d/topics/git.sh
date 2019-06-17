@@ -5,6 +5,7 @@ else
   hostname=$(hostname -f)
 fi
 
+# cd relative to nearest git root
 function gcd {
   if command -v git &> /dev/null; then
     local STATUS=$(git status 2>/dev/null)
@@ -14,6 +15,11 @@ function gcd {
     local dir="./$( command git rev-parse --show-cdup )/${1}"
     cd "${dir}"
   fi
+}
+
+# Fancy git color log
+function glc {
+  git log --graph --full-history --all --color --pretty=format:"%x1b[31m%h%x09%x1b[32m%d%x1b[0m%x20%s" "$@"
 }
 
 function _git_cd {
