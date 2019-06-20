@@ -19,7 +19,7 @@ alias bat='bat --theme GitHub'
 
 if command -v nvim &>/dev/null; then
   alias vim='nvim -p'
-  alias v='nvim -p'
+  #alias v='nvim -p'
   alias n='nvim -p'
 else
   alias v='vim'

@@ -67,6 +67,36 @@ function gh-clone {
   cd "$1"
 }
 
+function gr-clone {
+  git clone "ssh://gerrit/$1" $1
+}
+
 alias gpf='git fetch --all && git pull --rebase || git pull --ff-only'
 alias gfp='gpf'
 alias gh="GIT_COMMITTER_EMAIL='stormbeta@gmail.com' GIT_AUTHOR_EMAIL='stormbeta@gmail.com' git"
+
+# Gitlab-specific
+# NOTE: clone expects ssh config named 'gitlab' to work
+function gl-clone {
+  cd "${HOME}/ping"
+  local project_path="$1"
+  shift 1
+  git clone "ssh://gitlab/${project_path}" "$project_path" "$@"
+  cd "$project_path"
+}
+
+# Gitlab shortcuts for opening project pages
+# NOTE: expects GITLAB_URL and GITLAB_TOKEN to be defined
+if [[ -d "${HOME}/.secret/gitlab" ]]; then
+  source "${HOME}/.secret/gitlab"
+  function gitlab-api {
+    local path="$(echo "$*" | sed -E "s/(\?|$)/\?private_token=${GITLAB_TOKEN}\&/")"
+    echo "$(git config --get remote.origin.url | sed -E "s|/|\%2F|g;s|(git@)?gitlab[^:]+:|https://${GITLAB_URL}/api/v4/projects/|;s/\.git$//")${path}"
+  }
+  alias glme='open -a Firefox "$(curl -s "$(gitlab-api "/merge_requests?source_branch=$(git rev-parse --abbrev-ref HEAD)")" | jq -r ".[].web_url")"'
+  function gitlab-url {
+    git config --get remote.origin.url | sed -E "s|(git@)?gitlab[^:]+:|https://${GITLAB_URL}/|;s/\.git$//"
+  }
+  alias glo='open -a Firefox "$(gitlab-url)"'
+  alias glm='open -a Firefox "$(gitlab-url)/merge_requests"'
+fi
