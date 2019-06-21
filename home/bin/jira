@@ -1,0 +1,89 @@
+#!/usr/bin/env bash
+
+function jira-get {
+  curl -s -u "${USER}:${JIRA_TOKEN}" "${JIRA_URL}/rest/api/2/${1}" "$@" | tee "/tmp/${1//\//.}.json"
+}
+
+function jira-issue {
+  jira-get "issue/$1"
+}
+
+function jira-issue-pp {
+  jira-issue "$1" | jq '"\\e[1m\\e[31m" + .key + " " + .fields.summary, "\n\\e[0m\\e[35m" + .fields.description + "\\e[0m\n", (.fields.comment.comments[] | select(.author.name != "gitlab") | "---", "\\e[1m" + .author.displayName + "\\e[0m \\e[2m" + .created + "\\e[0m", "\\e[32m" + .body + "\\e[0m")' -r
+}
+
+function jira-open-tickets {
+  jira-get "search?jql=assignee=${USER}+and+status+not+in+(Done,Closed,Resolved)" | \
+    jq -r --arg jira_url "$JIRA_URL" '.issues[] | "\\e[1m" + .key + "\\e[0m: " + .fields.summary, "  "+$jira_url+"/browse/" + .key + "\n"'
+}
+
+function render {
+  echo -e "$@"
+}
+
+function log {
+  echo -e "$@" 1>&2
+}
+
+function gitlab-commit-urls {
+  local ticket="$1"
+  jira-issue "$ticket" \
+    | jq '.fields.comment.comments[] | select(.author.name=="gitlab") | .body' -r \
+    | grep -Po "${GITLAB_URL}[/a-zA-Z0-9-]+/commit/[a-f0-9]+"
+}
+
+function gitlab-commit-map {
+  local ticket="$1"
+  gitlab-commit-urls "$ticket" \
+    | sed -E "s|${GITLAB_URL}/||" \
+    | sed -E 's|(.*)/commit/([0-9a-f]+)|{"\1": "\2"}|' \
+    | jq -s '. | reduce (.[] | to_entries | .[]) as $item ({}; .[$item|.key] += [$item|.value])'
+}
+
+function gitlab-project-map {
+  local ticket="$1"
+  local commit_map="$(gitlab-commit-map "$ticket")"
+  for project in $(jq -r '.|keys|.[]' <<< "$commit_map"); do
+    local by_name="${GITLAB_URL}/api/v4/projects/${project//\//%2F}/merge_requests?search=${ticket}&in=title"
+    curl -s "${by_name}&private_token=${GITLAB_TOKEN}" | jq .[]
+    for commit in $(jq -r --arg project "$project" '.[$project][]' <<< "$commit_map"); do
+      local by_commit="${GITLAB_URL}/api/v4/projects/${project//\//%2F}/repository/commits/${commit}/merge_requests"
+      curl -s "${by_commit}?private_token=${GITLAB_TOKEN}" | jq .[]
+    done
+  done
+}
+
+function gitlab-project-mrs {
+  local ticket="$1"
+  gitlab-project-map "$ticket" \
+    | jq -rs '. | unique_by(.id) | .[] | "\\e[1m"+.title+"\\e[0m", .web_url'
+}
+
+function usage {
+  log "Usage:"
+  log "  i|issue TICKET"
+  log "    Pretty prints ticket summary+comments + gitlab MRs"
+  log "  t|tickets"
+  log "    List open tickets for current user"
+}
+
+action="$1"
+shift 1
+
+case $action in
+  i|issue)
+    render "$(jira-issue-pp "$1")"
+    echo -e "\n=== Merge Requests ===\n"
+    render "$(gitlab-project-mrs "$1")"
+    ;;
+  t|tickets)
+    render "$(jira-open-tickets)"
+    ;;
+  g|gitlab)
+    render "$(gitlab-project-mrs "$1")"
+    ;;
+  *)
+    usage "$@"
+    exit 1
+    ;;
+esac
