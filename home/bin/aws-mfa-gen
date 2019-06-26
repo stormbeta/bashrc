@@ -48,6 +48,9 @@ function generate-creds {
   fi
   read -r access_key_id secret_access_key session_token <<< "$sts_response"
 
+  # NOTE: if using any tools based on AWS's golang SDK, you'll need to set
+  #       AWS_SDK_LOAD_CONFIG or they won't work properly with profiles
+
   if [[ -n "$access_key_id" ]]; then
     aws --profile "$MFA_PROFILE" configure set aws_access_key_id "$access_key_id"
     aws --profile "$MFA_PROFILE" configure set aws_secret_access_key "$secret_access_key"

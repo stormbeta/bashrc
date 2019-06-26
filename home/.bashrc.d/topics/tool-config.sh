@@ -18,6 +18,10 @@ if [[ -n "${GOPATH}" ]]; then
   add-path-if-exists "${GOPATH}/bin"
 fi
 
+# For some reason, the Go AWS SDK in particular refuses to load profiles and
+# credentials correctly without this, which includes terraform
+export AWS_SDK_LOAD_CONFIG=1
+
 # Android SDK paths
 (set-if-exists ANDROID_HOME "${HOME}/Library/Android/sdk" \
   || set-if-exists ANDROID_HOME "${HOME}/.android-sdk") \
