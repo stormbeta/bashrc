@@ -37,6 +37,7 @@ function kg {
   "$@" -oname | fzf --ansi # | "$@" -ojson "$(</dev/stdin)" | jq .
 }
 
+complete-alias kl kubectl --context=docker-for-desktop
 complete-alias kc kubectl
 complete-alias kcl kubectl logs -f
 complete-alias kj kubectl -o json

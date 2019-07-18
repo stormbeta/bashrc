@@ -94,6 +94,7 @@
 [diff]
   mnemonicprefix = true
   renames = copies
+  wsErrorHighlight = all
 
 [stash]
   showPatch = true
