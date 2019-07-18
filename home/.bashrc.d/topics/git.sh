@@ -85,18 +85,20 @@ function gl-clone {
   cd "$project_path"
 }
 
+function gitlab-url {
+  git config --get remote.origin.url | sed -E "s~((ssh://[^/]+/)|(git@)?gitlab[^:]+:)~~;s/\.git$//;s|/|%2F|g;s|^|${GITLAB_URL}/api/v4/projects/|"
+}
+
 # Gitlab shortcuts for opening project pages
 # NOTE: expects GITLAB_URL and GITLAB_TOKEN to be defined
-if [[ -d "${HOME}/.secret/gitlab" ]]; then
+if [[ -f "${HOME}/.secret/gitlab" ]]; then
   source "${HOME}/.secret/gitlab"
   function gitlab-api {
     local path="$(echo "$*" | sed -E "s/(\?|$)/\?private_token=${GITLAB_TOKEN}\&/")"
-    echo "$(git config --get remote.origin.url | sed -E "s|/|\%2F|g;s|(git@)?gitlab[^:]+:|https://${GITLAB_URL}/api/v4/projects/|;s/\.git$//")${path}"
+    echo "$(git config --get remote.origin.url | sed -E "s~((ssh://[^/]+/)|(git@)?gitlab[^:]+:)~~;s/\.git$//;s|/|%2F|g;s|^|${GITLAB_URL}/api/v4/projects/|")${path}"
+    #echo "$(git config --get remote.origin.url | sed -E "s|/|\%2F|g;s|(git@)?gitlab[^:]+:|${GITLAB_URL}/api/v4/projects/|;s/\.git$//")${path}"
   }
   alias glme='open -a Firefox "$(curl -s "$(gitlab-api "/merge_requests?source_branch=$(git rev-parse --abbrev-ref HEAD)")" | jq -r ".[].web_url")"'
-  function gitlab-url {
-    git config --get remote.origin.url | sed -E "s|(git@)?gitlab[^:]+:|https://${GITLAB_URL}/|;s/\.git$//"
-  }
   alias glo='open -a Firefox "$(gitlab-url)"'
   alias glm='open -a Firefox "$(gitlab-url)/merge_requests"'
 fi

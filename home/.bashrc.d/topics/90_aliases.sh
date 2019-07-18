@@ -51,7 +51,8 @@ complete-alias gco git checkout
 complete-alias dk docker
 #NOTE: Shadows GNU calculator "dc"
 complete-alias dc docker-compose
-complete-alias dr docker run -it --rm -v "\${PWD}:/local" -w /local
+complete-alias drv docker run -it --rm -v "\${PWD}:/local" -w /local
+complete-alias dr docker run -it --rm -v "\${PWD}:/local"
 
 # Typical watch alias, perserves alias expansion
 alias ww='watch --color -n 1 '
