@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # Change git author information if I am at work.
 if [[ "${PLATFORM}" == "cygwin" ]]; then
   hostname="${COMPUTERNAME}.${USERDNSDOMAIN}"
@@ -82,7 +83,9 @@ function gl-clone {
   local project_path="$1"
   shift 1
   git clone "ssh://gitlab/${project_path}" "$project_path" "$@"
+  local result=$?
   cd "$project_path"
+  [[ $? -eq 128 ]] && (git fetch --all && git pull)
 }
 
 function gitlab-url {

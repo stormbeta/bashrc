@@ -16,6 +16,7 @@ path-prepend /usr/local/opt/coreutils/libexec/gnubin
 path-prepend /usr/local/opt/coreutils/libexec/gnuman MANPATH
 path-prepend /usr/local/opt/gnu-sed/libexec/gnubin
 path-prepend /usr/local/opt/grep/libexec/gnubin
+path-prepend /Applications/KeePassXC.app/Contents/MacOS
 
 # Stuff for brew.
 path-prepend /usr/local/bin

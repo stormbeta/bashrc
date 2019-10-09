@@ -24,14 +24,19 @@ fi
 export AWS_SDK_LOAD_CONFIG=1
 
 # Android SDK paths
-(set-if-exists ANDROID_HOME "${HOME}/Library/Android/sdk" \
-  || set-if-exists ANDROID_HOME "${HOME}/.android-sdk") \
-  && add-path-if-exists "${ANDROID_HOME}/platform-tools"
+#(set-if-exists ANDROID_HOME "${HOME}/Library/Android/sdk" \
+  #|| set-if-exists ANDROID_HOME "${HOME}/.android-sdk") \
+  #&& add-path-if-exists "${ANDROID_HOME}/platform-tools"
 
 # Google Cloud SDK setup
 # TODO: is there a standard place the SDK is installed to besides home?
-if [[ -d "${HOME}/google-cloud-sdk" ]]; then
-  export GOOGLE_CLOUD_HOME="${HOME}/google-cloud-sdk"
-  source-if-exists "${GOOGLE_CLOUD_HOME}/path.${SHELL_NAME}.inc"
-  source-if-exists "${GOOGLE_CLOUD_HOME}/completion.${SHELL_NAME}.inc"
+#if [[ -d "${HOME}/google-cloud-sdk" ]]; then
+  #export GOOGLE_CLOUD_HOME="${HOME}/google-cloud-sdk"
+  #source-if-exists "${GOOGLE_CLOUD_HOME}/path.${SHELL_NAME}.inc"
+  #source-if-exists "${GOOGLE_CLOUD_HOME}/completion.${SHELL_NAME}.inc"
+#fi
+
+# kubectl krew plugin manager
+if [[ -d "${HOME}/.krew/bin" ]]; then
+  export PATH="${HOME}/.krew/bin:${PATH}"
 fi
