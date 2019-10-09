@@ -69,7 +69,11 @@ function gh-clone {
 }
 
 function gr-clone {
-  git clone "ssh://gerrit/$1" $1
+  cd "${HOME}/ping"
+  local project_path="$1"
+  shift 1
+  git clone "ssh://gerrit/${project_path}" "$project_path" "$@"
+  cd "$project_path"
 }
 
 alias gpf='git fetch --all && git pull --rebase || git pull --ff-only'
