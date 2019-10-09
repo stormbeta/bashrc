@@ -14,13 +14,12 @@ if ! command -v aws >/dev/null; then
 fi
 
 # Profile that contains static creds
-#STATIC_PROFILE=''
+STATIC_PROFILE='ping-iam'
 # Profile to set dynamic creds on
-#MFA_PROFILE=''
+MFA_PROFILE='ping-mfa'
 # Profile to validate creds with
 VALIDATE_PROFILE="$AWS_PROFILE"
 
-MFA_TOKEN="$1"
 USERNAME="${USER:-$2}"
 echo "Authenticating as ${USERNAME}"
 HOURS=36
