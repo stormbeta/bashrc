@@ -77,3 +77,7 @@ source-if-exists "${HOME}/.travis/travis.sh"
 if [[ -f "${HOME}/backup/env" ]]; then
   source "${HOME}/backup/env"
 fi
+
+# Tillerless helm plugin defaults to using Secret storage for some reason
+export HELM_TILLER_STORAGE=configmap
+alias vault=/usr/local/bin/vault-wrapper

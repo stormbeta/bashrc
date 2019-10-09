@@ -9,12 +9,23 @@ function jira-issue {
 }
 
 function jira-issue-pp {
+  # TODO: Include ticket status in output
   jira-issue "$1" | jq '"\\e[1m\\e[31m" + .key + " " + .fields.summary, "\n\\e[0m\\e[35m" + .fields.description + "\\e[0m\n", (.fields.comment.comments[] | select(.author.name != "gitlab") | "---", "\\e[1m" + .author.displayName + "\\e[0m \\e[2m" + .created + "\\e[0m", "\\e[32m" + .body + "\\e[0m")' -r
 }
 
 function jira-open-tickets {
   jira-get "search?jql=assignee=${USER}+and+status+not+in+(Done,Closed,Resolved)" | \
-    jq -r --arg jira_url "$JIRA_URL" '.issues[] | "\\e[1m" + .key + "\\e[0m: " + .fields.summary, "  "+$jira_url+"/browse/" + .key + "\n"'
+    jq -r --argjson icons "$priority" \
+          --arg jira_url "$JIRA_URL" \
+          '.issues[] | "\\e[1m" + .key + "\\e[0m: " + .fields.summary, $icons[.fields.priority.name] + "  "+$jira_url+"/browse/" + .key + "\n"'
+}
+
+function jira-ticket-search {
+  jira-get "search?jql=text+~+${1}+and+project+in+(DEVHELP,DT)"
+}
+
+function jira-ticket-summary-pp {
+  echo "$(</dev/stdin)" | jq '.issues[] | "\\e[1m" + .key + "\\e[0m: \t" + .fields.summary' -r
 }
 
 function render {
