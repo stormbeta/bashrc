@@ -103,6 +103,24 @@ function bt-reset {
   sudo kextload -b com.apple.iokit.BroadcomBluetoothHostControllerUSBTransport
 }
 
+function idea {
+  local pth="${1:-.}"
+  shift 1
+  open -a IntelliJ\ IDEA "$pth" "$@"
+}
+
+function charm {
+  local pth="${1:-.}"
+  shift 1
+  open -a PyCharm "$pth" "$@"
+}
+
+function mine {
+  local pth="${1:-.}"
+  shift 1
+  open -a RubyMine "$pth" "$@"
+}
+
 # Colemak aliases
 # Credit: https://stackoverflow.com/questions/21597804/determine-os-x-keyboard-layout-input-source-in-the-terminal-a-script
 export KEYBOARD_LAYOUT="$(defaults read ~/Library/Preferences/com.apple.HIToolbox.plist  AppleSelectedInputSources |  egrep -w 'KeyboardLayout Name' | gsed -E 's/^.+ = \"?([^\"]+)\"?;$/\1/')"

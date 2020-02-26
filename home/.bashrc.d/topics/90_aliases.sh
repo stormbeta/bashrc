@@ -58,6 +58,8 @@ complete-alias dr docker run -it --rm -v "\${PWD}:/local"
 alias ww='watch --color -n 1 '
 alias watch='watch --color '
 
+alias gr='gron | grep --color=auto -P'
+
 function vimnote {
   #TODO: Tab completion
   #TODO: Should this update the timestamp in place?
