@@ -22,8 +22,9 @@ case $PLATFORM in
     function upgrade-all {
       command -v apt-get &>/dev/null && sudo apt-get update && sudo apt-get upgrade
       command -v yum &> /dev/null && sudo yum update && sudo yum upgrade
-      command -v npm &> /dev/null && npm update npm -g && npm update -g
-      command -v gem &> /dev/null && sudo gem update
+      command -v brew &> /dev/null && brew upgrade
+      #command -v npm &> /dev/null && npm update npm -g && npm update -g
+      #command -v gem &> /dev/null && sudo gem update
     }
     ;;
   *)
