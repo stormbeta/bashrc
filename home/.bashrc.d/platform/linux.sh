@@ -4,6 +4,10 @@
 # make less more friendly for non-text input files, see lesspipe(1)
 eval "$(SHELL=/bin/sh lesspipe)"
 
+if [[ -e "/home/linuxbrew/.linuxbrew/bin" ]]; then
+  path-prepend "/home/linuxbrew/.linuxbrew/bin"
+fi
+
 function setjava {
   local jvmpath="$(find /usr/lib/jvm -maxdepth 1 -type d -name *-$1-*)"
   export JAVA_HOME="${jvmpath}"
