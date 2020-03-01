@@ -66,7 +66,14 @@ fi
 command -v brew &> /dev/null && brew_prefix=$( brew --prefix )
 # GRC colorizes nifty unix tools all over the place
 if command -v grc &>/dev/null && [[ -n "${brew_prefix}" ]]; then
-  source ${brew_prefix}/etc/grc.bashrc
+  case "$SHELL_NAME" in
+    zsh)
+      source ${brew_prefix}/etc/grc.zsh
+      ;;
+    *)
+      source ${brew_prefix}/etc/grc.bashrc
+      ;;
+  esac
 fi
 
 # Suspend all system activity and sleep - not the same as normal sleep

@@ -86,7 +86,7 @@ function gl-clone {
 }
 
 function gitlab-url {
-  git config --get remote.origin.url | sed -E "s~((ssh://[^/]+/)|(git@)?gitlab[^:]+:)~~;s/\.git$//;s|/|%2F|g;s|^|${GITLAB_URL}/api/v4/projects/|"
+  git config --get remote.origin.url | sed -E "s~((ssh://[^/]+/)|(git@)?gitlab[^:]+:)~~;s/\.git$//;s|^|${GITLAB_URL}/|"
 }
 
 # Gitlab shortcuts for opening project pages

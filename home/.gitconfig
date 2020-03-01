@@ -73,6 +73,9 @@
   changed = yellow
   untracked = red
 
+[color "diff"]
+  whitespace = red reverse
+
 [merge]
   # Include summaries of merged commits in newly created merge commit messages
   tool = vimdiff

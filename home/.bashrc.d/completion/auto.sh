@@ -25,3 +25,8 @@ fi
 if command -v kubectl &>/dev/null; then
   source <(kubectl completion "$SHELL_NAME")
 fi
+
+#AWS CLI
+if command -v aws_completer &>/dev/null; then
+  complete -C "$(command -v aws_completer)" aws
+fi
