@@ -9,7 +9,8 @@ fi
 # NodeJS Version Manager
 if [[ -f "${HOME}/.nvm/nvm.sh" ]]; then
   export NVM_DIR="${HOME}/.nvm"
-  . "$NVM_DIR/nvm.sh"  # This loads nvm
+  # nvm insists on spamming spurious warnings on load
+  . "$NVM_DIR/nvm.sh" &> /dev/null
 fi
 
 # Golang setup

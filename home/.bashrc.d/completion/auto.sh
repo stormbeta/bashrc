@@ -19,7 +19,7 @@ if command -v minikube &>/dev/null; then
 fi
 
 if command -v helm &>/dev/null; then
-  source <(helm completion "$SHELL_NAME")
+  source <(helm completion "$SHELL_NAME" &>/dev/null)
 fi
 
 if command -v kubectl &>/dev/null; then
