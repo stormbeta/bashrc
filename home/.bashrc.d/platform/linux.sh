@@ -13,6 +13,11 @@ function setjava {
   export JAVA_HOME="${jvmpath}"
 }
 
+if [[ -e "$(brew --prefix)/opt/openjdk" ]]; then
+  path-prepend "$(brew --prefix)/opt/openjdk/bin"
+fi
+set-if-exists GROOVY_HOME "$(brew --prefix)/opt/groovy/libexec"
+
 if [[ -f /usr/share/bash-completion/completions/git ]]; then
   source /usr/share/bash-completion/completions/git
 fi
