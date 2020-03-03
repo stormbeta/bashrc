@@ -35,6 +35,7 @@ alias ec='emacsclient -c'
 alias sshx='ssh -X'
 alias less='less -R'
 alias cj='cd ..'
+alias cp='rsync -ah --progress'
 
 # Completion-aware aliases
 complete-alias tf terraform
