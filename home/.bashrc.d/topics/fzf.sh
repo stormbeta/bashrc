@@ -54,7 +54,7 @@ if command -v fzf 2>&1 > /dev/null; then
       [[ $# -gt 0 ]] && query="--query=$1 --select-1"
       # NOTE: bash-specific
       local result
-      result="$(history | fzf --tac --tiebreak=index $query | sed -E 's/^\s+[0-9]+ +//g')"
+      result="$(history | fzf --tac --tiebreak=index $query | sed -E 's/^(\s+)?[0-9]+ +//g')"
       [[ -n "$result" ]] || return 1
       echo -e "\033[A\033[F"
       echo "$result"
