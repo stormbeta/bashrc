@@ -22,3 +22,4 @@ alias vlow='VAULT_ADDR="https://nonprod-vault-us-west-2.awscloud.pingidentity.ne
 alias vlo='VAULT_ADDR="https://nonprod-vault-us-east-2.awscloud.pingidentity.net" vault-wrapper'
 alias vlt='VAULT_ADDR="https://nonprod-vault-us-east-2.awscloud.pingidentity.net" vault-wrapper'
 alias vla='VAULT_ADDR="https://prod-vault-ap-southeast-2.awscloud.pingidentity.net" vault-wrapper'
+alias vl='VAULT_ADDR="http://localhost:8200" VAULT_TOKEN="vault-token" vault-wrapper'
