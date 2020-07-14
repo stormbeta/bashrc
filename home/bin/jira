@@ -1,81 +1,7 @@
 #!/usr/bin/env bash
 
-source ~/.secret/jira
-
-priority='{
-  "Extra Spicy": "🔥",
-  "Medium Spicy": "🌶️",
-  "Mild": "🍅"
-}'
-
-function jira-get {
-  curl -s -u "${USER}:${JIRA_TOKEN}" "${JIRA_URL}/rest/api/2/${1}" "$@" | tee "/tmp/${1//\//.}.json"
-}
-
-function jira-issue {
-  jira-get "issue/$1"
-}
-
-function jira-issue-pp {
-  # TODO: Include ticket status in output
-  jira-issue "$1" | jq '"\\e[1m\\e[31m" + .key + " " + .fields.summary, "\n\\e[0m\\e[35m" + .fields.description + "\\e[0m\n", (.fields.comment.comments[] | select(.author.name != "gitlab") | "---", "\\e[1m" + .author.displayName + "\\e[0m \\e[2m" + .created + "\\e[0m", "\\e[32m" + .body + "\\e[0m")' -r
-}
-
-function jira-open-tickets {
-  jira-get "search?jql=assignee=${USER}+and+status+not+in+(Done,Closed,Resolved)" | \
-    jq -r --argjson icons "$priority" \
-          --arg jira_url "$JIRA_URL" \
-          '.issues[] | "\\e[1m" + .key + "\\e[0m: " + .fields.summary, $icons[.fields.priority.name] + "  "+$jira_url+"/browse/" + .key + "\n"'
-}
-
-function jira-ticket-search {
-  jira-get "search?jql=text+~+${1}+and+project+in+(DEVHELP,DT)"
-}
-
-function jira-ticket-summary-pp {
-  echo "$(</dev/stdin)" | jq '.issues[] | "\\e[1m" + .key + "\\e[0m: \t" + .fields.summary' -r
-}
-
-function render {
-  echo -e "$@"
-}
-
 function log {
   echo -e "$@" 1>&2
-}
-
-function gitlab-commit-urls {
-  local ticket="$1"
-  jira-issue "$ticket" \
-    | jq '.fields.comment.comments[] | select(.author.name=="gitlab") | .body' -r \
-    | grep -Po "${GITLAB_URL}[/a-zA-Z0-9-]+/commit/[a-f0-9]+"
-}
-
-function gitlab-commit-map {
-  local ticket="$1"
-  gitlab-commit-urls "$ticket" \
-    | sed -E "s|${GITLAB_URL}/||" \
-    | sed -E 's|(.*)/commit/([0-9a-f]+)|{"\1": "\2"}|' \
-    | jq -s '. | reduce (.[] | to_entries | .[]) as $item ({}; .[$item|.key] += [$item|.value])'
-}
-
-function gitlab-project-map {
-  local ticket="$1"
-  local commit_map="$(gitlab-commit-map "$ticket")"
-  for project in $(jq -r '.|keys|.[]' <<< "$commit_map"); do
-    local by_name="${GITLAB_URL}/api/v4/projects/${project//\//%2F}/merge_requests?search=${ticket}&in=title"
-    curl -s "${by_name}&private_token=${GITLAB_TOKEN}" | jq .[]
-    for commit in $(jq -r --arg project "$project" '.[$project][]' <<< "$commit_map"); do
-      local by_commit="${GITLAB_URL}/api/v4/projects/${project//\//%2F}/repository/commits/${commit}/merge_requests"
-      curl -s "${by_commit}?private_token=${GITLAB_TOKEN}" | jq .[]
-    done
-  done
-}
-
-function gitlab-project-mrs {
-  local ticket="$1"
-  gitlab-project-map "$ticket" \
-    | jq -rs '. | unique_by(.id) | .[] | "\\e[1m"+.title+"\\e[0m", .web_url'
 }
 
 function usage {
@@ -84,25 +10,216 @@ function usage {
   log "    Pretty prints ticket summary+comments + gitlab MRs"
   log "  t|tickets"
   log "    List open tickets for current user"
+  log "  o|open TICKET"
+  log "    Open TICKET in Firefox"
+  log "  a|assign TICKET"
+  log "    Assign ticket to self"
+  log "  add TICKET"
+  log "    Add TICKET to current DevTools sprint"
 }
+
+# Required:
+# export JIRA_TOKEN='<JIRA_PASSWORD>'
+source ~/.secret/jira
+
+export JIRA_URL='https://jira.pingidentity.com'
+
+DEVTOOLS_BOARD_ID=562
+DEVTOOLS_BOARD_INITIAL_INDEX=50
+
+if [[ ! -e "${HOME}/.jq/jira.jq" ]]; then
+  mkdir -p "${HOME}/.jq"
+  cat << "EOF" > "${HOME}/.jq/jira.jq"
+def statusColors(name):
+  {
+    "blue-gray": "\\u001b[38;5;67m",
+    "yellow": "\\u001b[38;5;178m",
+    "green": "\\u001b[38;5;35m"
+  }[name];
+
+def bold: "\\e[1m" + .;
+def color(id): "\\e[" + id + "m" + .;
+
+def coloredStatus: statusColors(.fields.status.statusCategory.colorName) + (.fields.status.name | ascii_upcase);
+
+def sprintExtract2: if (.customfield_11341 | length) > 0 then ([.customfield_11341[] | sub(".*\\[(?<x>[^]]+)]$"; "\(.x)") | split(",") | [.[]|split("=") | {name: .[0], value: .[1]}] | from_entries]) else [] end;
+
+def jiraExtract(field): if (.[field] | length) > 0 then ([.[field][] | sub(".*\\[(?<x>[^]]+)]$"; "\(.x)") | split(",") | [.[]|split("=") | {name: .[0], value: .[1]}] | from_entries]) else [] end;
+
+def maybeBold(cond): if cond then ("\\e[1m" + .) else . end;
+
+def maybeFormat(format; cond): if cond then (format + .) else . end;
+EOF
+fi
+
+# NOTE: chilli emoji is single-width, others are double-width for some reason
+priority='{
+  "Extra Spicy": "🔥",
+  "Medium Spicy": "🌶️ ",
+  "Mild": "🍅"
+}'
+
+function status-color-json {
+  cat <<EOF
+{
+  "blue-gray": "\\u001b[38;5;67m",
+  "yellow": "\\u001b[38;5;178m",
+  "green": "\\u001b[38;5;35m"
+}
+EOF
+}
+
+function render {
+  echo -e "$(</dev/stdin)"
+}
+
+function jira-get {
+  # tee to /tmp/ for debugging purposes
+  curl -s -u "${USER}:${JIRA_TOKEN}" "${JIRA_URL}/rest/api/2/${1}" "$@" | tee "/tmp/${1//\//.}.json" \
+    | jq -R '. as $raw | try fromjson catch $raw'
+}
+
+function jql-search {
+  jira-get "search" \
+    --header "Content-Type: application/json" \
+    --data "$(jq -nc --arg query "$*" '{"jql": $query}')"
+}
+
+function jira-agile-get {
+  curl -s -u "${USER}:${JIRA_TOKEN}" "${JIRA_URL}/rest/agile/1.0/${1}" "$@" | tee "/tmp/agile-${1//\//.}.json"
+}
+
+function get-jira-sprint {
+  local board="$DEVTOOLS_BOARD_ID"
+  local min_index="$DEVTOOLS_BOARD_INITIAL_INDEX"
+  jira-agile-get "board/${board}/sprint?startAt=${min_index}" | jq '[.values[] | {name: .name, id: .id} | select(.name|startswith("DevTools Sprint"))][-1]'
+}
+
+function jira-agile-add {
+  local board="$DEVTOOLS_BOARD_ID"
+  local min_index="$DEVTOOLS_BOARD_INITIAL_INDEX"
+  local current_sprint="$(jira-agile-get "board/${board}/sprint?startAt=${min_index}" | jq '[.values[] | {name: .name, id: .id} | select(.name|startswith("DevTools Sprint"))][-1].id')"
+  echo "CURRENT_SPRINT_ID: $current_sprint" 1>&2
+  local payload="$(jq --arg issues "$1" -nc '{"issues": ($issues|split(",")| map(.|ascii_upcase))}')"
+  curl -s -u "${USER}:${JIRA_TOKEN}" \
+    --header 'Content-Type: application/json' \
+    "${JIRA_URL}/rest/agile/1.0/sprint/${current_sprint}/issue" \
+    --data "$payload"
+}
+
+function jira-issue {
+  jira-get "issue/$1"
+}
+
+function jira-issue-sprint {
+  jq '.fields.customfield_11341[0] | sub(".*\\[(?<x>[^]]+)]$"; "\(.x)") | split(",") | [.[]|split("=") | {name: .[0], value: .[1]}] | from_entries'
+}
+
+function jira-issue-pp {
+  local issue="$(jira-issue "$1")"
+  jq --argjson colors "$(status-color-json)" \
+     --arg url "${JIRA_URL}/browse/$1" \
+       'include "jira";
+         (.key + ": [" | color("31") | bold)
+         + coloredStatus + "\\e[1m\\e[31m] " + .fields.summary, "\\e[0m" + $url +
+       "\n\n\\e[35m" + .fields.description + "\\e[0m\n",
+       (.fields.comment.comments[] |
+         select(.author.name != "gitlab") |
+           "---", "\\e[1m" +
+                  .author.displayName +
+                  "\\e[0m \\e[2m" + .created + "\\e[0m",
+           "\\e[32m" + .body + "\\e[0m"
+       )' -r <<< "$issue"
+}
+
+function prettify-search-results {
+  jq -r --argjson icons "$priority" \
+        --argjson colors "$(status-color-json)" \
+        --arg jira_url "$JIRA_URL" \
+        'include "jira"; .issues[] | .fields as $f |
+         "\\e[1m" + .key + " [" +
+           coloredStatus + "\\e[0m\\e[1m] \\e[0m" +
+             (.fields.summary | maybeBold($f | sprintExtract2 | any(.state == "ACTIVE"))) + "\\e[0m",
+           $icons[.fields.priority.name] + "  "+$jira_url+"/browse/" + .key + "\n"' \
+    | render
+}
+
+# TODO: This is just a dirty copy of jira-open-tickets with modified query
+function jira-open-tickets-sprint {
+  local board="$DEVTOOLS_BOARD_ID"
+  local min_index="$DEVTOOLS_BOARD_INITIAL_INDEX"
+  local current_sprint="$(jira-agile-get "board/${board}/sprint?startAt=${min_index}" | jq '[.values[] | {name: .name, id: .id} | select(.name|startswith("DevTools Sprint"))][-1].id')"
+  jql-search "assignee = ${USER} and Sprint = ${current_sprint}" \
+    | prettify-search-results
+}
+
+function compact-search-results {
+  jq --argjson colors "$(status-color-json)" \
+    '.issues[] | "\\e[1m" + .key + "\\e[0m: \t" + .fields.summary' -r \
+    | render
+}
+
+function jira-assign-ticket-self {
+  local issue="$1"
+  if [[ -z "$issue" ]]; then
+    log "Must specify issue to assign!"
+    exit 1
+  fi
+  local payload="$(jq -n --arg assignee "$USER" '{"fields":{"assignee":{"name": $assignee}}}')"
+  # TODO: Convert to jira-get, rename jira-get => jira-api
+  curl -s -u "${USER}:${JIRA_TOKEN}" \
+    --request PUT \
+    --header 'Content-Type: application/json' \
+    "${JIRA_URL}/rest/api/2/issue/${issue}" \
+    --data "$payload"
+}
+
+if [[ $# -lt 1 ]]; then
+  usage
+  exit 1
+fi
 
 action="$1"
 shift 1
 
 case $action in
   i|issue)
-    render "$(jira-issue-pp "$1")"
-    echo -e "\n=== Merge Requests ===\n"
-    render "$(gitlab-project-mrs "$1")"
+    jira-issue-pp "$1" | render
+    ;;
+  o|open)
+    open -a Firefox "${JIRA_URL}/browse/$1"
+    ;;
+  c|commit)
+    jql-search "project = DT and assignee = ${USER} and statusCategory not in (done) and \"Commit Date\" is not EMPTY" \
+      | prettify-search-results
     ;;
   t|tickets)
-    render "$(jira-open-tickets)"
+    jql-search "assignee = ${USER} and statusCategory not in (done)" \
+      | prettify-search-results
     ;;
-  g|gitlab)
-    render "$(gitlab-project-mrs "$1")"
+  a|assign)
+    jira-assign-ticket-self "$1"
+    ;;
+  ts)
+    jira-open-tickets-sprint
+    ;;
+  s|search)
+    jql-search "text ~ ${1} and project in (DEVHELP,DT)" \
+      | compact-search-results
+    ;;
+  sprint)
+    get-jira-sprint
+    ;;
+  add)
+    jira-agile-add "$1"
+    ;;
+  d|devhelp)
+    # Yes, the component names really have leading spaces, don't ask me why
+    jql-search "project = DEVHELP and component in (\"  DevTools\",\" Other\") and text ~ \"$1\" order by created desc" \
+      | compact-search-results
     ;;
   *)
-    usage "$@"
-    exit 1
+    # Default to rendering first arg as ticket
+    jira-issue-pp "$action" | render
     ;;
 esac
