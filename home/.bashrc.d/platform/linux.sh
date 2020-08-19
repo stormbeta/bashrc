@@ -45,3 +45,4 @@ function ssh-fix {
 
 alias pbpaste='xclip -selection clipboard -o'
 alias pbcopy='xclip -selection clipboard'
+alias open=xdg-open
