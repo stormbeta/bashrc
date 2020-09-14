@@ -60,6 +60,7 @@ alias ww='watch --color -n 1 '
 alias watch='watch --color '
 
 alias gr='gron | grep --color=auto -P'
+alias rga='rg --no-ignore --no-hidden'
 
 function vimnote {
   #TODO: Tab completion

@@ -6,7 +6,7 @@
   user = stormbeta
 
 [web]
-  browser = google-chrome
+  browser = firefox
 
 [push]
   default = current
@@ -24,17 +24,13 @@
   helper = osxkeychain
 
 [alias]
-  ;promote = ~/bin/git-promote
-  ;wtf     = ~/bin/git-wtf
-  ;rank-contributers = ~/bin/git-rank-contributers
-
   co = checkout
   c  = commit
   st = status -sb
   br = branch
   pr = pull --rebase
+  rebase = rebase -i
 
-  fpull = "!f() { git fetch --all && git pull $@; }; f"
   push-local = "!f() { local target=$1; shift; git push . HEAD:$target $@; }; f"
 
   ; checkout to new branch with tracking auto-enabled
@@ -49,9 +45,6 @@
   plog  = log --graph --pretty=format:'%Cred%h%Creset %an: %s - %Creset %C(yellow)%d%Creset %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
   logme = log --author='Jason.*Miller'
   blog  = log --graph --decorate --pretty=oneline --abbrev-commit
-
-  # Safeguards
-  rebase = rebase -i
 
   # Tools from mklich
   oldest-ancestor = !bash -c 'diff -u <(git rev-list --first-parent \"${1:-master}\") <(git rev-list --first-parent \"${2:-HEAD}\") | sed -ne \"s/^ //p\" | head -1' -

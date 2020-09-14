@@ -89,6 +89,13 @@ alias standby='/System/Library/CoreServices/Menu\ Extras/user.menu/Contents/Reso
 # TODO: Deprecate?
 #complete -A hostname 'ssh-osx-tmux'
 
+if [[ -d /usr/local/Cellar/openjdk ]]; then
+  if [[ ! -e /usr/local/opt/openjdk/libexec/openjdk.jdk ]]; then
+    sudo ln -sfn /usr/local/opt/openjdk/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk.jdk
+  fi
+  path-prepend "/usr/local/opt/openjdk/bin"
+fi
+
 # TODO: This no longer works well when using OpenJDK via AdoptOpenJDK
 function setjava {
   local javahome="$(/usr/libexec/java_home -v $1)"
@@ -135,3 +142,11 @@ export KEYBOARD_LAYOUT="$(defaults read ~/Library/Preferences/com.apple.HIToolbo
 if [[ "${KEYBOARD_LAYOUT}" == 'Colemak' ]]; then
   alias cs=cd
 fi
+
+# Open in default web browser
+function web {
+  local handlers="${HOME}/Library/Preferences/com.apple.LaunchServices/com.apple.launchservices.secure.plist"
+  local browser="$(plutil -convert json "$handlers" -o - | \
+    jq -r '.LSHandlers[] | select(.LSHandlerURLScheme == "https") | .LSHandlerRoleAll | {"org.mozilla.firefox": "Firefox", "com.google.chrome": "Google Chrome"}[.] // "Safari"')"
+  open -a "$browser" "$@"
+}

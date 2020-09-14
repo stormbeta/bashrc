@@ -78,6 +78,15 @@ if [[ -f "${HOME}/backup/env" ]]; then
   source "${HOME}/backup/env"
 fi
 
+# Python 2.7 is EOL and needs to die
+alias python=python3
+
 # Tillerless helm plugin defaults to using Secret storage for some reason
 export HELM_TILLER_STORAGE=configmap
 alias vault=/usr/local/bin/vault-wrapper
+
+# Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
+export PATH="$PATH:$HOME/.rvm/bin"
+
+# Force upgrade protocol as it errors out otherwise
+alias cqlsh='cqlsh --cqlversion=3.4.4'

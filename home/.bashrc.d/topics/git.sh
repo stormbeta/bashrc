@@ -89,7 +89,7 @@ function gl-clone {
   git clone "ssh://gitlab/${project_path}" "$project_path" "$@"
   local result=$?
   cd "$project_path"
-  [[ $? -eq 128 ]] && (git fetch --all && git pull)
+  [[ $? -eq 128 ]] && (git fetch --all && git pull --rebase)
 }
 
 function gitlab-url {
