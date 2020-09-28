@@ -40,19 +40,20 @@ function kg {
 complete-alias kl kubectl --context=docker-for-desktop
 complete-alias kc kubectl
 complete-alias kcl kubectl logs -f
-complete-alias kj kubectl -o json
-complete-alias kd kubectl --namespace default
-complete-alias kp kubectl --namespace ping-services
 complete-alias mk minikube
 complete-alias kx kubectx
 complete-alias kxec kubectl -it exec
 
 complete-alias kl kubectl --server=127.0.0.1:8001
 complete-alias klp kubectl --server=127.0.0.1:8002
+complete-alias kpw kubectl --server=127.0.0.1:8012
 complete-alias klc kubectl --server=127.0.0.1:8003
 complete-alias klt kubectl --server=127.0.0.1:8004
 complete-alias klo kubectl --server=127.0.0.1:8005
 complete-alias kle kubectl --server=127.0.0.1:8007
 complete-alias kll kubectl --server=127.0.0.1:8008
-complete-alias klow kubectl --server=127.0.0.1:8009
+complete-alias kow kubectl --server=127.0.0.1:8009
 complete-alias kla kubectl --server=127.0.0.1:8010
+
+# DEPRECATED
+complete-alias klow kubectl --server=127.0.0.1:8009

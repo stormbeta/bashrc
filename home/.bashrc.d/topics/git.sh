@@ -60,6 +60,7 @@ function git-lastauthor {
   done
 }
 
+# Clone project from github and jump to directory
 function gh-clone {
   cd "${HOME}/github"
   GIT_COMMITTER_EMAIL='stormbeta@gmail.com' \
@@ -68,6 +69,7 @@ function gh-clone {
   cd "$1"
 }
 
+# Clone project from gerrit (based on ssh config) and jump to directory
 function gr-clone {
   cd "${HOME}/ping"
   local project_path="$1"
@@ -116,16 +118,16 @@ if [[ -f "${HOME}/.secret/gitlab" ]]; then
 
   # Find project by name, and use fzf to narrow if multiple matches found
   function gl-project {
-    #set -eo pipefail
     local results="$(curl -H "PRIVATE-TOKEN: $GITLAB_TOKEN" "${GITLAB_URL}/api/v4/search?scope=projects&search=${1}" -s)"
     local project="$(echo "$results" | jq --arg project "$1" '.[] | select(.path == $project) | .path_with_namespace' -r)"
     if [[ -z "$project" ]]; then
       project="$(echo "$results" | jq --arg project "$1" '.[] | select(.path_with_namespace | contains($project)) | .path_with_namespace' -r)"
     fi
     echo "$project" | fzf -1
-    #set +e
   }
 
+  # Clone project from gitlab based on fuzzy match from name passed to function, then jump to
+  # directory and pull any changes
   function glc {
     gl-clone "$(gl-project "$1")"
     git fetch --all && git co master && git pull
@@ -140,3 +142,22 @@ if [[ -f "${HOME}/.secret/gitlab" ]]; then
     fi
   }
 fi
+
+function glp {
+  # TODO: Make it default target to default branch, allow title override
+  local title="$(git log -1 --pretty=%s)"
+  local description="$(git log -1 --pretty=%b)"
+  git log -1 --pretty=%B
+  read -p "Push and create MR? [Y/n]" -n 1 -r prompt
+  echo "$1 $prompt"
+  if [[ ! $prompt =~ ^[Yy]$ ]]; then
+    echo "Aborting!" 1>&2
+    return 1
+  else
+    if [[ -n "$description" ]]; then
+      git push -o merge_request.create -o merge_request.target="${1:-master}" -o merge_request.title="${title}" -o merge_request.description="${description}"
+    else
+      git push -o merge_request.create -o merge_request.target="${1:-master}" -o merge_request.title="${title}"
+    fi
+  fi
+}
