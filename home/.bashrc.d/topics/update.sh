@@ -5,7 +5,7 @@ case $PLATFORM in
     function upgrade-all {
       # Upgrade homebrew, os patches, and appstore applications (requires mas)
       if command -v brew &>/dev/null; then
-        brew upgrade && brew cask upgrade
+        brew upgrade && brew upgrade --cask
         if command -v mas &>/dev/null; then
           mas upgrade
         else
