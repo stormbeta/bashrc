@@ -1,8 +1,26 @@
 #!/usr/bin/env bash
 
+# TODO: Should I wrap this with python instead for better code organization? Would lose portability.
+#       The bulk of the work is being done by jq/fzf, so we'd want to shell out for those anyways
+
 function log {
   echo -e "$@" 1>&2
 }
+
+function confirm {
+  local prompt="$1"
+  echo -n "${prompt} (y/N) " 1>&2
+  read -n 1 result
+  log ''
+  if [[ "$result" != 'y' ]]; then
+    exit 1
+  fi
+}
+
+# TODO: Ideas
+# Using the status updater as an example, consider making the entire thing interactive-fuzzy
+# Make `jira t` the default behavior for a quick glance
+# And everything else allows selecting options from the list
 
 function usage {
   log "Usage:"
@@ -10,10 +28,16 @@ function usage {
   log "    Pretty prints ticket summary+comments + gitlab MRs"
   log "  t|tickets"
   log "    List open tickets for current user"
-  log "  o|open TICKET"
-  log "    Open TICKET in Firefox"
+  log "  u|transition TICKET [STATUS]"
+  log "    Transition issue to target status - defaults to 'in progress', asks for confirmation"
   log "  a|assign TICKET"
   log "    Assign ticket to self"
+  log "  o|open TICKET"
+  log "    Open TICKET in Firefox"
+  log "  c|commits"
+  log "    List open commits for the current DevTools sprint"
+  log "  s|search QUERY"
+  log "    Search DT and devtools DEVHELP tickets for QUERY"
   log "  add TICKET"
   log "    Add TICKET to current DevTools sprint"
 }
@@ -29,57 +53,111 @@ DEVTOOLS_BOARD_INITIAL_INDEX=50
 
 if [[ ! -e "${HOME}/.jq/jira.jq" ]]; then
   mkdir -p "${HOME}/.jq"
-  cat << "EOF" > "${HOME}/.jq/jira.jq"
-def statusColors(name):
+fi
+
+# jq function library
+cat << "EOF" > "${HOME}/.jq/jira.jq"
+# NOTE: if there's no parameter, input is expected to be piped in in standard jq fashion
+
+# Requires 256-color terminal support
+# @name: corresponds to STATUS.statusCategory.colorName field from JIRA
+# NOTE: "Blocked" in JIRA web is blue, yet the API clearly indicates it's color category is yellow :/
+def jiraIssueColor(name):
   {
     "blue-gray": "\\u001b[38;5;67m",
     "yellow": "\\u001b[38;5;178m",
     "green": "\\u001b[38;5;35m"
   }[name];
 
-def bold: "\\e[1m" + .;
-def color(id): "\\e[" + id + "m" + .;
+def bold: "\\e[1m" + . + "\\e[0m";
+def color(id): "\\e[" + (id|tostring) + "m" + . + "\\e[0m";
+def color256(id): "\\u001b[38;5;" + (id|tostring) + "m" + . + "\\u001b[0m";
+def background256(id): "\\u001b[48;5;" + (id|tostring) + "m" + . + "\\u001b[0m";
 
-def coloredStatus: statusColors(.fields.status.statusCategory.colorName) + (.fields.status.name | ascii_upcase);
+def maybeBold(condition): if condition then ("\\e[1m" + . + "\\e[0m") else . end;
 
+def maybeColor(id; condition): if condition then color(id) else . end;
+
+# @assignee => ISSUE.fields.assignee
+def jiraAssignee(assignee): (assignee.displayName // "\\u001b[0mUNASSIGNED" | if assignee.key==env.USER then (color256("230") | background256("115")) else (color256("230") | background256("250")) end);
+
+# @status: JIRA status json blob
+def jiraPrettyStatus(status): jiraIssueColor(status.statusCategory.colorName) + (status.name | ascii_upcase | bold);
+
+# Hack to extract JIRA's embedded serialization of sprint metadata. Reliably accurate for sprint
+# extraction, but doesn't generalize to all embedded JIRA serialization fields
+# Example output:
+# [{
+#    "id": "2376",
+#    "rapidViewId": "562",
+#    "state": "ACTIVE",
+#    "name": "DevTools Sprint 55",
+#    "startDate": "2021-02-17T12:08:00.000-07:00",
+#    "endDate": "2021-03-03T12:08:00.000-07:00",
+#    "completeDate": "<null>",
+#    "activatedDate": "2021-02-17T12:08:33.666-07:00",
+#    "sequence": "2259",
+#    "goal": ""
+# }]
 def sprintExtract2: if (.customfield_11341 | length) > 0 then ([.customfield_11341[] | sub(".*\\[(?<x>[^]]+)]$"; "\(.x)") | split(",") | [.[]|split("=") | {name: .[0], value: .[1]}] | from_entries]) else [] end;
 
-def jiraExtract(field): if (.[field] | length) > 0 then ([.[field][] | sub(".*\\[(?<x>[^]]+)]$"; "\(.x)") | split(",") | [.[]|split("=") | {name: .[0], value: .[1]}] | from_entries]) else [] end;
-
-def maybeBold(cond): if cond then ("\\e[1m" + .) else . end;
-
-def maybeFormat(format; cond): if cond then (format + .) else . end;
-EOF
-fi
+# @issue: JIRA full issue json blob
+# Pretty-prints one-line status for ticket, bolds summary if it's in current sprint
+def jiraPrettySummary(issue): .fields as $f |
+  (.key + " [" | bold) +
+  jiraPrettyStatus(.fields.status) + ("] "| bold) +
+  (.fields.summary | maybeBold($f | sprintExtract2 | any(.state == "ACTIVE")));
 
 # NOTE: chilli emoji is single-width, others are double-width for some reason
-priority='{
+def jiraDevtoolsIcons: {
   "Extra Spicy": "🔥",
   "Medium Spicy": "🌶️ ",
   "Mild": "🍅"
-}'
+};
 
-function status-color-json {
-  cat <<EOF
-{
-  "blue-gray": "\\u001b[38;5;67m",
-  "yellow": "\\u001b[38;5;178m",
-  "green": "\\u001b[38;5;35m"
-}
+# NOTE: only use this with -Rr flags!
+# Ensure jq prints server response if something goes wrong instead of swallowing errors that aren't json
+def jsonElseRaw: . as $raw | try fromjson catch $raw;
 EOF
-}
 
+# Evaluate ANSI color escape codes
 function render {
   echo -e "$(</dev/stdin)"
 }
 
 function jira-get {
   # tee to /tmp/ for debugging purposes
-  curl -s -u "${USER}:${JIRA_TOKEN}" "${JIRA_URL}/rest/api/2/${1}" "$@" | tee "/tmp/${1//\//.}.json" \
-    | jq -R '. as $raw | try fromjson catch $raw'
+  curl --silent \
+    --user "${USER}:${JIRA_TOKEN}" \
+    "${JIRA_URL}/rest/api/2/${1}" "$@" \
+    | tee "/tmp/${1//\//.}.json" \
+    | jq -Rr 'include "jira"; jsonElseRaw'
+}
+
+function jira-post {
+  # tee to /tmp/ for debugging purposes
+  curl --silent \
+    --request POST --post302 \
+    -H "Content-Type: application/json" \
+    --user "${USER}:${JIRA_TOKEN}" \
+    "${JIRA_URL}/rest/api/2/${1}" "$@" \
+    | tee "/tmp/${1//\//.}.json" \
+    | jq -Rr 'include "jira"; jsonElseRaw'
+}
+
+function jira-put {
+  # tee to /tmp/ for debugging purposes
+  curl --silent \
+    --request PUT \
+    -H "Content-Type: application/json" \
+    --user "${USER}:${JIRA_TOKEN}" \
+    "${JIRA_URL}/rest/api/2/${1}" "$@" \
+    | tee "/tmp/${1//\//.}.json" \
+    | jq -Rr 'include "jira"; jsonElseRaw'
 }
 
 function jql-search {
+  # -nc = blank input, compact output
   jira-get "search" \
     --header "Content-Type: application/json" \
     --data "$(jq -nc --arg query "$*" '{"jql": $query}')"
@@ -100,6 +178,7 @@ function jira-agile-add {
   local min_index="$DEVTOOLS_BOARD_INITIAL_INDEX"
   local current_sprint="$(jira-agile-get "board/${board}/sprint?startAt=${min_index}" | jq '[.values[] | {name: .name, id: .id} | select(.name|startswith("DevTools Sprint"))][-1].id')"
   echo "CURRENT_SPRINT_ID: $current_sprint" 1>&2
+  # -nc = blank input, compact output
   local payload="$(jq --arg issues "$1" -nc '{"issues": ($issues|split(",")| map(.|ascii_upcase))}')"
   curl -s -u "${USER}:${JIRA_TOKEN}" \
     --header 'Content-Type: application/json' \
@@ -111,40 +190,44 @@ function jira-issue {
   jira-get "issue/$1"
 }
 
-function jira-issue-sprint {
-  jq '.fields.customfield_11341[0] | sub(".*\\[(?<x>[^]]+)]$"; "\(.x)") | split(",") | [.[]|split("=") | {name: .[0], value: .[1]}] | from_entries'
-}
-
-function jira-issue-pp {
+function jira-issue-pretty {
   local issue="$(jira-issue "$1")"
-  jq --argjson colors "$(status-color-json)" \
-     --arg url "${JIRA_URL}/browse/$1" \
+  jq --arg url "${JIRA_URL}/browse/$1" \
        'include "jira";
-         (.key + ": [" | color("31") | bold)
-         + coloredStatus + "\\e[1m\\e[31m] " + .fields.summary, "\\e[0m" + $url +
-       "\n\n\\e[35m" + .fields.description + "\\e[0m\n",
-       (.fields.comment.comments[] |
-         select(.author.name != "gitlab") |
-           "---", "\\e[1m" +
-                  .author.displayName +
-                  "\\e[0m \\e[2m" + .created + "\\e[0m",
-           "\\e[32m" + .body + "\\e[0m"
-       )' -r <<< "$issue"
+         ((.key + ": [") | bold | color("31")) + jiraPrettyStatus(.fields.status) + (("] " + .fields.summary) | bold | color("31")),
+         $url + "\n\n" + (.fields.description | color("35")) + "\n",
+         (.fields.comment.comments[] |
+           select(.author.name != "gitlab") | "---",
+           (.author.displayName | bold) + " " + (.created | color("2")),
+           (.body | color("32"))
+         )' \
+     -r <<< "$issue"
 }
 
 function prettify-search-results {
-  jq -r --argjson icons "$priority" \
-        --argjson colors "$(status-color-json)" \
-        --arg jira_url "$JIRA_URL" \
-        'include "jira"; .issues[] | .fields as $f |
-         "\\e[1m" + .key + " [" +
-           coloredStatus + "\\e[0m\\e[1m] \\e[0m" +
-             (.fields.summary | maybeBold($f | sprintExtract2 | any(.state == "ACTIVE"))) + "\\e[0m",
-           $icons[.fields.priority.name] + "  "+$jira_url+"/browse/" + .key + "\n"' \
+  jq -r --arg jira_url "$JIRA_URL" \
+        'include "jira";
+          .issues[] | jiraPrettySummary(.),
+          jiraDevtoolsIcons[.fields.priority.name] + "  " + ($jira_url + "/browse/" + .key) + "\n"' \
     | render
 }
 
-# TODO: This is just a dirty copy of jira-open-tickets with modified query
+function detailed-search-results {
+  # TODO: Sort also in priority order, not just grouping by status
+  jq -r --arg jira_url "$JIRA_URL" \
+        'include "jira";
+          .issues | sort_by(.fields.status.name) | reverse | .[] | jiraPrettySummary(.),
+          jiraDevtoolsIcons[.fields.priority.name] + " " + ($jira_url + "/browse/" + .key),
+          .fields.assignee as $assignee
+            | "  " + jiraAssignee($assignee) + " " +
+            (.fields.customfield_22540
+              | map(maybeColor("35"; contains("Committed")))
+              | join(", ")
+            ),
+          ""' \
+    | render
+}
+
 function jira-open-tickets-sprint {
   local board="$DEVTOOLS_BOARD_ID"
   local min_index="$DEVTOOLS_BOARD_INITIAL_INDEX"
@@ -154,9 +237,10 @@ function jira-open-tickets-sprint {
 }
 
 function compact-search-results {
-  jq --argjson colors "$(status-color-json)" \
-    '.issues[] | "\\e[1m" + .key + "\\e[0m: \t" + .fields.summary' -r \
-    | render
+  jq 'include "jira";
+    .issues | map(jiraPrettySummary(.))[]' -r | render
+  #jq 'include "jira";
+      #.issues[] | (.key|bold) + ": \t" + .fields.summary' -r | render
 }
 
 function jira-assign-ticket-self {
@@ -165,13 +249,60 @@ function jira-assign-ticket-self {
     log "Must specify issue to assign!"
     exit 1
   fi
-  local payload="$(jq -n --arg assignee "$USER" '{"fields":{"assignee":{"name": $assignee}}}')"
-  # TODO: Convert to jira-get, rename jira-get => jira-api
-  curl -s -u "${USER}:${JIRA_TOKEN}" \
-    --request PUT \
-    --header 'Content-Type: application/json' \
-    "${JIRA_URL}/rest/api/2/issue/${issue}" \
-    --data "$payload"
+  jira-put "issue/${issue}" --data \
+    "$(jq -Rc '{"fields": {"assignee": {"name": .}}}' <<< "$USER")"
+}
+
+function jira-update-status {
+  # Ultra fancy transition selector, with COLORS
+  local issue="$1"
+  local pattern="${2:-}" # OPTIONAL
+  local issue_json="$(jira-issue "$issue")"
+  local status="$(jq -r '.fields.status.name' <<< "$issue_json")"
+  local summary="$(jq -r '"\\e[0m" + .fields.summary' <<< "$issue_json")"
+  local pretty_ticket_summary="$(jq -r 'include "jira"; jiraPrettySummary(.)' <<< "$issue_json")"
+  local transitions="$(jira-get "issue/${issue}/transitions")"
+  local target="$(jq -r \
+    'include "jira"; .transitions | map(jiraPrettyStatus(.to))[]' <<< "$transitions" \
+    | render \
+    | fzf --ansi \
+      --preview="echo -e '$pretty_ticket_summary'" \
+      --preview-window=down:1 \
+      --prompt="Transition: " \
+      --cycle \
+      --select-1 \
+      --query="${pattern}")"
+  local transition="$(jq --arg target "$target" '.transitions[] | select(.to.name | test("^"+$target+"$";"i"))' <<< "$transitions")"
+  if [[ -z "$transition" ]]; then
+    log "No action - available transitions for ${issue}:"
+    log "$(jq -r --arg status "$status" '.transitions | map("* " + $status + " => " + .to.name + " (via " + .name + ")")[]' <<< "$transitions")"
+    exit 2
+  fi
+  local transition_id="$(jq -r '.id' <<< "$transition")"
+  local transition_name="$(jq -r '.name' <<< "$transition")"
+  confirm "Move ${issue} to '${target}' via '${transition_name}'?"
+  jira-post "issue/${issue}/transitions" \
+    --data "{\"transition\": \"${transition_id}\"}"
+  sleep 1
+  # Print new summary line to indicate transition was successful
+  jira-issue "$issue" | jq -r 'include "jira"; jiraPrettySummary(.)'
+}
+
+function jira-add-comment {
+  local issue="$1"
+  jira-issue "$issue" | jq -r 'include "jira"; jiraPrettySummary(.)' | render
+  echo -n 'Comment: '
+  read comment
+  confirm "Post comment?:"
+  jira-post "issue/${issue}/comment" \
+            --data "$(jq -Rc '{"body": .}' <<< "$comment")"
+  sleep 1
+  # Print most recent comment to verify successful post
+  jira-get "issue/${issue}" \
+    | jq -r 'include "jira"; (.fields.comment.comments[-1] |
+           (.author.displayName | bold) + " " + (.created | color("2")),
+           (.body | color("32")))' \
+    | render
 }
 
 if [[ $# -lt 1 ]]; then
@@ -183,15 +314,22 @@ action="$1"
 shift 1
 
 case $action in
+  u|transition)
+    jira-update-status "$@" | render
+    ;;
   i|issue)
-    jira-issue-pp "$1" | render
+    jira-issue-pretty "$1" | render
     ;;
   o|open)
     open -a Firefox "${JIRA_URL}/browse/$1"
     ;;
-  c|commit)
-    jql-search "project = DT and assignee = ${USER} and statusCategory not in (done) and \"Commit Date\" is not EMPTY" \
-      | prettify-search-results
+  comment)
+    jira-add-comment "$1"
+    ;;
+  c|commits)
+    jql-search "project = DT and statusCategory not in (done) and \"Commit Date\" is not EMPTY" \
+      | detailed-search-results
+      #| prettify-search-results
     ;;
   t|tickets)
     jql-search "assignee = ${USER} and statusCategory not in (done)" \
@@ -204,8 +342,13 @@ case $action in
     jira-open-tickets-sprint
     ;;
   s|search)
-    jql-search "text ~ ${1} and project in (DEVHELP,DT)" \
-      | compact-search-results
+    # Yes, the component names really have leading spaces, don't ask me why
+    result="$(jql-search "(project = DT or (project = DEVHELP and component in (\"  DevTools\",\" Other\"))) and text ~ \"$1\" order by created desc" \
+      | compact-search-results \
+      | fzf --ansi | grep -Po -m 1 '^\w+-\d+')"
+    if [[ -n "$result" ]]; then
+      open -a Firefox "${JIRA_URL}/browse/${result}"
+    fi
     ;;
   sprint)
     get-jira-sprint
@@ -213,13 +356,8 @@ case $action in
   add)
     jira-agile-add "$1"
     ;;
-  d|devhelp)
-    # Yes, the component names really have leading spaces, don't ask me why
-    jql-search "project = DEVHELP and component in (\"  DevTools\",\" Other\") and text ~ \"$1\" order by created desc" \
-      | compact-search-results
-    ;;
   *)
     # Default to rendering first arg as ticket
-    jira-issue-pp "$action" | render
+    jira-issue-pretty "$action" | render
     ;;
 esac

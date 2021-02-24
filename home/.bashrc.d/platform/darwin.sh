@@ -22,6 +22,9 @@ path-prepend /Applications/KeePassXC.app/Contents/MacOS
 path-prepend /usr/local/bin
 path-append /usr/local/sbin
 
+# TODO: Why is this suddenly needed now? It was never necessary before
+#path-prepend /usr/local/Frameworks/Python.framework/Versions/Current/bin
+
 # Set GOROOT for brew-installed go if present
 command -v go >/dev/null && export GOROOT='/usr/local/opt/go/libexec'
 
