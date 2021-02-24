@@ -77,6 +77,10 @@ if command -v grc &>/dev/null && [[ -n "${brew_prefix}" ]]; then
   esac
 fi
 
+if [[ -e "$(brew --prefix nvm)/nvm.sh" ]]; then
+  source "$(brew --prefix nvm)/nvm.sh"
+fi
+
 # Suspend all system activity and sleep - not the same as normal sleep
 alias standby='/System/Library/CoreServices/Menu\ Extras/user.menu/Contents/Resources/CGSession -suspend'
 

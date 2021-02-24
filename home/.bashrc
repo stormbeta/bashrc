@@ -80,6 +80,7 @@ fi
 
 # Python 2.7 is EOL and needs to die
 alias python=python3
+alias pip3=pip
 
 # Tillerless helm plugin defaults to using Secret storage for some reason
 export HELM_TILLER_STORAGE=configmap

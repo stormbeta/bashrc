@@ -54,6 +54,4 @@ complete-alias kle kubectl --server=127.0.0.1:8007
 complete-alias kll kubectl --server=127.0.0.1:8008
 complete-alias kow kubectl --server=127.0.0.1:8009
 complete-alias kla kubectl --server=127.0.0.1:8010
-
-# DEPRECATED
 complete-alias klow kubectl --server=127.0.0.1:8009

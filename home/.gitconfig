@@ -23,6 +23,9 @@
 [credential]
   helper = osxkeychain
 
+[pull]
+  rebase = true
+
 [alias]
   co = checkout
   c  = commit
