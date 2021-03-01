@@ -29,20 +29,22 @@ function reload-kubeconfigs {
 
 reload-kubeconfigs
 
+# TODO: Unused?
 function k8sh {
   kubectl run -i --tty "$USER-shell-$RANDOM" --image="$1" --restart=Never -- sh
 }
 
+# TODO: Unused?
 function kg {
   "$@" -oname | fzf --ansi # | "$@" -ojson "$(</dev/stdin)" | jq .
 }
 
+# TODO: zsh support?
 complete-alias kl kubectl --context=docker-for-desktop
 complete-alias kc kubectl
 complete-alias kcl kubectl logs -f
 complete-alias kj kubectl -o json
 complete-alias kd kubectl --namespace default
-complete-alias kp kubectl --namespace ping-services
 complete-alias mk minikube
 complete-alias kx kubectx
 complete-alias kxec kubectl -it exec

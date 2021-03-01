@@ -19,7 +19,7 @@ function gcd {
 }
 
 # Fancy git color log
-function glc {
+function glog {
   git log --graph --full-history --all --color --pretty=format:"%x1b[31m%h%x09%x1b[32m%d%x1b[0m%x20%s" "$@"
 }
 
@@ -69,7 +69,7 @@ function gh-clone {
 }
 
 function gr-clone {
-  cd "${HOME}/ping"
+  cd "${HOME}/gerrit"
   local project_path="$1"
   shift 1
   git clone "ssh://gerrit/${project_path}" "$project_path" "$@"
@@ -80,10 +80,11 @@ alias gpf='git fetch --all && git pull --rebase || git pull --ff-only'
 alias gfp='gpf'
 alias gh="GIT_COMMITTER_EMAIL='stormbeta@gmail.com' GIT_AUTHOR_EMAIL='stormbeta@gmail.com' git"
 
-# Gitlab-specific
+# TODO: Fork this out into separate file
+# Internal Gitlab-specific
 # NOTE: clone expects ssh config named 'gitlab' to work
 function gl-clone {
-  cd "${HOME}/ping"
+  cd "${HOME}/gitlab"
   local project_path="$1"
   shift 1
   git clone "ssh://gitlab/${project_path}" "$project_path" "$@"

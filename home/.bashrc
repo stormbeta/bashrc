@@ -66,6 +66,7 @@ set-if-exists EDITOR "$(command -v vim)" \
 source "${HOME}/.bashrc.d/prompt.sh"
 
 #export RUST_SRC_PATH="/Users/jason.miller/git/hub/rust/src"
+export PATH="${HOME}/android-sdk/platform-tools:${PATH}"
 
 #eval "$(pyenv init -)"
 #eval "$(pyenv virtualenv-init -)"

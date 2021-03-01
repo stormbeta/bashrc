@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# TODO: Consider this deprecated, dns-heaven should fix all remaining macOS DNS issues
+
 # Helper script to hardwire k8s cluster api IPs to /etc/hosts as a buffer against DNS issues
 
 # IMPORTANT - add the following block to your /etc/hosts first!
