@@ -15,8 +15,6 @@
 if [[ "$#" -eq 1 ]]; then
   chmod +x "$(realpath "$1")"
   set -- "$@" "$(realpath "$1")"
-else
-  batch='-o'
 fi
 
 files=()
@@ -25,6 +23,9 @@ while [[ "$1" != "--" ]] && [[ "$#" -ne 1 ]]; do
   shift 1
 done
 
-# NOTE: -o is required to workaround issues with some utilities that
-#       behave strangely in the presence of stdin not being a tty
-fswatch $batch "${files[@]}" | xargs -n1 -I{} -o /usr/bin/env bash -c "${@}"
+while true; do
+  fswatch -1 "${files[@]}" &>/dev/null
+  echo '---' 1>&2
+  /usr/bin/env bash -c "${@}"
+  sleep 1
+done
