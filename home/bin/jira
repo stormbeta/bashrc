@@ -3,6 +3,9 @@
 # TODO: Should I wrap this with python instead for better code organization? Would lose portability.
 #       The bulk of the work is being done by jq/fzf, so we'd want to shell out for those anyways
 
+# TODO: Really need some kind of ticket-selector UI for faster operation
+#       Maybe use fzf's expect to trigger keybindings on entries?
+
 function log {
   echo -e "$@" 1>&2
 }
@@ -44,6 +47,7 @@ function usage {
 
 # Required:
 # export JIRA_TOKEN='<JIRA_PASSWORD>'
+# TODO: leverage macOS security keychain instead
 source ~/.secret/jira
 
 export JIRA_URL='https://jira.pingidentity.com'
@@ -220,10 +224,7 @@ function detailed-search-results {
           jiraDevtoolsIcons[.fields.priority.name] + " " + ($jira_url + "/browse/" + .key),
           .fields.assignee as $assignee
             | "  " + jiraAssignee($assignee) + " " +
-            (.fields.customfield_22540
-              | map(maybeColor("35"; contains("Committed")))
-              | join(", ")
-            ),
+            ((.fields.customfield_10143 | tostring) + " Story Points"),
           ""' \
     | render
 }
@@ -327,7 +328,9 @@ case $action in
     jira-add-comment "$1"
     ;;
   c|commits)
-    jql-search "project = DT and statusCategory not in (done) and \"Commit Date\" is not EMPTY" \
+    sprintId="$(get-jira-sprint | jq .id)"
+    echo "$sprintId" 1>&2
+    jql-search "project = DT and statusCategory not in (done) and Sprint = ${sprintId}" \
       | detailed-search-results
       #| prettify-search-results
     ;;
