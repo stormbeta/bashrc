@@ -34,12 +34,6 @@
   br = branch
   pr = pull --rebase
 
-  fpull = "!f() { git fetch --all && git pull $@; }; f"
-  push-local = "!f() { local target=$1; shift; git push . HEAD:$target $@; }; f"
-
-  ; checkout to new branch with tracking auto-enabled
-  cb = "!f() { local target=$1; git checkout -b $1; git branch -u origin/$1; }; f"
-
   # Diffs
   sdiff = diff --short-stat
   ndiff = diff --name-only
@@ -54,6 +48,7 @@
   rebase = rebase -i
 
   # Tools from mklich
+  # TODO: Delete? I don't really use these
   oldest-ancestor = !bash -c 'diff -u <(git rev-list --first-parent \"${1:-master}\") <(git rev-list --first-parent \"${2:-HEAD}\") | sed -ne \"s/^ //p\" | head -1' -
   diverges = !bash -c 'git rev-parse $(diff <(git log --pretty=oneline ${1}) <(git log --pretty=oneline ${2}) | tail -1 | cut -c 3-42)^'
 
@@ -95,6 +90,7 @@
   prompt = false
 
 [diff]
+  colorMoved = default
   mnemonicprefix = true
   renames = copies
   wsErrorHighlight = all
@@ -108,4 +104,16 @@
 [filter "lfs"]
   clean = git-lfs clean %f
   smudge = git-lfs smudge %f
-  required = true
+
+[pager]
+  diff = delta
+  log = delta
+  reflog = delta
+  show = delta required = true
+
+[delta]
+  syntax-theme = "Solarized (light)"
+  line-numbers = true
+
+[interactive]
+  diffFilter = delta --color-only
