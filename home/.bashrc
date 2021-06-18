@@ -2,11 +2,11 @@
 # interactively, don't do anything
 [ -z "${PS1}" ] && export TERM='xterm' && return
 
-#Enabled italics if supported
-#TODO: Find a better way to support this that doesn't break remote terminals
-export TERM='xterm-256color-italic'
-(tput -T xterm-256color-italic rev &> /dev/null)
-[[ $? -eq 3 ]] && export TERM='xterm-256color'
+# TODO: This doesn't appear to be needed on macOS, verify if still needed on linux
+#       Was originally used to force-enable italics on terminals that wouldn't use it otherwise
+#export TERM='xterm-256color-italic'
+#(tput -T xterm-256color-italic rev &> /dev/null)
+#[[ $? -eq 3 ]] && export TERM='xterm-256color'
 
 export SHELL_NAME
 if [[ -n "$BASH_VERSION" ]]; then
@@ -31,6 +31,7 @@ function source_platform {
     source "${platform_config}"
   fi
 }
+source_platform
 
 function sourced {
   local dir="${HOME}/.bashrc.d/$1"
@@ -40,27 +41,12 @@ function sourced {
     done
   fi
 }
-
-# Base utilities used by other config
-source "${HOME}/.bashrc.d/path-manip.sh"
-source "${HOME}/.bashrc.d/utils.sh"
-
-source_platform
 # tab completion
 sourced completion
-
 sourced topics
-
-path-prepend /usr/local/bin
-path-prepend "${HOME}/bin"
 
 # FASD support
 command -v fasd &>/dev/null && eval "$(fasd --init auto)"
-
-set-if-exists EDITOR "$(command -v vim)" \
-  || set-if-exists EDITOR "$(command -v vi)" \
-  || set-if-exists EDITOR "$(command -v nano)" \
-  || echo "WARNING: No editor found!"
 
 #Promptline
 source "${HOME}/.bashrc.d/prompt.sh"
@@ -75,10 +61,13 @@ export PATH="${HOME}/android-sdk/platform-tools:${PATH}"
 source-if-exists "${HOME}/.travis/travis.sh"
 
 # Workaround for some machine-specific variables
-if [[ -f "${HOME}/backup/env" ]]; then
-  source "${HOME}/backup/env"
-fi
+source-if-exists "${HOME}/backup/env"
 
-# Tillerless helm plugin defaults to using Secret storage for some reason
-export HELM_TILLER_STORAGE=configmap
-alias vault=/usr/local/bin/vault-wrapper
+source-if-exists "${HOME}/github/stormbeta/snippets/python/pyw/pyw.bashrc"
+
+# TODO: move to macOS-specific config
+source-if-exists "${HOME}/.iterm2_shell_integration.bash"
+add-path-if-exists "/usr/local/opt/qt@5/bin"
+
+add-path-if-exists "${HOME}/.rvm/bin"
+source-if-exists "${HOME}/.rvm/scripts/rvm"
