@@ -1,5 +1,8 @@
 # Compatible with bash and zsh
 
+# Utility methods for bashrc/zshrc/etc configuration
+# TODO: Split these out into separate homeschick repo?
+
 function _log-warn {
   local msg="[WARN]: $0: $*"
   echo "$(date) ${msg}" >> ~/.bash_warnings
@@ -18,7 +21,7 @@ add-path-if-exists() {
 }
 
 source-if-exists() {
-  [[ -e "$1" ]] && source "$1"
+  [[ -s "$1" ]] && source "$1"
 }
 
 # TODO: profile to see if this is actually useful
