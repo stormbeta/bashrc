@@ -1,10 +1,4 @@
 #!/usr/bin/env bash
-# Change git author information if I am at work.
-if [[ "${PLATFORM}" == "cygwin" ]]; then
-  hostname="${COMPUTERNAME}.${USERDNSDOMAIN}"
-else
-  hostname=$(hostname -f)
-fi
 
 # cd relative to nearest git root
 function gcd {
@@ -16,11 +10,6 @@ function gcd {
     local dir="./$( command git rev-parse --show-cdup )/${1}"
     cd "${dir}"
   fi
-}
-
-# Fancy git color log
-function glog {
-  git log --graph --full-history --all --color --pretty=format:"%x1b[31m%h%x09%x1b[32m%d%x1b[0m%x20%s" "$@"
 }
 
 function _git_cd {
@@ -68,17 +57,19 @@ function gh-clone {
   cd "$1"
 }
 
-function gr-clone {
-  cd "${HOME}/gerrit"
-  local project_path="$1"
-  shift 1
-  git clone "ssh://gerrit/${project_path}" "$project_path" "$@"
-  cd "$project_path"
+function gfp {
+  git fetch --all
+  local remote="$(git rev-parse --abbrev-ref HEAD@{upstream} 2>/dev/null)"
+  git log --pretty=oneline --abbrev-commit "HEAD..${remote}"
+  git pull --rebase || git pull --ff-only
 }
 
-alias gpf='git fetch --all && git pull --rebase || git pull --ff-only'
-alias gfp='gpf'
+alias gpf='gfp'
 alias gh="GIT_COMMITTER_EMAIL='stormbeta@gmail.com' GIT_AUTHOR_EMAIL='stormbeta@gmail.com' git"
+if [[ "$USER" != 'jasonmiller' ]]; then
+  GIT_COMMITTER_EMAIL='stormbeta@gmail.com'
+  GIT_AUTHOR_EMAIL='stormbeta@gmail.com'
+fi
 
 # TODO: Fork this out into separate file
 # Internal Gitlab-specific
@@ -97,16 +88,21 @@ function gitlab-url {
   git config --get remote.origin.url | sed -E "s~((ssh://[^/]+/)|(git@)?gitlab[^:]+:)~~;s/\.git$//;s|^|${GITLAB_URL}/|"
 }
 
-# Gitlab shortcuts for opening project pages
-# NOTE: expects GITLAB_URL and GITLAB_TOKEN to be defined
-if [[ -f "${HOME}/.secret/gitlab" ]]; then
-  source "${HOME}/.secret/gitlab"
-  function gitlab-api {
-    local path="$(echo "$*" | sed -E "s/(\?|$)/\?private_token=${GITLAB_TOKEN}\&/")"
-    echo "$(git config --get remote.origin.url | sed -E "s~((ssh://[^/]+/)|(git@)?gitlab[^:]+:)~~;s/\.git$//;s|/|%2F|g;s|^|${GITLAB_URL}/api/v4/projects/|")${path}"
-    #echo "$(git config --get remote.origin.url | sed -E "s|/|\%2F|g;s|(git@)?gitlab[^:]+:|${GITLAB_URL}/api/v4/projects/|;s/\.git$//")${path}"
-  }
-  alias glme='open -a Firefox "$(curl -s "$(gitlab-api "/merge_requests?source_branch=$(git rev-parse --abbrev-ref HEAD)")" | jq -r ".[].web_url")"'
-  alias glo='open -a Firefox "$(gitlab-url)"'
-  alias glm='open -a Firefox "$(gitlab-url)/merge_requests"'
-fi
+function glp {
+  # TODO: Make it default target to default branch, allow title override
+  local title="$(git log -1 --pretty=%s)"
+  local description="$(git log -1 --pretty=%b)"
+  git log -1 --pretty=%B
+  read -p "Push and create MR? [Y/n]" -n 1 -r prompt
+  echo "$1 $prompt"
+  if [[ ! $prompt =~ ^[Yy]$ ]]; then
+    echo "Aborting!" 1>&2
+    return 1
+  else
+    if [[ -n "$description" ]]; then
+      git push -o merge_request.create -o merge_request.target="${1:-master}" -o merge_request.title="${title}" -o merge_request.description="${description}"
+    else
+      git push -o merge_request.create -o merge_request.target="${1:-master}" -o merge_request.title="${title}"
+    fi
+  fi
+}
