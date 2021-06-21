@@ -1,29 +1,22 @@
-#Homebrew settings
-brew_installed=${HOME}/.brew_installed
+# macOS-specific bash/dotfile config
 
-# --------
-# Snippets for manual use - TODO: put these elsewhere
+# Use GNU coreutils if installed instead of BSD versions that come with OSX
+add-path-if-exists /usr/local/opt/coreutils/libexec/gnubin
+add-path-if-exists /usr/local/opt/coreutils/libexec/gnuman MANPATH
+add-path-if-exists /usr/local/opt/gnu-sed/libexec/gnubin
+add-path-if-exists /usr/local/opt/grep/libexec/gnubin
+add-path-if-exists /usr/local/opt/findutils/libexec/gnubin
 
-# Create NFS-enabled docker-machine
-# docker-machine create --driver vmwarefusion --vmwarefusion-memory-size 4096 --vmwarefusion-cpu-count 4 --vmwarefusion-no-share --vmwarefusion-disk-size 30000 default
-# docker-machine-nfs default --shared-folder=$HOME
-
-
-# --------
-
-# Use GNU userland.
-path-prepend /usr/local/opt/coreutils/libexec/gnubin
-path-prepend /usr/local/opt/coreutils/libexec/gnuman MANPATH
-path-prepend /usr/local/opt/gnu-sed/libexec/gnubin
-path-prepend /usr/local/opt/grep/libexec/gnubin
-path-prepend /Applications/KeePassXC.app/Contents/MacOS
+add-path-if-exists /Applications/KeePassXC.app/Contents/MacOS
 
 # Stuff for brew.
 path-prepend /usr/local/bin
 path-append /usr/local/sbin
+# TODO: is brew_installed still useful?
+brew_installed=${HOME}/.brew_installed
 
-# TODO: Why is this suddenly needed now? It was never necessary before
-#path-prepend /usr/local/Frameworks/Python.framework/Versions/Current/bin
+# TODO: Is this still needed
+# path-prepend /usr/local/Frameworks/Python.framework/Versions/Current/bin
 
 # Set GOROOT for brew-installed go if present
 command -v go >/dev/null && export GOROOT='/usr/local/opt/go/libexec'
@@ -37,7 +30,7 @@ function emptytrash {
 }
 
 #Attach to remote shell via iTerm2 tmux integration
-function ssh-osx-tmux {
+function ssh-tmux {
   local jump_host="${1:-jm}"
   shift 1
   ssh -tt $jump_host -C 'tmux -CC attach' $@
@@ -47,17 +40,12 @@ function ssh-osx-tmux {
 # TODO: Is this even still an issue on modern macOS now?
 alias dsclean="find . -type f -name '*.DS_Store' -ls -delete"
 
-# Use GNU coreutils if installed instead of BSD versions that come with OSX
-if [[ -f "/usr/local/opt/coreutils/libexec/gnubin" ]]; then
-  path-prepend "/usr/local/opt/coreutils/libexec/gnubin"
-  MANPATH="/usr/local/opt/coreutils/libexec/gnuman:$MANPATH"
-fi
-
 # Use linux-style colors for ls
 export CLICOLOR=1
 export LSCOLORS=ExGxBxDxCxEgEdxbxgxcxd
 
 # Workaround for macOS Sierra ssh keychain problems
+# TODO: Still needed?
 # '/Users/USER/.ssh/...' should be in output if it's actually loaded
 if ssh-add -l 2>/dev/null | grep -vq Users; then
   # Use absolute path in case GNU version is installed with brew
@@ -69,6 +57,7 @@ fi
 
 command -v brew &> /dev/null && brew_prefix=$( brew --prefix )
 # GRC colorizes nifty unix tools all over the place
+# TODO: Not sure this is working properly anymore?
 if command -v grc &>/dev/null && [[ -n "${brew_prefix}" ]]; then
   case "$SHELL_NAME" in
     zsh)
@@ -80,10 +69,6 @@ if command -v grc &>/dev/null && [[ -n "${brew_prefix}" ]]; then
   esac
 fi
 
-if [[ -e "$(brew --prefix nvm)/nvm.sh" ]]; then
-  source "$(brew --prefix nvm)/nvm.sh"
-fi
-
 # Suspend all system activity and sleep - not the same as normal sleep
 alias standby='/System/Library/CoreServices/Menu\ Extras/user.menu/Contents/Resources/CGSession -suspend'
 
@@ -93,29 +78,23 @@ alias standby='/System/Library/CoreServices/Menu\ Extras/user.menu/Contents/Reso
 #[[ -f "${darwin_git}/git-completion.bash" ]] && . "${darwin_git}/git-completion.bash"
 #[[ -f "${darwin_git}/git-prompt.sh" ]] && . "${darwin_git}/git-prompt.sh"
 
-# TODO: Deprecate?
-#complete -A hostname 'ssh-osx-tmux'
-
-if [[ -d /usr/local/Cellar/openjdk ]]; then
-  if [[ ! -e /usr/local/opt/openjdk/libexec/openjdk.jdk ]]; then
-    sudo ln -sfn /usr/local/opt/openjdk/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk.jdk
-  fi
-  path-prepend "/usr/local/opt/openjdk/bin"
-fi
-
-# TODO: This no longer works well when using OpenJDK via AdoptOpenJDK
+# Default to brew-installed java, and warn if not OpenJDK
+alias java_home=/usr/libexec/java_home
 function setjava {
-  local javahome="$(/usr/libexec/java_home -v $1)"
-  if "${javahome}/bin/java" -version 2>&1 | grep -q OpenJDK; then
+  local javahome="$(/usr/libexec/java_home -v "$1" 2>/dev/null || \
+    /usr/libexec/java_home "1.${1}" 2>/dev/null || \
+    /usr/libexec/java_home)"
+  if "${javahome}/bin/java" -version 2>&1 | grep -qi openjdk; then
     export JAVA_HOME="$javahome"
   else
     echo "Java at '${javahome}' is not OpenJDK, refusing to set JAVA_HOME" 1>&2
     return 1
   fi
 }
+setjava 11
 
-#setjava 1.8
 set-if-exists GROOVY_HOME '/usr/local/opt/groovy/libexec'
+source-if-exists "${brew_prefix}/nvm.sh"
 
 # Forcibly reload macOS bluetooth kernel module
 # TODO: Probably not needed anymore, was used to workaround a bug on an old laptop
@@ -145,12 +124,12 @@ function mine {
 
 # Colemak aliases
 # Credit: https://stackoverflow.com/questions/21597804/determine-os-x-keyboard-layout-input-source-in-the-terminal-a-script
-export KEYBOARD_LAYOUT="$(defaults read ~/Library/Preferences/com.apple.HIToolbox.plist  AppleSelectedInputSources |  egrep -w 'KeyboardLayout Name' | gsed -E 's/^.+ = \"?([^\"]+)\"?;$/\1/')"
-if [[ "${KEYBOARD_LAYOUT}" == 'Colemak' ]]; then
-  alias cs=cd
-fi
+#export KEYBOARD_LAYOUT="$(defaults read ~/Library/Preferences/com.apple.HIToolbox.plist  AppleSelectedInputSources |  egrep -w 'KeyboardLayout Name' | gsed -E 's/^.+ = \"?([^\"]+)\"?;$/\1/')"
+#if [[ "${KEYBOARD_LAYOUT}" == 'Colemak' ]]; then
+  #alias cs=cd
+#fi
 
-# Open in default web browser
+# Open file in default web browser
 function web {
   local handlers="${HOME}/Library/Preferences/com.apple.LaunchServices/com.apple.launchservices.secure.plist"
   local browser="$(plutil -convert json "$handlers" -o - | \
