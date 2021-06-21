@@ -6,11 +6,12 @@ case $PLATFORM in
       # Upgrade homebrew, os patches, and appstore applications (requires mas)
       if command -v brew &>/dev/null; then
         brew upgrade && brew upgrade --cask
-        if command -v mas &>/dev/null; then
-          mas upgrade
-        else
-          echo "Mas not installed, can't update AppStore apps from CLI" 1>&2
-        fi
+        # TODO: this doesn't really update anything I care about
+        #if command -v mas &>/dev/null; then
+          #mas upgrade
+        #else
+          #echo "Mas not installed, can't update AppStore apps from CLI" 1>&2
+        #fi
         sudo softwareupdate -dia
       fi
       #pip3 list | grep -Eo '^\w+' | xargs -n1 -I{} pip3 install --upgrade '{}'
@@ -36,6 +37,7 @@ case $PLATFORM in
     ;;
 esac
 
+# TODO: Factor out into stand-alone script
 function updatehome {
   # Initialize homesick if needed.
   set -e
@@ -69,29 +71,5 @@ function updatehome {
   set +e
   ( cd ${HOME}/.vim; ./update.sh )
 }
-
-# TODO: This needs updating
-#function ssh-init-home {
-  #local target
-  #for target in $@; do
-    #ssh-copy-id ${target}
-    ##TODO: Replace scp with rsync
-    #scp ~/.ssh/known_hosts ${target}:./.ssh/known_hosts
-    #scp -r "${HOME}/.homesick" ${target}:./
-    #scp -r "${HOME}/.homeshick" ${target}:./
-
-    #ssh -At ${target} bash <<EOF
-      #export HOMESICK="\${HOME}/.homesick/repos"
-      #export HOMESHICK="\${HOMESICK}/homeshick"
-      #export HOMESICK_REPOS="${HOMESICK_REPOS}"
-      #export HOMESICK_MKDIRS="${HOMESICK_MKDIRS}"
-      #ssh-keyscan github.com >> ~/.ssh/known_hosts
-      #$(declare -f updatehome)
-      #updatehome
-
-#EOF
-    #rsync -az "${HOME}/.vim/bundle" ${target}:.vim/
-  #done
-#}
 
 # vim: set ft=sh ts=2 sw=2 tw=0 :

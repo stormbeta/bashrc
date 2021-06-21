@@ -26,6 +26,12 @@ source-if-exists() {
   [[ -s "$1" ]] && source "$1"
 }
 
+alias-if-exists() {
+  local _alias="$1"
+  shift 1
+  command -v "$1" &>/dev/null && alias "$_alias"="$*"
+}
+
 # TODO: profile to see if this is actually useful
 function cacheable-source {
   local cachefile="${HOME}/.bashrc.d/cache/${1}.cache.sh"
