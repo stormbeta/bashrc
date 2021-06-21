@@ -1,4 +1,4 @@
-# Oh, THE COLORS!
+# TODO: Are these superceded / conflict with GRC auto-coloring?
 if command -v dircolors >/dev/null 2>&1; then
   test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || \
     eval "$(dircolors -b)"
@@ -14,8 +14,3 @@ fi
 
 # Use custom colors for the ant console output
 export ANT_OPTS="-Dant.logger.defaults=${HOME}/.ant_settings"
-
-# Create aliases for color version of optional commands if they both exist
-# TODO: Are these even relevant to me anymore?
-#smart-alias svn 'colorsvn'
-#smart-alias ant 'ant -logger org.apache.tools.ant.listener.AnsiColorLogger'

@@ -7,26 +7,14 @@ alias sl='ls'
 
 alias hs='homesick'
 
-if command -v yq &>/dev/null; then
-  alias jy='yq --yaml-output .'
-fi
-
-if command -v prettyping &>/dev/null; then
-  alias ping='prettyping'
-fi
-
+alias-if-exists jy yq --yaml-output .
+alias-if-exists ping prettyping
+alias-if-exists vim nvim -p
+alias-if-exists n nvim -p || alias-if-exists n vim
+#alias-if-exists cat bat --theme GitHub
 alias bat='bat --theme GitHub'
 
-if command -v nvim &>/dev/null; then
-  alias vim='nvim -p'
-  #alias v='nvim -p'
-  alias n='nvim -p'
-else
-  alias v='vim'
-fi
-
 alias c='clear'
-
 alias ssh='TERM=xterm-256color ssh'
 alias e='emacsclient -t'
 alias ec='emacsclient -c'
@@ -55,7 +43,7 @@ complete-alias dc docker-compose
 complete-alias drv docker run -it --rm -v "\${PWD}:/local" -w /local
 complete-alias dr docker run -it --rm -v "\${PWD}:/local"
 
-# Typical watch alias, perserves alias expansion
+# Typical watch alias, perserves alias expansion (ish)
 alias ww='watch --color -n 1 '
 alias watch='watch --color '
 

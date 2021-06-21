@@ -31,8 +31,12 @@ $( shopt -s )
 "
 fi
 
+# Bash 4.1+ only
+bind 'set skip-completed-text on' &> /dev/null
+
 # Bash 4.3+ only
 bind 'set colored-stats on' &> /dev/null
+bind 'set colored-completion-prefix' &> /dev/null
 
 # Show all tab completion results if multiple matches
 bind 'set show-all-if-ambiguous on'
