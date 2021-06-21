@@ -17,7 +17,9 @@ set-if-exists() {
 }
 
 add-path-if-exists() {
-  [[ -e "$1" ]] && path-prepend "$1"
+  local _path="$1"
+  shift 1
+  [[ -e "$_path" ]] && path-prepend "$_path" "$@"
 }
 
 source-if-exists() {
