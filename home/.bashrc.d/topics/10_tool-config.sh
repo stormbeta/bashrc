@@ -1,10 +1,8 @@
 # Paths and setup for various CLI tools and utitlies
 
 # Ruby Version Manager
-if [[ -s "$HOME/.rvm/scripts/rvm" ]]; then
-  source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
-  path-prepend "${HOME}/.rvm/bin"
-fi
+source-if-exists "${HOME}/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
+add-path-if-exists "${HOME}/.rvm/bin"
 
 # NodeJS Version Manager
 if [[ -f "${HOME}/.nvm/nvm.sh" ]]; then
@@ -15,13 +13,25 @@ fi
 
 # Golang setup
 set-if-exists GOPATH "${HOME}/go"
-if [[ -n "${GOPATH}" ]]; then
-  add-path-if-exists "${GOPATH}/bin"
-fi
+[[ -n "${GOPATH}" ]] && add-path-if-exists "${GOPATH}/bin"
 
 # For some reason, the Go AWS SDK in particular refuses to load profiles and
 # credentials correctly without this, which includes terraform
 export AWS_SDK_LOAD_CONFIG=1
+
+# kubectl krew plugin manager
+add-path-if-exists "${HOME}/.krew/bin"
+
+#export RUST_SRC_PATH="/Users/jasonmiller/github/rust/src"
+
+#eval "$(pyenv init -)"
+#eval "$(pyenv virtualenv-init -)"
+
+# Travis setup
+source-if-exists "${HOME}/.travis/travis.sh"
+
+# Personal pyw wrapper helper
+source-if-exists "${HOME}/github/stormbeta/snippets/python/pyw/pyw.bashrc"
 
 # Android SDK paths
 #(set-if-exists ANDROID_HOME "${HOME}/Library/Android/sdk" \
@@ -35,8 +45,3 @@ export AWS_SDK_LOAD_CONFIG=1
   #source-if-exists "${GOOGLE_CLOUD_HOME}/path.${SHELL_NAME}.inc"
   #source-if-exists "${GOOGLE_CLOUD_HOME}/completion.${SHELL_NAME}.inc"
 #fi
-
-# kubectl krew plugin manager
-if [[ -d "${HOME}/.krew/bin" ]]; then
-  export PATH="${HOME}/.krew/bin:${PATH}"
-fi
