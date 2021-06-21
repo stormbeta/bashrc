@@ -8,6 +8,10 @@ add-path-if-exists /usr/local/opt/grep/libexec/gnubin
 add-path-if-exists /usr/local/opt/findutils/libexec/gnubin
 
 add-path-if-exists /Applications/KeePassXC.app/Contents/MacOS
+source-if-exists "${HOME}/.iterm2_shell_integration.bash"
+
+# brew-installed QT5 utils e.g. qmake
+add-path-if-exists "/usr/local/opt/qt@5/bin"
 
 # Stuff for brew.
 path-prepend /usr/local/bin
