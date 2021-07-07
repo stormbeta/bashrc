@@ -2,6 +2,8 @@
 # interactively, don't do anything
 [ -z "${PS1}" ] && export TERM='xterm' && return
 
+source "${HOME}/.bash_profile"
+
 # TODO: This doesn't appear to be needed on macOS, verify if still needed on linux
 #       Was originally used to force-enable italics on terminals that wouldn't use it otherwise
 #export TERM='xterm-256color-italic'
