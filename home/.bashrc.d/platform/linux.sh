@@ -2,7 +2,9 @@
 [[ -e /usr/sbin/service ]] && alias service='sudo service'
 
 # make less more friendly for non-text input files, see lesspipe(1)
-eval "$(SHELL=/bin/sh lesspipe)"
+if command -v 'lesspipe' &>/dev/null; then
+  eval "$(SHELL=/bin/sh lesspipe)"
+fi
 
 if [[ -e "/home/linuxbrew/.linuxbrew/bin" ]]; then
   path-prepend "/home/linuxbrew/.linuxbrew/bin"
@@ -13,10 +15,12 @@ function setjava {
   export JAVA_HOME="${jvmpath}"
 }
 
-if [[ -e "$(brew --prefix)/opt/openjdk" ]]; then
-  path-prepend "$(brew --prefix)/opt/openjdk/bin"
+if command -v brew &>/dev/null; then
+  if [[ -e "$(brew --prefix)/opt/openjdk" ]]; then
+    path-prepend "$(brew --prefix)/opt/openjdk/bin"
+  fi
+  set-if-exists GROOVY_HOME "$(brew --prefix)/opt/groovy/libexec"
 fi
-set-if-exists GROOVY_HOME "$(brew --prefix)/opt/groovy/libexec"
 
 if [[ -f /usr/share/bash-completion/completions/git ]]; then
   source /usr/share/bash-completion/completions/git
