@@ -110,7 +110,6 @@
 
 [delta]
   syntax-theme = "Solarized (light)"
-  line-numbers = true
 
 [interactive]
   diffFilter = delta --color-only

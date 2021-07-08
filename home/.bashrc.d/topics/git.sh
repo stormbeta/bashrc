@@ -66,11 +66,13 @@ function gfp {
 }
 
 alias gpf='gfp'
+alias g='git'
 alias gh="GIT_COMMITTER_EMAIL='stormbeta@gmail.com' GIT_AUTHOR_EMAIL='stormbeta@gmail.com' git"
 if [[ "$USER" != 'jasonmiller' ]]; then
   GIT_COMMITTER_EMAIL='stormbeta@gmail.com'
   GIT_AUTHOR_EMAIL='stormbeta@gmail.com'
 fi
+
 
 # Gitlab-specific
 # NOTE: clone expects ssh config named 'gitlab' to work
