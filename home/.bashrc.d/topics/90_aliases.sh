@@ -14,7 +14,6 @@ alias-if-exists n nvim -p || alias-if-exists n vim
 #alias-if-exists cat bat --theme GitHub
 alias bat='bat --theme GitHub'
 
-alias c='clear'
 alias ssh='TERM=xterm-256color ssh'
 alias e='emacsclient -t'
 alias ec='emacsclient -c'

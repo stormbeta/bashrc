@@ -65,44 +65,9 @@ function gfp {
 }
 
 alias gpf='gfp'
+alias g='git'
 alias gh="GIT_COMMITTER_EMAIL='stormbeta@gmail.com' GIT_AUTHOR_EMAIL='stormbeta@gmail.com' git"
 if [[ "$USER" != 'jasonmiller' ]]; then
   GIT_COMMITTER_EMAIL='stormbeta@gmail.com'
   GIT_AUTHOR_EMAIL='stormbeta@gmail.com'
 fi
-
-# TODO: Fork this out into separate file
-# Internal Gitlab-specific
-# NOTE: clone expects ssh config named 'gitlab' to work
-function gl-clone {
-  cd "${HOME}/gitlab"
-  local project_path="$1"
-  shift 1
-  git clone "ssh://gitlab/${project_path}" "$project_path" "$@"
-  local result=$?
-  cd "$project_path"
-  [[ $? -eq 128 ]] && (git fetch --all && git pull)
-}
-
-function gitlab-url {
-  git config --get remote.origin.url | sed -E "s~((ssh://[^/]+/)|(git@)?gitlab[^:]+:)~~;s/\.git$//;s|^|${GITLAB_URL}/|"
-}
-
-function glp {
-  # TODO: Make it default target to default branch, allow title override
-  local title="$(git log -1 --pretty=%s)"
-  local description="$(git log -1 --pretty=%b)"
-  git log -1 --pretty=%B
-  read -p "Push and create MR? [Y/n]" -n 1 -r prompt
-  echo "$1 $prompt"
-  if [[ ! $prompt =~ ^[Yy]$ ]]; then
-    echo "Aborting!" 1>&2
-    return 1
-  else
-    if [[ -n "$description" ]]; then
-      git push -o merge_request.create -o merge_request.target="${1:-master}" -o merge_request.title="${title}" -o merge_request.description="${description}"
-    else
-      git push -o merge_request.create -o merge_request.target="${1:-master}" -o merge_request.title="${title}"
-    fi
-  fi
-}

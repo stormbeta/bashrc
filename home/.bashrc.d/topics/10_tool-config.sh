@@ -19,6 +19,9 @@ set-if-exists GOPATH "${HOME}/go"
 # credentials correctly without this, which includes terraform
 export AWS_SDK_LOAD_CONFIG=1
 
+# Python packaging framework
+add-path-if-exists "${HOME}/.poetry/bin"
+
 # kubectl krew plugin manager
 add-path-if-exists "${HOME}/.krew/bin"
 

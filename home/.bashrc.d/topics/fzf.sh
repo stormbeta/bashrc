@@ -81,6 +81,7 @@ if command -v fzf 2>&1 > /dev/null; then
       [[ -n "$result" ]] || return 1
       fasd_cd -d "$result"
     }
+    alias c='cdp'
 
     function v {
       local query
