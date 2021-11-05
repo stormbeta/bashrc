@@ -1,4 +1,5 @@
 # macOS-specific bash/dotfile config
+__profile "${BASH_SOURCE[0]}"
 
 # Use GNU coreutils if installed instead of BSD versions that come with OSX
 add-path-if-exists /usr/local/opt/coreutils/libexec/gnubin

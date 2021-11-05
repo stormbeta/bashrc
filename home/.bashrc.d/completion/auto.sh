@@ -1,3 +1,4 @@
+__profile "${BASH_SOURCE[0]}"
 if [[ "$SHELL_NAME" == "bash" ]]; then
   case ${PLATFORM} in
     darwin)

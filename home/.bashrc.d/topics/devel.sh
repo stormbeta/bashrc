@@ -1,3 +1,4 @@
+__profile "${BASH_SOURCE[0]}"
 # TODO: Probably superceded by the loopit script?
 function watch-file {
   # Executes a command everytime a file or directory's contents change

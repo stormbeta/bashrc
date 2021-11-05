@@ -1,3 +1,4 @@
+__profile "${BASH_SOURCE[0]}"
 export HOMESICK="${HOME}/.homesick/repos"
 export HOMESHICK="${HOMESICK}/homeshick"
 

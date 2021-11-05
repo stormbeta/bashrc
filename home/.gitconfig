@@ -32,7 +32,7 @@
   st = status -sb
   br = branch
   pr = pull --rebase
-  rebase = rebase -i
+  push = push -u
 
   # Diffs
   sdiff = diff --short-stat

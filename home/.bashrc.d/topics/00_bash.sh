@@ -1,4 +1,5 @@
 # Avoid duplicate entries
+__profile "${BASH_SOURCE[0]}"
 HISTCONTROL="erasedups:ignoreboth"
 
 # Disable bash history size limits (in combination with histappend)
@@ -20,6 +21,9 @@ shell_options="\
   autocd \
 "
 
+# This cannot be set via shopt, not sure why
+set -o noclobber
+
 if ! shopt -qs ${shell_options}; then
   echo "
 Warning! Not all shell options were set.
@@ -33,10 +37,10 @@ fi
 
 # Bash 4.1+ only
 bind 'set skip-completed-text on' &> /dev/null
+bind 'set colored-completion-prefix on' &> /dev/null
 
 # Bash 4.3+ only
 bind 'set colored-stats on' &> /dev/null
-bind 'set colored-completion-prefix' &> /dev/null
 
 # Show all tab completion results if multiple matches
 bind 'set show-all-if-ambiguous on'

@@ -52,5 +52,8 @@ command -v fasd &>/dev/null && eval "$(fasd --init auto)"
 #Promptline
 source "${HOME}/.bashrc.d/prompt.sh"
 
-# Workaround for some machine-specific variables
-source-if-exists "${HOME}/backup/env"
+let CURRENT_TIME="$(/usr/local/opt/coreutils/libexec/gnubin/date +%s%3N)"
+if [[ -z "$CURRENT_TIME" ]]; then
+  let LAST_TIME=$CURRENT_TIME
+fi
+echo "BASH STARTUP TIME: $(echo "($CURRENT_TIME - $START_TIME)/1000.0" | bc -l | head -c7)" 1>&2

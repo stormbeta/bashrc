@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+__profile "${BASH_SOURCE[0]}"
 
 # Tell kubectl to automatically load from ~/.kube/config.d (if they exist)
 function reload-kubeconfigs {

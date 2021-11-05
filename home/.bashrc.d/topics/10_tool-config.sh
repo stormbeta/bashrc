@@ -1,5 +1,5 @@
+__profile "${BASH_SOURCE[0]}"
 # Paths and setup for various CLI tools and utitlies
-
 # Ruby Version Manager
 source-if-exists "${HOME}/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
 add-path-if-exists "${HOME}/.rvm/bin"

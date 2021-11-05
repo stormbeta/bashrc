@@ -1,3 +1,4 @@
+__profile "${BASH_SOURCE[0]}"
 # ls aliases
 alias ll='ls -l'
 alias la='ls -A'
