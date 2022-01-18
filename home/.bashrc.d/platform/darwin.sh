@@ -141,3 +141,5 @@ function web {
     jq -r '.LSHandlers[] | select(.LSHandlerURLScheme == "https") | .LSHandlerRoleAll | {"org.mozilla.firefox": "Firefox", "com.google.chrome": "Google Chrome"}[.] // "Safari"')"
   open -a "$browser" "$@"
 }
+
+path-prepend "${HOME}/bin"

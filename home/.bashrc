@@ -52,7 +52,7 @@ command -v fasd &>/dev/null && eval "$(fasd --init auto)"
 #Promptline
 source "${HOME}/.bashrc.d/prompt.sh"
 
-let CURRENT_TIME="$(/usr/local/opt/coreutils/libexec/gnubin/date +%s%3N)"
+let CURRENT_TIME="$(date +%s%3N)"
 if [[ -z "$CURRENT_TIME" ]]; then
   let LAST_TIME=$CURRENT_TIME
 fi
