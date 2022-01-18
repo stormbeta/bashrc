@@ -7,8 +7,15 @@ if [[ -z "$BASH_PROFILE_SOURCED" ]]; then
   export LANG=en_US.UTF-8
 
   export LAST_TIME
-  let LAST_TIME="$(/usr/local/opt/coreutils/libexec/gnubin/date '+%s%3N')"
-  let START_TIME="$(/usr/local/opt/coreutils/libexec/gnubin/date '+%s%3N')"
+  function __timestamp {
+    if [[ "$(uname -s)" == "Darwin" ]]; then
+      /usr/local/opt/coreutils/libexec/gnubin/date '+%s%3N'
+    else
+      date '+%s%3N'
+    fi
+  }
+  let LAST_TIME="$(__timestamp)"
+  let START_TIME="$(__timestamp)"
   # Base utilities used by other config
   source "${HOME}/.bashrc.d/path-manip.sh"
   function __profile {
@@ -17,7 +24,7 @@ if [[ -z "$BASH_PROFILE_SOURCED" ]]; then
     if [[ "$enabled" == "false" ]]; then
       return 0
     fi
-    let CURRENT_TIME="$(/usr/local/opt/coreutils/libexec/gnubin/date +%s%3N)"
+    let CURRENT_TIME="$(__timestamp)"
     if [[ -z "$CURRENT_TIME" ]]; then
       let LAST_TIME=$CURRENT_TIME
     fi
