@@ -33,6 +33,10 @@ alias-if-exists() {
   command -v "$1" &>/dev/null && alias "$_alias"="$*"
 }
 
+command-exists() {
+  command -v "$1" &>/dev/null
+}
+
 # TODO: profile to see if this is actually useful
 function cacheable-source {
   local cachefile="${HOME}/.bashrc.d/cache/${1}.cache.sh"

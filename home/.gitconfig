@@ -97,6 +97,7 @@
 
 [rebase]
   autostash = true
+  autosquash = true
 
 [filter "lfs"]
   clean = git-lfs clean %f
@@ -110,6 +111,12 @@
 
 [delta]
   syntax-theme = "Solarized (light)"
+  ; Delta's default style is hard to differentiate commits
+  commit-style = yellow
+  commit-decoration-style = ol
+  file-style = bold
+  file-decoration-style = blue
+  hunk-header-decoration-style = none
 
 [interactive]
   diffFilter = delta --color-only

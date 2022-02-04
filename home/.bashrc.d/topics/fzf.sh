@@ -49,6 +49,7 @@ if command -v fzf 2>&1 > /dev/null; then
   }
 
   if command -v fasd &>/dev/null; then
+    eval "$(fasd --init auto)"
     # Fuzzy match from shell history and execute it
     function hst {
       local query

@@ -1,5 +1,6 @@
 # Avoid duplicate entries
 __profile "${BASH_SOURCE[0]}"
+
 HISTCONTROL="erasedups:ignoreboth"
 
 # Disable bash history size limits (in combination with histappend)
@@ -22,7 +23,7 @@ shell_options="\
 "
 
 # This cannot be set via shopt, not sure why
-set -o noclobber
+#set -o noclobber
 
 if ! shopt -qs ${shell_options}; then
   echo "

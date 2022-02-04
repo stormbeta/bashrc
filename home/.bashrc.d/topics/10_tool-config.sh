@@ -1,8 +1,11 @@
 __profile "${BASH_SOURCE[0]}"
+
 # Paths and setup for various CLI tools and utitlies
-# Ruby Version Manager
-source-if-exists "${HOME}/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
-add-path-if-exists "${HOME}/.rvm/bin"
+
+# Ruby Version Manager (load as a function)
+if source-if-exists "${HOME}/.rvm/scripts/rvm"; then
+  add-path-if-exists "${HOME}/.rvm/bin"
+fi
 
 # NodeJS Version Manager
 if [[ -f "${HOME}/.nvm/nvm.sh" ]]; then
@@ -31,7 +34,7 @@ add-path-if-exists "${HOME}/.krew/bin"
 #eval "$(pyenv virtualenv-init -)"
 
 # Travis setup
-source-if-exists "${HOME}/.travis/travis.sh"
+#source-if-exists "${HOME}/.travis/travis.sh"
 
 # Personal pyw wrapper helper
 source-if-exists "${HOME}/github/stormbeta/snippets/python/pyw/pyw.bashrc"
