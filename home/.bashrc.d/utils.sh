@@ -1,3 +1,4 @@
+__profile "${BASH_SOURCE[0]}"
 # Compatible with bash and zsh
 
 # Utility methods for bashrc/zshrc/etc configuration
@@ -30,6 +31,10 @@ alias-if-exists() {
   local _alias="$1"
   shift 1
   command -v "$1" &>/dev/null && alias "$_alias"="$*"
+}
+
+command-exists() {
+  command -v "$1" &>/dev/null
 }
 
 # TODO: profile to see if this is actually useful

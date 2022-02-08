@@ -1,21 +1,27 @@
 # macOS-specific bash/dotfile config
+__profile "${BASH_SOURCE[0]}"
+
+# Stuff for brew.
+# M1 macOS uses different prefix
+if [[ "$(sysctl -n machdep.cpu.brand_string)" =~ "M1" ]]; then
+  path-prepend /opt/homebrew/bin
+fi
+BREW_PREFIX="$(brew --prefix)"
+path-prepend "${BREW_PREFIX}/bin"
 
 # Use GNU coreutils if installed instead of BSD versions that come with OSX
-add-path-if-exists /usr/local/opt/coreutils/libexec/gnubin
-add-path-if-exists /usr/local/opt/coreutils/libexec/gnuman MANPATH
-add-path-if-exists /usr/local/opt/gnu-sed/libexec/gnubin
-add-path-if-exists /usr/local/opt/grep/libexec/gnubin
-add-path-if-exists /usr/local/opt/findutils/libexec/gnubin
+add-path-if-exists "${BREW_PREFIX}/opt/coreutils/libexec/gnubin"
+add-path-if-exists "${BREW_PREFIX}/opt/coreutils/libexec/gnuman" MANPATH
+add-path-if-exists "${BREW_PREFIX}/opt/gnu-sed/libexec/gnubin"
+add-path-if-exists "${BREW_PREFIX}/opt/grep/libexec/gnubin"
+add-path-if-exists "${BREW_PREFIX}/opt/findutils/libexec/gnubin"
 
 add-path-if-exists /Applications/KeePassXC.app/Contents/MacOS
 source-if-exists "${HOME}/.iterm2_shell_integration.bash"
 
 # brew-installed QT5 utils e.g. qmake
-add-path-if-exists "/usr/local/opt/qt@5/bin"
-
-# Stuff for brew.
-path-prepend /usr/local/bin
-path-append /usr/local/sbin
+add-path-if-exists "${BREW_PREFIX}/opt/qt@5/bin"
+path-append "${BREW_PREFIX}/sbin"
 # TODO: is brew_installed still useful?
 brew_installed=${HOME}/.brew_installed
 
@@ -48,12 +54,16 @@ alias dsclean="find . -type f -name '*.DS_Store' -ls -delete"
 export CLICOLOR=1
 export LSCOLORS=ExGxBxDxCxEgEdxbxgxcxd
 
-# Workaround for macOS Sierra ssh keychain problems
-# TODO: Still needed?
+# Workaround for macOS Sierra+ ssh keychain problems
 # '/Users/USER/.ssh/...' should be in output if it's actually loaded
 if ssh-add -l 2>/dev/null | grep -vq Users; then
   # Use absolute path in case GNU version is installed with brew
-  /usr/bin/ssh-add -A &>/dev/null
+  # HACK: at some point after Catalina, macOS broke ssh-add and required Apple-specific flags
+  if [[ "$OSTYPE" =~ 'darwin2' ]]; then
+    /usr/bin/ssh-add --use-apple-keychain &>/dev/null
+  else
+    /usr/bin/ssh-add -A &>/dev/null
+  fi
 fi
 
 # Handy shortcut for setting up socks proxy
@@ -140,3 +150,5 @@ function web {
     jq -r '.LSHandlers[] | select(.LSHandlerURLScheme == "https") | .LSHandlerRoleAll | {"org.mozilla.firefox": "Firefox", "com.google.chrome": "Google Chrome"}[.] // "Safari"')"
   open -a "$browser" "$@"
 }
+
+add-path-if-exists "${HOME}/bin"

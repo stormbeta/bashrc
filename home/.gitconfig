@@ -6,7 +6,7 @@
   user = stormbeta
 
 [web]
-  browser = google-chrome
+  browser = firefox
 
 [push]
   default = current
@@ -23,16 +23,16 @@
 [credential]
   helper = osxkeychain
 
-[alias]
-  ;promote = ~/bin/git-promote
-  ;wtf     = ~/bin/git-wtf
-  ;rank-contributers = ~/bin/git-rank-contributers
+[pull]
+  rebase = true
 
+[alias]
   co = checkout
   c  = commit
   st = status -sb
   br = branch
   pr = pull --rebase
+  push = push -u
 
   # Diffs
   sdiff = diff --short-stat
@@ -43,9 +43,6 @@
   plog  = log --graph --pretty=format:'%Cred%h%Creset %an: %s - %Creset %C(yellow)%d%Creset %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
   logme = log --author='Jason.*Miller'
   blog  = log --graph --decorate --pretty=oneline --abbrev-commit
-
-  # Safeguards
-  rebase = rebase -i
 
   # Tools from mklich
   # TODO: Delete? I don't really use these
@@ -100,6 +97,7 @@
 
 [rebase]
   autostash = true
+  autosquash = true
 
 [filter "lfs"]
   clean = git-lfs clean %f
@@ -113,6 +111,12 @@
 
 [delta]
   syntax-theme = "Solarized (light)"
+  ; Delta's default style is hard to differentiate commits
+  commit-style = yellow
+  commit-decoration-style = ol
+  file-style = bold
+  file-decoration-style = blue
+  hunk-header-decoration-style = none
 
 [interactive]
   diffFilter = delta --color-only

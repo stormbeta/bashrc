@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+__profile "${BASH_SOURCE[0]}"
 export PLATFORM="$(uname -s | tr "[:upper:]" "[:lower:]")"
 case $PLATFORM in
   darwin)

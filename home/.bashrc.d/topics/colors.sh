@@ -1,5 +1,6 @@
+__profile "${BASH_SOURCE[0]}"
 # TODO: Are these superceded / conflict with GRC auto-coloring?
-if command -v dircolors >/dev/null 2>&1; then
+if command-exists dircolors; then
   test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || \
     eval "$(dircolors -b)"
 

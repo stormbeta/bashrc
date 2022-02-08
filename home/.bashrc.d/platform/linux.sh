@@ -1,3 +1,4 @@
+__profile "${BASH_SOURCE[0]}"
 # Pretty much never makes sense to run service without sudo
 [[ -e /usr/sbin/service ]] && alias service='sudo service'
 

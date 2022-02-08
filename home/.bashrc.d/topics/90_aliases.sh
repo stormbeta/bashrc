@@ -1,3 +1,5 @@
+__profile "${BASH_SOURCE[0]}"
+
 # ls aliases
 alias ll='ls -l'
 alias la='ls -A'
@@ -5,24 +7,27 @@ alias lla='ls -lA'
 alias l='ls -CF'
 alias sl='ls'
 
-alias hs='homesick'
-
 alias-if-exists jy yq --yaml-output .
 alias-if-exists ping prettyping
-alias-if-exists vim nvim -p
-alias-if-exists n nvim -p || alias-if-exists n vim
 #alias-if-exists cat bat --theme GitHub
 alias bat='bat --theme GitHub'
 
+if command-exists nvim; then
+  alias-if-exists vim nvim -p
+  alias-if-exists n nvim -p || alias-if-exists n vim
+fi
+if command-exists emacsclient; then
+  alias e='emacsclient -t'
+  alias ec='emacsclient -c'
+fi
+
 alias ssh='TERM=xterm-256color ssh'
-alias e='emacsclient -t'
-alias ec='emacsclient -c'
 
 #Unix-only
 alias sshx='ssh -X'
 alias less='less -R'
 alias cj='cd ..'
-alias cp='rsync -ah --progress'
+#alias cp='rsync -ah --progress'
 
 # Completion-aware aliases
 complete-alias tf terraform
@@ -47,21 +52,4 @@ alias ww='watch --color -n 1 '
 alias watch='watch --color '
 
 alias gr='gron | grep --color=auto -P'
-
-function vimnote {
-  #TODO: Tab completion
-  #TODO: Should this update the timestamp in place?
-  local title="$1"
-  local notedir="${HOME}/notes"
-  #find -regex can't handle this pattern
-  local note="$(ls -St "${notedir}" | grep -P "${title}(\.md)?$" | head -n 1)"
-  if [[ -f "${notedir}/${note}" ]]; then
-    vim "${notedir}/${note}"
-  elif [[ -n "${note}" ]]; then
-    echo "Found multiple matches:"
-    echo "${note}"
-    return 1
-  else
-    vim "${notedir}/$(date +%Y%m%d)-${title}"
-  fi
-}
+alias rga='rg --no-ignore --no-hidden'

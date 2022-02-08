@@ -1,6 +1,5 @@
 # Utility functions for manipulating PATH vars
 # Should be compatible with both bash and zsh
-
 # NOTE: _path is used because zsh is dumb and shadows `path` with some incompatible nonsense
 
 # path-remove directory [PATH]

@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+__profile "${BASH_SOURCE[0]}"
 
 # cd relative to nearest git root
 function gcd {
@@ -42,13 +43,7 @@ complete -o nospace -F _git_cd gcd
   #export GIT_COMMITTER_EMAIL=${GIT_AUTHOR_EMAIL}
 #fi
 
-function git-lastauthor {
-  while read line; do
-    local hash=$(git log -n 1 --pretty=format:%H "$line")
-    echo "${line} $(git show -q --format="%ai %ar by %an" ${hash})"
-  done
-}
-
+# Clone project from github and jump to directory
 function gh-clone {
   cd "${HOME}/github"
   GIT_COMMITTER_EMAIL='stormbeta@gmail.com' \

@@ -1,3 +1,5 @@
+__profile "${BASH_SOURCE[0]}"
+
 # Use ^X instead of ^S to stop control flow so I can reclaim ^S for forward
 # common history search, and to allow using ^S as save in terminal editors
 if stty --help &> /dev/null; then
