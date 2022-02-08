@@ -8,8 +8,12 @@ if [[ -z "$BASH_PROFILE_SOURCED" ]]; then
 
   export LAST_TIME
   function __timestamp {
-    if [[ "$(uname -s)" == "Darwin" ]]; then
-      /usr/local/opt/coreutils/libexec/gnubin/date '+%s%3N'
+    if [[ "$OSTYPE" =~ "darwin" ]]; then
+      if [[ "$(sysctl -n machdep.cpu.brand_string)" =~ "M1" ]]; then
+        /opt/homebrew/opt/coreutils/libexec/gnubin/date '+%s%3N'
+      else
+        /usr/local/opt/coreutils/libexec/gnubin/date '+%s%3N'
+      fi
     else
       date '+%s%3N'
     fi
