@@ -6,7 +6,7 @@ Personal bash/cli config. These dotfiles are set up to be linked in with Homesic
 ## Highlights:
 
 * Sets many useful bash options such as globstar matching, spellcheck, and faster completion
-* Transparent ssh agent setup, especially for macOS
+* Transparent ssh agent setup, especially for macOS (now supports Monterey)
 * Unlimited history with synchronization across local shell instances
 * Fancy prompt, pure bash to avoid dependencies
 * terminfo settings to support italics

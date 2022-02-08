@@ -72,13 +72,13 @@ fi
 command -v brew &> /dev/null && brew_prefix=$( brew --prefix )
 # GRC colorizes nifty unix tools all over the place
 # TODO: Not sure this is working properly anymore?
-if command -v grc &>/dev/null && [[ -n "${brew_prefix}" ]]; then
+if command -v grc &>/dev/null && [[ -n "${BREW_PREFIX}" ]]; then
   case "$SHELL_NAME" in
     zsh)
-      source ${brew_prefix}/etc/grc.zsh
+      source ${BREW_PREFIX}/etc/grc.zsh
       ;;
     *)
-      source ${brew_prefix}/etc/grc.bashrc
+      source ${BREW_PREFIX}/etc/grc.bashrc
       ;;
   esac
 fi
@@ -92,31 +92,15 @@ alias standby='/System/Library/CoreServices/Menu\ Extras/user.menu/Contents/Reso
 #[[ -f "${darwin_git}/git-completion.bash" ]] && . "${darwin_git}/git-completion.bash"
 #[[ -f "${darwin_git}/git-prompt.sh" ]] && . "${darwin_git}/git-prompt.sh"
 
-# Default to brew-installed java, and warn if not OpenJDK
-alias java_home=/usr/libexec/java_home
+# Default to brew-installed java
 function setjava {
-  local javahome="$(/usr/libexec/java_home -v "$1" 2>/dev/null || \
-    /usr/libexec/java_home "1.${1}" 2>/dev/null || \
-    /usr/libexec/java_home)"
-  if "${javahome}/bin/java" -version 2>&1 | grep -qi openjdk; then
-    export JAVA_HOME="$javahome"
-  else
-    echo "Java at '${javahome}' is not OpenJDK, refusing to set JAVA_HOME" 1>&2
-    return 1
-  fi
+  local javaVer="$1"
+  export JAVA_HOME="$(ls -d "${BREW_PREFIX}/opt/openjdk@${javaVer}" | head -n1)"
 }
 setjava 11
 
-set-if-exists GROOVY_HOME '/usr/local/opt/groovy/libexec'
-source-if-exists "${brew_prefix}/nvm.sh"
-
-# Forcibly reload macOS bluetooth kernel module
-# TODO: Probably not needed anymore, was used to workaround a bug on an old laptop
-function bt-reset {
-  sudo kextunload -b com.apple.iokit.BroadcomBluetoothHostControllerUSBTransport
-  sleep 5
-  sudo kextload -b com.apple.iokit.BroadcomBluetoothHostControllerUSBTransport
-}
+set-if-exists GROOVY_HOME "${BREW_PREFIX}/opt/groovy/libexec"
+source-if-exists "${BREW_PREFIX}/nvm.sh"
 
 function idea {
   local pth="${1:-.}"
