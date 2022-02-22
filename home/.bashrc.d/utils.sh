@@ -12,30 +12,6 @@ function _log-warn {
   fi
 }
 
-# set-if-exists VAR PATH
-set-if-exists() {
-  [[ -e "$2" ]] && export "$1"="$2"
-}
-
-add-path-if-exists() {
-  local _path="$1"
-  shift 1
-  [[ -e "$_path" ]] && path-prepend "$_path" "$@"
-}
-
-source-if-exists() {
-  [[ -s "$1" ]] && source "$1"
-}
-
-alias-if-exists() {
-  local _alias="$1"
-  shift 1
-  command -v "$1" &>/dev/null && alias "$_alias"="$*"
-}
-
-command-exists() {
-  command -v "$1" &>/dev/null
-}
 
 # TODO: profile to see if this is actually useful
 function cacheable-source {

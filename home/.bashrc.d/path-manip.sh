@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # Utility functions for manipulating PATH vars
 # Should be compatible with both bash and zsh
 # NOTE: _path is used because zsh is dumb and shadows `path` with some incompatible nonsense
@@ -32,4 +33,30 @@ function path-append {
   local cleanPath
   if [[ -n "$BASH_VERSION" ]]; then cleanPath="${!pathVar}"; else cleanPath="${(P)pathVar}"; fi
   export "$pathVar"="${cleanPath}:${_path}"
+}
+
+# set-if-exists VAR PATH
+set-if-exists() {
+  [[ -e "$2" ]] && export "$1"="$2"
+}
+
+add-path-if-exists() {
+  local _path="$1"
+  shift 1
+  [[ -e "$_path" ]] && path-prepend "$_path" "$@"
+}
+
+source-if-exists() {
+  [[ -s "$1" ]] && source "$1"
+}
+
+alias-if-exists() {
+  local _alias="$1"
+  shift 1
+  command -v "$1" &>/dev/null && alias "$_alias"="$*"
+}
+
+# Usage: if command-exists '...'; then
+command-exists() {
+  command -v "$1" &>/dev/null
 }
