@@ -29,7 +29,7 @@ brew_installed=${HOME}/.brew_installed
 # path-prepend /usr/local/Frameworks/Python.framework/Versions/Current/bin
 
 # Set GOROOT for brew-installed go if present
-command -v go >/dev/null && export GOROOT='/usr/local/opt/go/libexec'
+command -v go >/dev/null && export GOROOT="${BREW_PREFIX}/opt/go/libexec"
 
 function emptytrash {
   # Empty the Trash on all mounted volumes and the main HDD
