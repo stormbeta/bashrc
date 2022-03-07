@@ -3,6 +3,9 @@ bashrc
 
 Personal bash/cli config. These dotfiles are set up to be linked in with Homesick.
 
+**NOTE:** If you fork this, make sure to change the git username/email configuration! Everything
+else should be user-neutral
+
 ## Highlights:
 
 * Sets many useful bash options such as globstar matching, spellcheck, and faster completion

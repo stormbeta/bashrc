@@ -32,8 +32,10 @@ add-path-if-exists "${HOME}/.krew/bin"
 
 #export RUST_SRC_PATH="/Users/jasonmiller/github/rust/src"
 
-#eval "$(pyenv init -)"
 #eval "$(pyenv virtualenv-init -)"
+if command-exists pyenv; then
+  eval "$(pyenv init -)"
+fi
 
 # Travis setup
 #source-if-exists "${HOME}/.travis/travis.sh"
