@@ -3,6 +3,7 @@ __profile "${BASH_SOURCE[0]}"
 
 # Stuff for brew.
 # M1 macOS uses different prefix
+# Using env var instead of `brew --prefix` as the latter fails slowly if package isn't installed
 if [[ "$(sysctl -n machdep.cpu.brand_string)" =~ "M1" ]]; then
   path-prepend /opt/homebrew/bin
 fi
@@ -100,7 +101,7 @@ function setjava {
 setjava 11
 
 set-if-exists GROOVY_HOME "${BREW_PREFIX}/opt/groovy/libexec"
-source-if-exists "${BREW_PREFIX}/nvm.sh"
+source-if-exists "${BREW_PREFIX}/opt/nvm/nvm.sh"
 
 function idea {
   local pth="${1:-.}"
