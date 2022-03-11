@@ -94,10 +94,6 @@ if command -v fzf 2>&1 > /dev/null; then
       history -r && history -s vim "$result"
       vim "$result"
     }
-  else
-    _log-warn "fasd not found, 'v' fzf shortcut disabled"
   fi
-else
-  _log-warn "fzf not found, skipping rf/v shortcuts"
 fi
 
