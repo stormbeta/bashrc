@@ -1,4 +1,3 @@
-__profile "${BASH_SOURCE[0]}"
 # fuzzy-finder + fasd utils
 
 # cdp
