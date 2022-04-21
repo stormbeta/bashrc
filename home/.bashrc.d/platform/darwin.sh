@@ -79,7 +79,7 @@ if command -v grc &>/dev/null && [[ -n "${BREW_PREFIX}" ]]; then
       source ${BREW_PREFIX}/etc/grc.zsh
       ;;
     *)
-      source ${BREW_PREFIX}/etc/grc.bashrc
+      source ${BREW_PREFIX}/etc/grc.sh
       ;;
   esac
 fi
@@ -137,3 +137,8 @@ function web {
 }
 
 add-path-if-exists "${HOME}/bin"
+
+# Reset iTerm profile to fix colorscheme bug that crops up sometimes
+function fix-iterm {
+  echo -e "\033]50;SetProfile=${1:-Default}\a"
+}

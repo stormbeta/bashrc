@@ -9,6 +9,7 @@ if [[ -z "$BASH_PROFILE_SOURCED" ]]; then
   export LAST_TIME
   function __timestamp {
     if [[ "$OSTYPE" =~ "darwin" ]]; then
+      # BSD/macOS `date` doesn't support sub-second precision, must use GNU version
       if [[ "$(sysctl -n machdep.cpu.brand_string)" =~ "M1" ]]; then
         /opt/homebrew/opt/coreutils/libexec/gnubin/date '+%s%3N'
       else
