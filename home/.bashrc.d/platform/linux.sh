@@ -43,6 +43,19 @@ function top_level_parent_pid {
   fi
 }
 
+# WSL-specific ssh config
+if grep -q WSL /proc/version && command -v wsl-ssh-agent-relay &>/dev/null; then
+  if [[ -z ${SSH_AUTH_SOCK} ]]; then
+    if [[ ! -e "${HOME}/.ssh/wsl-ssh-agent-relay.pid" ]]; then
+      # TODO: This doesn't work - need to start in foreground mode manually for now
+      wsl-ssh-agent-relay start -s
+    fi
+    export SSH_AUTH_SOCK="${HOME}/.ssh/wsl-ssh-agent.sock"
+  else
+    echo "SSH agent already active from another session or host."
+  fi
+fi
+
 #tmux ssh socket stuff
 function ssh-fix {
   export SSH_AUTH_SOCK="$(ls -laht --full-time /tmp/ssh-*/agent.* | head -n 1 | grep -oP '[^\s]+$')"

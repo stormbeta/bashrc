@@ -142,3 +142,13 @@ add-path-if-exists "${HOME}/bin"
 function fix-iterm {
   echo -e "\033]50;SetProfile=${1:-Default}\a"
 }
+
+if [[ -z "$SSH_AUTH_SOCK" ]]; then
+  if [[ "$OSTYPE" =~ 'darwin2' ]]; then
+    /usr/bin/ssh-add --use-apple-keychain &>/dev/null
+  else
+    /usr/bin/ssh-add -K &>/dev/null
+  fi
+else
+  echo "SSH agent using key in OSX keychain." 1>&2
+fi
