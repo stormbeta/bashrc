@@ -8,7 +8,12 @@ function path-remove {
   local _path="$1"
   local pathVar="${2:-PATH}"
   local currPath
-  if [[ -n "$BASH_VERSION" ]]; then currPath="${!pathVar}"; else currPath="${(P)pathVar}"; fi
+  if [[ -n "$BASH_VERSION" ]]; then
+    currPath="${!pathVar}"
+  else
+    # zsh version
+    currPath="${(P)pathVar}"
+  fi
   local newPath="$(echo -n "$currPath" | tr ':' '\n' | grep -vxF "$_path" | tr '\n' ':' | sed 's/:$//')"
   export "$pathVar"="$newPath"
 }
@@ -20,7 +25,12 @@ function path-prepend {
   local pathVar="${2:-PATH}"
   path-remove "$_path" "$pathVar"
   local cleanPath
-  if [[ -n "$BASH_VERSION" ]]; then cleanPath="${!pathVar}"; else cleanPath="${(P)pathVar}"; fi
+  if [[ -n "$BASH_VERSION" ]]; then
+    cleanPath="${!pathVar}"
+  else
+    # zsh version
+    cleanPath="${(P)pathVar}"
+  fi
   export "$pathVar"="${_path}:${cleanPath}"
 }
 
@@ -31,7 +41,12 @@ function path-append {
   local pathVar="${2:-PATH}"
   path-remove "$_path" "$pathVar"
   local cleanPath
-  if [[ -n "$BASH_VERSION" ]]; then cleanPath="${!pathVar}"; else cleanPath="${(P)pathVar}"; fi
+  if [[ -n "$BASH_VERSION" ]]; then
+    cleanPath="${!pathVar}"
+  else
+    # zsh version
+    cleanPath="${(P)pathVar}"
+  fi
   export "$pathVar"="${cleanPath}:${_path}"
 }
 
