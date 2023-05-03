@@ -1,5 +1,6 @@
 #
 # This shell prompt config file was created by promptline.vim
+# Usage: source this file from your bash profile, either `~/.bash_profile` or `~/.bashrc`
 #
 
 function __promptline_last_exit_code {
