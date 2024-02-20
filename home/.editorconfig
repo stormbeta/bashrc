@@ -1,12 +1,16 @@
+# EditorConfig: https://editorconfig.org/
+
 root = true
+
+# 'ij_' prefix indicates JetBrains' IDE specific features (IntelliJ)
 
 [*]
 indent_style = space
 indent_size  = 2
 insert_final_newline = true
 trim_trailing_whitespace = true
-indent_brace_style = K&R
 charset = utf-8
+indent_brace_style = K&R
 ij_smart_tabs = true
 
 [*.java]
@@ -17,6 +21,7 @@ ij_java_class_brace_style = end_of_line
 
 [*.groovy]
 indent_size = 4
+indent_style = space
 ij_groovy_if_brace_force = always
 ij_groovy_method_brace_style = end_of_line
 ij_groovy_lambda_brace_style = end_of_line
@@ -38,3 +43,6 @@ indent_size = 2
 
 [*.py]
 indent_size = 4
+
+[*.go]
+indent_style = tab

@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 __profile "${BASH_SOURCE[0]}"
 
+function gbase {
+  git fetch --all && git rebase -i origin/master
+}
+
 # cd relative to nearest git root
 function gcd {
   if command -v git &> /dev/null; then
