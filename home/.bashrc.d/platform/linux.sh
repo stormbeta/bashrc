@@ -61,6 +61,11 @@ function ssh-fix {
   export SSH_AUTH_SOCK="$(ls -laht --full-time /tmp/ssh-*/agent.* | head -n 1 | grep -oP '[^\s]+$')"
 }
 
-alias pbpaste='xclip -selection clipboard -o'
-alias pbcopy='xclip -selection clipboard'
+if [[ "${XDG_SESSION_TYPE}" == 'wayland' ]]; then
+  alias pbpaste='wl-paste'
+  alias pbcopy='wl-copy'
+else
+  alias pbpaste='xclip -selection clipboard -o'
+  alias pbcopy='xclip -selection clipboard'
+fi
 alias open=xdg-open

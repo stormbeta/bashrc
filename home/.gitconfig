@@ -1,6 +1,6 @@
 [user]
   name = Jason Miller
-  email = jasonmiller@pingidentity.com
+  email = git@stormbeta.dev
 
 [github]
   user = stormbeta
@@ -110,7 +110,7 @@
   show = delta required = true
 
 [delta]
-  syntax-theme = "Solarized (light)"
+  syntax-theme = "Solarized (dark)"
   ; Delta's default style is hard to differentiate commits
   commit-style = yellow
   commit-decoration-style = ol
@@ -120,3 +120,5 @@
 
 [interactive]
   diffFilter = delta --color-only
+[init]
+	defaultBranch = main
