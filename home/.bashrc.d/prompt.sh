@@ -11,6 +11,7 @@ function __promptline_last_exit_code {
 }
 
 function __blue {
+  return
   local context="$(kubectl config current-context)"
   local namespace="$(kubectl config view -o json | jq '.["current-context"] as $curr | .contexts[] | select(.name == $curr) | .context.namespace // "default"' -r)"
   if [[ "${context}" =~ ^kubernetes ]]; then

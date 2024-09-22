@@ -38,6 +38,8 @@ if [[ -z "$BASH_PROFILE_SOURCED" ]]; then
   }
   source "${HOME}/.bashrc.d/utils.sh"
 
+  path-prepend "${HOME}/.local/bin"
+  # TODO: Consider ditching this in favor of .local/bin which seems to be more standard
   path-prepend "${HOME}/bin"
   path-prepend /usr/local/bin
 

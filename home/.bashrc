@@ -49,6 +49,20 @@ sourced topics
 # FASD support
 command -v fasd &>/dev/null && eval "$(fasd --init auto)"
 
+# TEMP function to build config
+function add-dotfile {
+  local rpath="$(realpath "$1" --relative-to="$HOME")"
+  local castle="${HOME}/.homesick/repos/linux-desktop-rc/home"
+  local dirpth="$(realpath "$(dirname "$1")" --relative-to="$HOME")"
+  local fname="$(basename "$1")"
+  mkdir -p "${castle}/${dirpth}"
+  cp "$1" "${castle}/${dirpth}"
+  (
+    cd "$castle"
+    git add "${dirpth}/${fname}"
+  )
+}
+
 #Promptline
 source "${HOME}/.bashrc.d/prompt.sh"
 
