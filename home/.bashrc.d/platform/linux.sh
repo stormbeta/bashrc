@@ -3,8 +3,9 @@ __profile "${BASH_SOURCE[0]}"
 [[ -e /usr/sbin/service ]] && alias service='sudo service'
 
 # make less more friendly for non-text input files, see lesspipe(1)
+# TODO: This seems of pretty limited benefit?
 if command -v 'lesspipe' &>/dev/null; then
-  eval "$(SHELL=/bin/sh lesspipe)"
+  export LESSOPEN="|lesspipe %s"
 fi
 
 if [[ -e "/home/linuxbrew/.linuxbrew/bin" ]]; then
