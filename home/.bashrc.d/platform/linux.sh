@@ -57,6 +57,15 @@ if grep -q WSL /proc/version && command -v wsl-ssh-agent-relay &>/dev/null; then
   fi
 fi
 
+# Gentoo-specific helper
+if grep -q Gentoo /etc/os-release && command -v e-file &>/dev/null; then
+  function command_not_found_handle {
+    echo "Command ${1} not found!" 1>&2
+    e-file "$1" || return 127
+  }
+fi
+
+
 #tmux ssh socket stuff
 function ssh-fix {
   export SSH_AUTH_SOCK="$(ls -laht --full-time /tmp/ssh-*/agent.* | head -n 1 | grep -oP '[^\s]+$')"
