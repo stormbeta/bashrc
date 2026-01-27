@@ -50,8 +50,8 @@ complete -o nospace -F _git_cd gcd
 # Clone project from github and jump to directory
 function gh-clone {
   cd "${HOME}/github"
-  GIT_COMMITTER_EMAIL='stormbeta@gmail.com' \
-    GIT_AUTHOR_EMAIL='stormbeta@gmail.com' \
+  GIT_COMMITTER_EMAIL='git@stormbeta.dev' \
+    GIT_AUTHOR_EMAIL='git@stormbeta.dev' \
     git clone "git@github.com:$1.git" "$1"
   cd "$1"
 }
@@ -65,8 +65,8 @@ function gfp {
 
 alias gpf='gfp'
 alias g='git'
-alias gh="GIT_COMMITTER_EMAIL='stormbeta@gmail.com' GIT_AUTHOR_EMAIL='stormbeta@gmail.com' git"
+alias gh="GIT_COMMITTER_EMAIL='git@stormbeta.dev' GIT_AUTHOR_EMAIL='git@stormbeta.dev' git"
 if [[ "$USER" != 'jasonmiller' ]]; then
-  GIT_COMMITTER_EMAIL='stormbeta@gmail.com'
-  GIT_AUTHOR_EMAIL='stormbeta@gmail.com'
+  GIT_COMMITTER_EMAIL='git@stormbeta.dev'
+  GIT_AUTHOR_EMAIL='git@stormbeta.dev'
 fi
