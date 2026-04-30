@@ -6,7 +6,7 @@ fi
 
 # Restrict to desktop system, maybe use hostname instead?
 if grep -q Gentoo /etc/os-release; then
-  eval $(keychain --eval --quick --quiet --agents ssh)
+  eval $(keychain --eval --quick --quiet ssh)
 fi
 
 # Start ssh-agent automatically if not already running
