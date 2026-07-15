@@ -42,6 +42,7 @@ if [[ -z "$BASH_PROFILE_SOURCED" ]]; then
   # TODO: Consider ditching this in favor of .local/bin which seems to be more standard
   path-prepend "${HOME}/bin"
   path-prepend /usr/local/bin
+  path-prepend "${HOME}/.local/bin"
 
   set-if-exists EDITOR "$(command -v nvim)" \
     || set-if-exists EDITOR "$(command -v vim)"

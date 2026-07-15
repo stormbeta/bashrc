@@ -9,6 +9,8 @@ if [[ "$(sysctl -n machdep.cpu.brand_string)" =~ "M1" ]]; then
 fi
 BREW_PREFIX="$(brew --prefix)"
 path-prepend "${BREW_PREFIX}/bin"
+# Homebrew default cask location is stupid
+export HOMEBREW_CASK_OPTS="--appdir=${HOME}/Applications"
 
 # Use GNU coreutils if installed instead of BSD versions that come with OSX
 add-path-if-exists "${BREW_PREFIX}/opt/coreutils/libexec/gnubin"
@@ -98,7 +100,7 @@ function setjava {
   local javaVer="$1"
   export JAVA_HOME="$(ls -d "${BREW_PREFIX}/opt/openjdk@${javaVer}" | head -n1)"
 }
-setjava 11
+setjava 25
 
 set-if-exists GROOVY_HOME "${BREW_PREFIX}/opt/groovy/libexec"
 source-if-exists "${BREW_PREFIX}/opt/nvm/nvm.sh"

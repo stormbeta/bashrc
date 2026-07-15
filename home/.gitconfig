@@ -107,7 +107,8 @@
   diff = delta
   log = delta
   reflog = delta
-  show = delta required = true
+  show = delta
+  required = true
 
 [delta]
   syntax-theme = "Solarized (dark)"
