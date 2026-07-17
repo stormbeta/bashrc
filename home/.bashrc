@@ -65,6 +65,7 @@ function add-dotfile {
 
 #Promptline
 source "${HOME}/.bashrc.d/prompt.sh"
+path-prepend "${HOME}/.local/bin"
 
 let CURRENT_TIME="$(date +%s%3N)"
 if [[ -z "$CURRENT_TIME" ]]; then
