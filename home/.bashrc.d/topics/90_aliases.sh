@@ -1,4 +1,3 @@
-__profile "${BASH_SOURCE[0]}"
 
 # ls aliases
 alias ll='ls -l'
@@ -53,3 +52,5 @@ alias watch='watch --color '
 
 alias gr='gron | grep --color=auto -P'
 alias rga='rg --no-ignore --no-hidden'
+
+__profile "${BASH_SOURCE[0]}"

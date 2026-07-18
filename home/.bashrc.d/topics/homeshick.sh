@@ -1,4 +1,3 @@
-__profile "${BASH_SOURCE[0]}"
 
 export HOMESICK="${HOME}/.homesick/repos"
 export HOMESHICK="${HOMESICK}/homeshick"
@@ -10,3 +9,5 @@ if source-if-exists "${HOMESHICK}/homeshick.sh"; then
   make-completion-wrapper _homeshick_complete _homesick_alias homesick
   complete -F _homesick_alias homesick
 fi
+
+__profile "${BASH_SOURCE[0]}"

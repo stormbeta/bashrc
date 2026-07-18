@@ -1,4 +1,3 @@
-__profile "${BASH_SOURCE[0]}"
 # TODO: Are these superceded / conflict with GRC auto-coloring?
 if command-exists dircolors; then
   test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || \
@@ -15,3 +14,5 @@ fi
 
 # Use custom colors for the ant console output
 export ANT_OPTS="-Dant.logger.defaults=${HOME}/.ant_settings"
+
+__profile "${BASH_SOURCE[0]}"

@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-__profile "${BASH_SOURCE[0]}"
 
 # Tell kubectl to automatically load from ~/.kube/config.d (if they exist)
 function reload-kubeconfigs {
@@ -18,6 +17,7 @@ function k8sh {
 
 complete-alias kl kubectl --context=docker-for-desktop
 complete-alias kc kubectl
-complete-alias mk minikube
 complete-alias kx kubectx
 #complete-alias kcl kubectl logs -f
+
+__profile "${BASH_SOURCE[0]}"

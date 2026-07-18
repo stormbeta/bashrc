@@ -1,9 +1,8 @@
-__profile "${BASH_SOURCE[0]}"
 if [[ "$SHELL_NAME" == "bash" ]]; then
   case ${PLATFORM} in
     darwin)
       # Set up bash completion on OSX with brew
-      source "$(brew --prefix)/etc/bash_completion"
+      source "${BREW_PREFIX}/etc/bash_completion"
       source-if-exists /usr/local/opt/docker/etc/bash_completion.d/docker
       ;;
     *)
@@ -15,13 +14,9 @@ if [[ "$SHELL_NAME" == "bash" ]]; then
   esac
 fi
 
-if command -v minikube &>/dev/null; then
-  source <(minikube completion "$SHELL_NAME")
-fi
-
-if command -v helm &>/dev/null; then
-  source <(helm completion "$SHELL_NAME" &>/dev/null)
-fi
+#if command -v helm &>/dev/null; then
+  #source <(helm completion "$SHELL_NAME" &>/dev/null)
+#fi
 
 if command -v kubectl &>/dev/null; then
   source <(kubectl completion "$SHELL_NAME")
@@ -31,3 +26,5 @@ fi
 if command -v aws_completer &>/dev/null; then
   complete -C "$(command -v aws_completer)" aws
 fi
+
+__profile "${BASH_SOURCE[0]}"

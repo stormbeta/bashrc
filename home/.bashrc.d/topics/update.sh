@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-__profile "${BASH_SOURCE[0]}"
 export PLATFORM="$(uname -s | tr "[:upper:]" "[:lower:]")"
 case $PLATFORM in
   darwin)
@@ -74,3 +73,5 @@ function updatehome {
 }
 
 # vim: set ft=sh ts=2 sw=2 tw=0 :
+
+__profile "${BASH_SOURCE[0]}"

@@ -1,5 +1,4 @@
 # macOS-specific bash/dotfile config
-__profile "${BASH_SOURCE[0]}"
 
 # Stuff for brew.
 # M1 macOS uses different prefix
@@ -19,17 +18,15 @@ add-path-if-exists "${BREW_PREFIX}/opt/gnu-sed/libexec/gnubin"
 add-path-if-exists "${BREW_PREFIX}/opt/grep/libexec/gnubin"
 add-path-if-exists "${BREW_PREFIX}/opt/findutils/libexec/gnubin"
 
-add-path-if-exists /Applications/KeePassXC.app/Contents/MacOS
+#add-path-if-exists /Applications/KeePassXC.app/Contents/MacOS
 source-if-exists "${HOME}/.iterm2_shell_integration.bash"
 
 # brew-installed QT5 utils e.g. qmake
-add-path-if-exists "${BREW_PREFIX}/opt/qt@5/bin"
+# TODO: When did/do I use that?
+#add-path-if-exists "${BREW_PREFIX}/opt/qt@5/bin"
 path-append "${BREW_PREFIX}/sbin"
 # TODO: is brew_installed still useful?
 brew_installed=${HOME}/.brew_installed
-
-# TODO: Is this still needed
-# path-prepend /usr/local/Frameworks/Python.framework/Versions/Current/bin
 
 # Set GOROOT for brew-installed go if present
 command -v go >/dev/null && export GOROOT="${BREW_PREFIX}/opt/go/libexec"
@@ -72,7 +69,6 @@ fi
 # Handy shortcut for setting up socks proxy
 # alias socks='sudo networksetup -setsocksfirewallproxystate'
 
-command -v brew &> /dev/null && brew_prefix=$( brew --prefix )
 # GRC colorizes nifty unix tools all over the place
 # TODO: Not sure this is working properly anymore?
 if command -v grc &>/dev/null && [[ -n "${BREW_PREFIX}" ]]; then
@@ -100,10 +96,8 @@ function setjava {
   local javaVer="$1"
   export JAVA_HOME="$(ls -d "${BREW_PREFIX}/opt/openjdk@${javaVer}" | head -n1)"
 }
-setjava 25
-
 set-if-exists GROOVY_HOME "${BREW_PREFIX}/opt/groovy/libexec"
-source-if-exists "${BREW_PREFIX}/opt/nvm/nvm.sh"
+#source-if-exists "${BREW_PREFIX}/opt/nvm/nvm.sh"
 
 function idea {
   local pth="${1:-.}"
@@ -154,3 +148,5 @@ if [[ -z "$SSH_AUTH_SOCK" ]]; then
 else
   echo "SSH agent using key in OSX keychain." 1>&2
 fi
+
+__profile "${BASH_SOURCE[0]}"

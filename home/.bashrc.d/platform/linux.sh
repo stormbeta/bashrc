@@ -1,4 +1,3 @@
-__profile "${BASH_SOURCE[0]}"
 # Pretty much never makes sense to run service without sudo
 [[ -e /usr/sbin/service ]] && alias service='sudo service'
 
@@ -57,7 +56,11 @@ if grep -q WSL /proc/version && command -v wsl-ssh-agent-relay &>/dev/null; then
   fi
 fi
 
-# Gentoo-specific helper
+# Gentoo-specific
+if grep -q Gentoo /etc/os-release; then
+  eval $(keychain --eval --quick --quiet ssh)
+fi
+
 if grep -q Gentoo /etc/os-release && command -v e-file &>/dev/null; then
   function command_not_found_handle {
     echo "Command ${1} not found!" 1>&2
@@ -79,3 +82,5 @@ else
   alias pbcopy='xclip -selection clipboard'
 fi
 alias open=xdg-open
+
+__profile "${BASH_SOURCE[0]}"

@@ -1,4 +1,3 @@
-__profile "${BASH_SOURCE[0]}"
 # Compatible with bash and zsh
 
 # Utility methods for bashrc/zshrc/etc configuration
@@ -59,3 +58,5 @@ else
     alias "${a}=$*"
   }
 fi
+
+__profile "${BASH_SOURCE[0]}"

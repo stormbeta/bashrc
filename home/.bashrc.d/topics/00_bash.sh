@@ -1,5 +1,4 @@
 # Avoid duplicate entries
-__profile "${BASH_SOURCE[0]}"
 
 HISTCONTROL="erasedups:ignoreboth"
 
@@ -52,3 +51,5 @@ bind "set completion-map-case on"
 
 # Automatically trim long paths in the prompt (requires Bash 4.x)
 export PROMPT_DIRTRIM=2
+
+__profile "${BASH_SOURCE[0]}"

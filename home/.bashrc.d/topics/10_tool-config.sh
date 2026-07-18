@@ -1,20 +1,12 @@
 # Paths and setup for various CLI tools and utitlies
 
-__profile "${BASH_SOURCE[0]}"
 
 # Paths and setup for various CLI tools and utitlies
 
 # Ruby Version Manager (load as a function)
-if source-if-exists "${HOME}/.rvm/scripts/rvm"; then
-  add-path-if-exists "${HOME}/.rvm/bin"
-fi
-
-# NodeJS Version Manager
-if [[ -f "${HOME}/.nvm/nvm.sh" ]]; then
-  export NVM_DIR="${HOME}/.nvm"
-  # nvm insists on spamming spurious warnings on load
-  . "$NVM_DIR/nvm.sh" &> /dev/null
-fi
+#if source-if-exists "${HOME}/.rvm/scripts/rvm"; then
+  #add-path-if-exists "${HOME}/.rvm/bin"
+#fi
 
 # Golang setup
 set-if-exists GOPATH "${HOME}/go"
@@ -25,20 +17,12 @@ set-if-exists GOPATH "${HOME}/go"
 export AWS_SDK_LOAD_CONFIG=1
 
 # Python packaging framework
-add-path-if-exists "${HOME}/.poetry/bin"
+#add-path-if-exists "${HOME}/.poetry/bin"
 
 # kubectl krew plugin manager
-add-path-if-exists "${HOME}/.krew/bin"
+#add-path-if-exists "${HOME}/.krew/bin"
 
 #export RUST_SRC_PATH="/Users/jasonmiller/github/rust/src"
-
-#eval "$(pyenv virtualenv-init -)"
-if command-exists pyenv; then
-  eval "$(pyenv init -)"
-fi
-
-# Travis setup
-#source-if-exists "${HOME}/.travis/travis.sh"
 
 # Personal pyw wrapper helper
 source-if-exists "${HOME}/github/stormbeta/snippets/python/pyw/pyw.bashrc"
@@ -55,3 +39,5 @@ source-if-exists "${HOME}/github/stormbeta/snippets/python/pyw/pyw.bashrc"
   #source-if-exists "${GOOGLE_CLOUD_HOME}/path.${SHELL_NAME}.inc"
   #source-if-exists "${GOOGLE_CLOUD_HOME}/completion.${SHELL_NAME}.inc"
 #fi
+
+__profile "${BASH_SOURCE[0]}"

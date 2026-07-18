@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-__profile "${BASH_SOURCE[0]}"
 
 function gbase {
   git fetch --all && git rebase -i origin/master
@@ -70,3 +69,5 @@ if [[ "$USER" != 'jasonmiller' ]]; then
   GIT_COMMITTER_EMAIL='git@stormbeta.dev'
   GIT_AUTHOR_EMAIL='git@stormbeta.dev'
 fi
+
+__profile "${BASH_SOURCE[0]}"
