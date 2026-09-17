@@ -1,7 +1,7 @@
 # macOS-specific bash/dotfile config
 
 # Stuff for brew.
-# M1 macOS uses different prefix
+# M-series macOS uses different prefix than Intel macs
 # Using env var instead of `brew --prefix` as the latter fails slowly if package isn't installed
 if [[ "$(sysctl -n machdep.cpu.brand_string)" =~ "M1" ]]; then
   path-prepend /opt/homebrew/bin

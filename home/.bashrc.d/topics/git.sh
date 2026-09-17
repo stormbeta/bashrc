@@ -64,7 +64,7 @@ function gfp {
 
 alias gpf='gfp'
 alias g='git'
-alias gh="GIT_COMMITTER_EMAIL='git@stormbeta.dev' GIT_AUTHOR_EMAIL='git@stormbeta.dev' git"
+alias gp="GIT_COMMITTER_EMAIL='git@stormbeta.dev' GIT_AUTHOR_EMAIL='git@stormbeta.dev' git"
 if [[ "$USER" != 'jasonmiller' ]]; then
   GIT_COMMITTER_EMAIL='git@stormbeta.dev'
   GIT_AUTHOR_EMAIL='git@stormbeta.dev'
