@@ -139,6 +139,26 @@ function fix-iterm {
   echo -e "\033]50;SetProfile=${1:-Default}\a"
 }
 
+SVARS_LIST="${HOME}/.secret/keychain"
+
+function update-cred {
+  if [[ "$#" -lt 1 ]]; then
+    echo "Usage: update-cred ENV_NAME" 1>&2
+    return 1
+  fi
+  local name="$1"
+  IFS= read -rsp 'Value: ' value && printf '\n'
+  security add-generic-password -a "$USER" -s "$name" -w "$value" -U
+  touch "$SVARS_LIST"
+  grep -qxF "$name" "$SVARS_LIST" || echo "$name" >> "$SVARS_LIST"
+}
+
+if [[ -e "$SVARS_LIST" ]]; then
+  for var in $(<"$SVARS_LIST"); do
+    export "$var"="$(security find-generic-password -s "$var" -a "$USER" -w 2>/dev/null)"
+  done
+fi
+
 if [[ -z "$SSH_AUTH_SOCK" ]]; then
   if [[ "$OSTYPE" =~ 'darwin2' ]]; then
     /usr/bin/ssh-add --use-apple-keychain &>/dev/null
