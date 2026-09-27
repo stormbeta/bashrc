@@ -47,12 +47,18 @@ complete -o nospace -F _git_cd gcd
 #fi
 
 # Clone project from github and jump to directory
+# Accepts ORG/REPO, git@github.com:ORG/REPO.git, or https://github.com/ORG/REPO(.git)
 function gh-clone {
+  local spec="$1"
+  spec="${spec#git@github.com:}"
+  spec="${spec#https://github.com/}"
+  spec="${spec%.git}"
+  spec="${spec%/}"
   cd "${HOME}/github"
   GIT_COMMITTER_EMAIL='git@stormbeta.dev' \
     GIT_AUTHOR_EMAIL='git@stormbeta.dev' \
-    git clone "git@github.com:$1.git" "$1"
-  cd "$1"
+    git clone "git@github.com:${spec}.git" "$spec"
+  cd "$spec"
 }
 
 function gfp {

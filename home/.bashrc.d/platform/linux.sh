@@ -56,10 +56,10 @@ if grep -q WSL /proc/version && command -v wsl-ssh-agent-relay &>/dev/null; then
   fi
 fi
 
-# Gentoo-specific
-if grep -q Gentoo /etc/os-release; then
-  eval $(keychain --eval --quick --quiet ssh)
-fi
+# Gentoo-specific (2026-07-19: Broken)
+#if grep -q Gentoo /etc/os-release; then
+  #eval $(keychain --eval --quick --quiet ssh)
+#fi
 
 if grep -q Gentoo /etc/os-release && command -v e-file &>/dev/null; then
   function command_not_found_handle {
