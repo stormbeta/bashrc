@@ -5,6 +5,8 @@ if stty --help &> /dev/null; then
   ##GNU/Linux version
   stty -F /dev/tty -ixon
   stty -F /dev/tty stop ^X
+  # Disable CTRL-V from breaking pastes when used accidentally
+  stty lnext ''
 else
   #BSD version (e.g. OSX)
   stty -f /dev/tty -ixon
